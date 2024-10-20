@@ -17,5 +17,8 @@ public class Test{
          System.out.println(x);
 
       }
+      Character ch ='a';
+      char c=ch;
+      System.out.println(c);
    }
 }

@@ -25,5 +25,6 @@ public class Employee{
       empOne.setSalary(1000.0);
       empOne.printEmp();
 
+
    }
 }
