@@ -5,6 +5,5 @@ leetcode(0/300)
 ## Base
 
 - [x] GIT的学习 
-- [ ] JAVA se
-- [ ] 
+- [ ] JAVA se  10.20
 
