@@ -4,5 +4,6 @@ public class FreshJuiceTest {
         FreshJuice fj = new FreshJuice();
         fj.size= FreshJuice.ChineseJuiceSize.MEDIUM;
         System.out.println(fj.size);
+        //System.out.println(fj.test2);
     }
 }
