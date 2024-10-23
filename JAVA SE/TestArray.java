@@ -1,3 +1,4 @@
+import java.util.Arrays;
 public class TestArray {
    public static void main(String[] args) {
       // 数组大小
@@ -20,5 +21,20 @@ public class TestArray {
          total += myList[i];
       }
       System.out.println("总和为： " + total);
+       double[] myList2 = {1.9, 20.9, 3.4, 3.5};
+
+
+      // 打印所有数组元素
+      for (double element: myList2) {
+         System.out.println(element);
+
+      }
+      System.out.println("xxxxxxxxxxxxxxxxxxxxxx");
+      Arrays.sort(myList2);
+      for(double x:myList2)
+      {
+         System.out.println(x);
+      }
+
    }
 }
