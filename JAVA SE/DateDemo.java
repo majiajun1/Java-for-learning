@@ -28,14 +28,12 @@ public class DateDemo {
       String input = args.length == 0 ? "1818-11-11" : args[0];
 
       System.out.print(input + " Parses as ");
-
-      Date t;
-
-      try {
-          t = ft.parse(input);
-          System.out.println(t);
-      } catch (ParseException e) {
-          System.out.println("Unparseable using " + ft);
-      }
+      long start=System.currentTimeMillis();
+      try{
+      Thread.sleep(3000);
+    }catch(InterruptedException e){}
+      long end=System.currentTimeMillis();
+      System.out.println(end-start);
     }
+
 }
