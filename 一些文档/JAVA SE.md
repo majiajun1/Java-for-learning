@@ -295,3 +295,390 @@ Java语言为内置数据类型char提供了包装类Character类。
 String 类是不可改变的，所以你一旦创建了 String 对象，那它的值就无法改变了（详看笔记部分解析）
 
 String 相当于指针 
+
+| 1    | [char charAt(int index)](https://www.runoob.com/java/java-string-charat.html) 返回指定索引处的 char 值。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | [int compareTo(Object o)](https://www.runoob.com/java/java-string-compareto.html) 把这个字符串和另一个对象比较。 |
+| 3    | [int compareTo(String anotherString)](https://www.runoob.com/java/java-string-compareto.html) 按字典顺序比较两个字符串。 |
+| 4    | [int compareToIgnoreCase(String str)](https://www.runoob.com/java/java-string-comparetoignorecase.html) 按字典顺序比较两个字符串，不考虑大小写。 |
+| 5    | [String concat(String str)](https://www.runoob.com/java/java-string-concat.html) 将指定字符串连接到此字符串的结尾。 |
+| 6    | [boolean contentEquals(StringBuffer sb)](https://www.runoob.com/java/java-string-contentequals.html) 当且仅当字符串与指定的StringBuffer有相同顺序的字符时候返回真。 |
+| 7    | [static String copyValueOf(char[\] data)](https://www.runoob.com/java/java-string-copyvalueof.html) 返回指定数组中表示该字符序列的 String。 |
+| 8    | [static String copyValueOf(char[\] data, int offset, int count)](https://www.runoob.com/java/java-string-copyvalueof.html) 返回指定数组中表示该字符序列的 String。 |
+| 9    | [boolean endsWith(String suffix)](https://www.runoob.com/java/java-string-endswith.html) 测试此字符串是否以指定的后缀结束。 |
+| 10   | [boolean equals(Object anObject)](https://www.runoob.com/java/java-string-equals.html) 将此字符串与指定的对象比较。 |
+| 11   | [boolean equalsIgnoreCase(String anotherString)](https://www.runoob.com/java/java-string-equalsignorecase.html) 将此 String 与另一个 String 比较，不考虑大小写。 |
+| 12   | [byte[\] getBytes()](https://www.runoob.com/java/java-string-getbytes.html)  使用平台的默认字符集将此 String 编码为 byte 序列，并将结果存储到一个新的 byte 数组中。 |
+| 13   | [byte[\] getBytes(String charsetName)](https://www.runoob.com/java/java-string-getbytes.html) 使用指定的字符集将此 String 编码为 byte 序列，并将结果存储到一个新的 byte 数组中。 |
+| 14   | [void getChars(int srcBegin, int srcEnd, char[\] dst, int dstBegin)](https://www.runoob.com/java/java-string-getchars.html) 将字符从此字符串复制到目标字符数组。 |
+| 15   | [int hashCode()](https://www.runoob.com/java/java-string-hashcode.html) 返回此字符串的哈希码。 |
+| 16   | [int indexOf(int ch)](https://www.runoob.com/java/java-string-indexof.html) 返回指定字符在此字符串中第一次出现处的索引。 |
+| 17   | [int indexOf(int ch, int fromIndex)](https://www.runoob.com/java/java-string-indexof.html) 返回在此字符串中第一次出现指定字符处的索引，从指定的索引开始搜索。 |
+| 18   | [int indexOf(String str)](https://www.runoob.com/java/java-string-indexof.html)  返回指定子字符串在此字符串中第一次出现处的索引。 |
+| 19   | [int indexOf(String str, int fromIndex)](https://www.runoob.com/java/java-string-indexof.html) 返回指定子字符串在此字符串中第一次出现处的索引，从指定的索引开始。 |
+| 20   | [String intern()](https://www.runoob.com/java/java-string-intern.html)  返回字符串对象的规范化表示形式。 |
+| 21   | [int lastIndexOf(int ch)](https://www.runoob.com/java/java-string-lastindexof.html)  返回指定字符在此字符串中最后一次出现处的索引。 |
+| 22   | [int lastIndexOf(int ch, int fromIndex)](https://www.runoob.com/java/java-string-lastindexof.html) 返回指定字符在此字符串中最后一次出现处的索引，从指定的索引处开始进行反向搜索。 |
+| 23   | [int lastIndexOf(String str)](https://www.runoob.com/java/java-string-lastindexof.html) 返回指定子字符串在此字符串中最右边出现处的索引。 |
+| 24   | [int lastIndexOf(String str, int fromIndex)](https://www.runoob.com/java/java-string-lastindexof.html)  返回指定子字符串在此字符串中最后一次出现处的索引，从指定的索引开始反向搜索。 |
+| 25   | [int length()](https://www.runoob.com/java/java-string-length.html) 返回此字符串的长度。 |
+| 26   | [boolean matches(String regex)](https://www.runoob.com/java/java-string-matches.html) 告知此字符串是否匹配给定的正则表达式。 |
+| 27   | [boolean regionMatches(boolean ignoreCase, int toffset, String other, int ooffset, int len)](https://www.runoob.com/java/java-string-regionmatches.html) 测试两个字符串区域是否相等。 |
+| 28   | [boolean regionMatches(int toffset, String other, int ooffset, int len)](https://www.runoob.com/java/java-string-regionmatches.html) 测试两个字符串区域是否相等。 |
+| 29   | [String replace(char oldChar, char newChar)](https://www.runoob.com/java/java-string-replace.html) 返回一个新的字符串，它是通过用 newChar 替换此字符串中出现的所有 oldChar 得到的。 |
+| 30   | [String replaceAll(String regex, String replacement)](https://www.runoob.com/java/java-string-replaceall.html) 使用给定的 replacement 替换此字符串所有匹配给定的正则表达式的子字符串。 |
+| 31   | [String replaceFirst(String regex, String replacement)](https://www.runoob.com/java/java-string-replacefirst.html)  使用给定的 replacement 替换此字符串匹配给定的正则表达式的第一个子字符串。 |
+| 32   | [String[\] split(String regex)](https://www.runoob.com/java/java-string-split.html) 根据给定正则表达式的匹配拆分此字符串。 |
+| 33   | [String[\] split(String regex, int limit)](https://www.runoob.com/java/java-string-split.html) 根据匹配给定的正则表达式来拆分此字符串。 |
+| 34   | [boolean startsWith(String prefix)](https://www.runoob.com/java/java-string-startswith.html) 测试此字符串是否以指定的前缀开始。 |
+| 35   | [boolean startsWith(String prefix, int toffset)](https://www.runoob.com/java/java-string-startswith.html) 测试此字符串从指定索引开始的子字符串是否以指定前缀开始。 |
+| 36   | [CharSequence subSequence(int beginIndex, int endIndex)](https://www.runoob.com/java/java-string-subsequence.html)  返回一个新的字符序列，它是此序列的一个子序列。 |
+| 37   | [String substring(int beginIndex)](https://www.runoob.com/java/java-string-substring.html) 返回一个新的字符串，它是此字符串的一个子字符串。 |
+| 38   | [String substring(int beginIndex, int endIndex)](https://www.runoob.com/java/java-string-substring.html) 返回一个新字符串，它是此字符串的一个子字符串。 |
+| 39   | [char[\] toCharArray()](https://www.runoob.com/java/java-string-tochararray.html) 将此字符串转换为一个新的字符数组。 |
+| 40   | [String toLowerCase()](https://www.runoob.com/java/java-string-tolowercase.html) 使用默认语言环境的规则将此 String 中的所有字符都转换为小写。 |
+| 41   | [String toLowerCase(Locale locale)](https://www.runoob.com/java/java-string-tolowercase.html)  使用给定 Locale 的规则将此 String 中的所有字符都转换为小写。 |
+| 42   | [String toString()](https://www.runoob.com/java/java-string-tostring.html)  返回此对象本身（它已经是一个字符串！）。 |
+| 43   | [String toUpperCase()](https://www.runoob.com/java/java-string-touppercase.html) 使用默认语言环境的规则将此 String 中的所有字符都转换为大写。 |
+| 44   | [String toUpperCase(Locale locale)](https://www.runoob.com/java/java-string-touppercase.html) 使用给定 Locale 的规则将此 String 中的所有字符都转换为大写。 |
+| 45   | [String trim()](https://www.runoob.com/java/java-string-trim.html) 返回字符串的副本，忽略前导空白和尾部空白。 |
+| 46   | [static String valueOf(primitive data type x)](https://www.runoob.com/java/java-string-valueof.html) 返回给定data type类型x参数的字符串表示形式。 |
+| 47   | [contains(CharSequence chars)](https://www.runoob.com/java/java-string-contains.html) 判断是否包含指定的字符系列。 |
+| 48   | [isEmpty()](https://www.runoob.com/java/java-string-isempty.html) 判断字符串是否为空。 |
+
+当对字符串进行修改的时候，需要使用 StringBuffer 和 StringBuilder 类
+
+然而在应用程序要求线程安全的情况下，则必须使用 StringBuffer 类。
+
+| 1    | public StringBuffer append(String s) 将指定的字符串追加到此字符序列。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | public StringBuffer reverse()  将此字符序列用其反转形式取代。 |
+| 3    | public delete(int start, int end) 移除此序列的子字符串中的字符。 |
+| 4    | public insert(int offset, int i) 将 `int` 参数的字符串表示形式插入此序列中。 |
+| 5    | insert(int offset, String str) 将 `str` 参数的字符串插入此序列中。 |
+| 6    | replace(int start, int end, String str) 使用给定 `String` 中的字符替换此序列的子字符串中的字符。 |
+
+| 1    | int capacity() 返回当前容量。                                |
+| ---- | ------------------------------------------------------------ |
+| 2    | char charAt(int index) 返回此序列中指定索引处的 `char` 值。  |
+| 3    | void ensureCapacity(int minimumCapacity) 确保容量至少等于指定的最小值。 |
+| 4    | void getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) 将字符从此序列复制到目标字符数组 `dst`。 |
+| 5    | int indexOf(String str) 返回第一次出现的指定子字符串在该字符串中的索引。 |
+| 6    | int indexOf(String str, int fromIndex) 从指定的索引处开始，返回第一次出现的指定子字符串在该字符串中的索引。 |
+| 7    | int lastIndexOf(String str) 返回最右边出现的指定子字符串在此字符串中的索引。 |
+| 8    | int lastIndexOf(String str, int fromIndex) 返回 String 对象中子字符串最后出现的位置。 |
+| 9    | int length()  返回长度（字符数）。                           |
+| 10   | void setCharAt(int index, char ch) 将给定索引处的字符设置为 `ch`。 |
+| 11   | void setLength(int newLength) 设置字符序列的长度。           |
+| 12   | CharSequence subSequence(int start, int end) 返回一个新的字符序列，该字符序列是此序列的子序列。 |
+| 13   | String substring(int start) 返回一个新的 `String`，它包含此字符序列当前所包含的字符子序列。 |
+| 14   | String substring(int start, int end) 返回一个新的 `String`，它包含此序列当前所包含的字符子序列。 |
+| 15   | String toString() 返回此序列中数据的字符串表示形式。         |
+
+
+
+
+
+数组加强型循环
+
+```
+for(type element: array)
+{
+    System.out.println(element);
+}
+
+```
+
+## Arrays 类
+
+java.util.Arrays 类能方便地操作数组，它提供的所有方法都是静态的。
+
+| 1    | **public static int binarySearch(Object[] a, Object key)** 用二分查找算法在给定数组中搜索给定值的对象(Byte,Int,double等)。数组在调用前必须排序好的。如果查找值包含在数组中，则返回搜索键的索引；否则返回 (-(*插入点*) - 1)。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | **public static boolean equals(long[] a, long[] a2)** 如果两个指定的 long 型数组彼此*相等*，则返回 true。如果两个数组包含相同数量的元素，并且两个数组中的所有相应元素对都是相等的，则认为这两个数组是相等的。换句话说，如果两个数组以相同顺序包含相同的元素，则两个数组是相等的。同样的方法适用于所有的其他基本数据类型（Byte，short，Int等）。 |
+| 3    | **public static void fill(int[] a, int val)** 将指定的 int 值分配给指定 int 型数组指定范围中的每个元素。同样的方法适用于所有的其他基本数据类型（Byte，short，Int等）。 |
+| 4    | **public static void sort(Object[] a)** 对指定对象数组根据其元素的自然顺序进行升序排列。同样的方法适用于所有的其他基本数据类型（Byte，short，Int等）。 |
+
+
+
+## 日期类 Date
+
+| 1    | **boolean after(Date date)** 若当调用此方法的Date对象在指定日期之后返回true,否则返回false。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | **boolean before(Date date)** 若当调用此方法的Date对象在指定日期之前返回true,否则返回false。 |
+| 3    | **Object clone( )** 返回此对象的副本。                       |
+| 4    | **int compareTo(Date date)** 比较当调用此方法的Date对象和指定日期。两者相等时候返回0。调用对象在指定日期之前则返回负数。调用对象在指定日期之后则返回正数。 |
+| 5    | **int compareTo(Object obj)** 若obj是Date类型则操作等同于compareTo(Date) 。否则它抛出ClassCastException。 |
+| 6    | **boolean equals(Object date)** 当调用此方法的Date对象和指定日期相等时候返回true,否则返回false。 |
+| 7    | **long getTime( )** 返回自 1970 年 1 月 1 日 00:00:00 GMT 以来此 Date 对象表示的毫秒数。 |
+| 8    | **int hashCode( )**  返回此对象的哈希码值。                  |
+| 9    | **void setTime(long time)**   用自1970年1月1日00:00:00 GMT以后time毫秒数设置时间和日期。 |
+| 10   | **String toString( )** 把此 Date 对象转换为以下形式的 String： dow mon dd hh:mm:ss zzz yyyy 其中： dow 是一周中的某一天 (Sun, Mon, Tue, Wed, Thu, Fri, Sat)。 |
+
+## 使用 SimpleDateFormat 格式化日期
+
+
+
+ ~~~ java
+ import  java.util.*;
+ import java.text.*;
+  
+ public class DateDemo {
+    public static void main(String[] args) {
+  
+       Date dNow = new Date( );
+       SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+  
+       System.out.println("当前时间为: " + ft.format(dNow));
+    }
+ }
+ ~~~
+
+
+
+其中 yyyy 是完整的公元年，MM 是月份，dd 是日期，HH:mm:ss 是时、分、秒。
+
+**注意**:有的格式大写，有的格式小写，例如 MM 是月份，mm 是分；HH 是 24 小时制，而 hh 是 12 小时制。
+
+| G    | 纪元标记                 | AD                      |
+| ---- | ------------------------ | ----------------------- |
+| y    | 四位年份                 | 2001                    |
+| M    | 月份                     | July or 07              |
+| d    | 一个月的日期             | 10                      |
+| h    | A.M./P.M. (1~12)格式小时 | 12                      |
+| H    | 一天中的小时 (0~23)      | 22                      |
+| m    | 分钟数                   | 30                      |
+| s    | 秒数                     | 55                      |
+| S    | 毫秒数                   | 234                     |
+| E    | 星期几                   | Tuesday                 |
+| D    | 一年中的日子             | 360                     |
+| F    | 一个月中第几周的周几     | 2 (second Wed. in July) |
+| w    | 一年中第几周             | 40                      |
+| W    | 一个月中第几周           | 1                       |
+| a    | A.M./P.M. 标记           | PM                      |
+| k    | 一天中的小时(1~24)       | 24                      |
+| K    | A.M./P.M. (0~11)格式小时 | 10                      |
+| z    | 时区                     | Eastern Standard Time   |
+| '    | 文字定界符               | Delimiter               |
+| "    | 单引号                   | `                       |
+
+**printf**  不是println
+
+| %tc  | 包括全部日期和时间信息      | 星期六 十月 27 14:21:20 CST 2007 |
+| ---- | --------------------------- | -------------------------------- |
+| %tF  | "年-月-日"格式              | 2007-10-27                       |
+| %tD  | "月/日/年"格式              | 10/27/07                         |
+| %tr  | "HH:MM:SS PM"格式（12时制） | 02:25:51 下午                    |
+| %tT  | "HH:MM:SS"格式（24时制）    | 14:28:16                         |
+| %tR  | "HH:MM"格式（24时制）       | 14:28                            |
+
+
+
+- %tY：输出四位数的年份，例如：2023
+- %ty：输出两位数的年份，例如：23
+- %tm：输出两位数的月份，例如：02
+- %tB：输出月份的全名，例如：February
+- %tb：输出月份的缩写，例如：Feb
+- %tA：输出星期的全名，例如：Wednesday
+- %ta：输出星期的缩写，例如：Wed
+- %td：输出两位数的日期，例如：24
+- %te：输出一位或两位数的日期，例如：24 或 02
+- %tH：输出24小时制的小时数，例如：23
+- %tI：输出12小时制的小时数，例如：11
+- %tM：输出分钟数，例如：45
+- %tS：输出秒数，例如：30
+- %tp：输出上午还是下午，例如：AM 或 PM
+- %tZ：输出时区，例如：GMT+08:00
+
+
+
+
+
+Calendar类
+
+
+| Calendar.YEAR         | 年份                           |
+| --------------------- | ------------------------------ |
+| Calendar.MONTH        | 月份                           |
+| Calendar.DATE         | 日期                           |
+| Calendar.DAY_OF_MONTH | 日期，和上面的字段意义完全相同 |
+| Calendar.HOUR         | 12小时制的小时                 |
+| Calendar.HOUR_OF_DAY  | 24小时制的小时                 |
+| Calendar.MINUTE       | 分钟                           |
+| Calendar.SECOND       | 秒                             |
+| Calendar.DAY_OF_WEEK  | 星期几                         |
+
+
+
+add函数和get函数 set 函数
+
+GregorianCalendar是Calendar类的一个具体实现。
+
+| 1    | **GregorianCalendar()** 在具有默认语言环境的默认时区内使用当前时间构造一个默认的 GregorianCalendar。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | **GregorianCalendar(int year, int month, int date)** 在具有默认语言环境的默认时区内构造一个带有给定日期设置的 GregorianCalendar |
+| 3    | **GregorianCalendar(int year, int month, int date, int hour, int minute)** 为具有默认语言环境的默认时区构造一个具有给定日期和时间设置的 GregorianCalendar。 |
+| 4    | **GregorianCalendar(int year, int month, int date, int hour, int minute, int second)**  为具有默认语言环境的默认时区构造一个具有给定日期和时间设置的 GregorianCalendar。 |
+| 5    | **GregorianCalendar(Locale aLocale)** 在具有给定语言环境的默认时区内构造一个基于当前时间的 GregorianCalendar。 |
+| 6    | **GregorianCalendar(TimeZone zone)** 在具有默认语言环境的给定时区内构造一个基于当前时间的 GregorianCalendar。 |
+| 7    | **GregorianCalendar(TimeZone zone, Locale aLocale)**  在具有给定语言环境的给定时区内构造一个基于当前时间的 GregorianCalendar。 |
+
+| 1    | **void add(int field, int amount)** 根据日历规则，将指定的（有符号的）时间量添加到给定的日历字段中。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | **protected void computeFields()** 转换UTC毫秒值为时间域值   |
+| 3    | **protected void computeTime()** 覆盖Calendar ，转换时间域值为UTC毫秒值 |
+| 4    | **boolean equals(Object obj)** 比较此 GregorianCalendar 与指定的 Object。 |
+| 5    | **int get(int field)** 获取指定字段的时间值                  |
+| 6    | **int getActualMaximum(int field)** 返回当前日期，给定字段的最大值 |
+| 7    | **int getActualMinimum(int field)** 返回当前日期，给定字段的最小值 |
+| 8    | **int getGreatestMinimum(int field)**  返回此 GregorianCalendar 实例给定日历字段的最高的最小值。 |
+| 9    | **Date getGregorianChange()** 获得格里高利历的更改日期。     |
+| 10   | **int getLeastMaximum(int field)** 返回此 GregorianCalendar 实例给定日历字段的最低的最大值 |
+| 11   | **int getMaximum(int field)** 返回此 GregorianCalendar 实例的给定日历字段的最大值。 |
+| 12   | **Date getTime()** 获取日历当前时间。                        |
+| 13   | **long getTimeInMillis()** 获取用长整型表示的日历的当前时间  |
+| 14   | **TimeZone getTimeZone()** 获取时区。                        |
+| 15   | **int getMinimum(int field)** 返回给定字段的最小值。         |
+| 16   | **int hashCode()** 重写hashCode.                             |
+| 17   | **boolean isLeapYear(int year)** 确定给定的年份是否为闰年。  |
+| 18   | **void roll(int field, boolean up)** 在给定的时间字段上添加或减去（上/下）单个时间单元，不更改更大的字段。 |
+| 19   | **void set(int field, int value)** 用给定的值设置时间字段。  |
+| 20   | **void set(int year, int month, int date)** 设置年、月、日的值。 |
+| 21   | **void set(int year, int month, int date, int hour, int minute)** 设置年、月、日、小时、分钟的值。 |
+| 22   | **void set(int year, int month, int date, int hour, int minute, int second)** 设置年、月、日、小时、分钟、秒的值。 |
+| 23   | **void setGregorianChange(Date date)** 设置 GregorianCalendar 的更改日期。 |
+| 24   | **void setTime(Date date)** 用给定的日期设置Calendar的当前时间。 |
+| 25   | **void setTimeInMillis(long millis)** 用给定的long型毫秒数设置Calendar的当前时间。 |
+| 26   | **void setTimeZone(TimeZone value)** 用给定时区值设置当前时区。 |
+| 27   | **String toString()**                                        |
+
+
+
+
+
+Hour of Day 是24小时制
+
+
+
+
+
+
+
+
+
+Java 的控制台输入由 System.in 完成。
+
+为了获得一个绑定到控制台的字符流，你可以把 System.in 包装在一个 BufferedReader 对象中来创建一个字符流。
+
+```java
+BufferedReader br = new BufferedReader(new 
+                      InputStreamReader(System.in));
+```
+
+
+
+从 BufferedReader 对象读取一个字符要使用 read() 方法，它的语法如下：
+
+```java
+int read( ) throws IOException
+    
+```
+
+从标准输入读取一个字符串需要使用 BufferedReader 的 readLine() 方法。
+
+~~~java	
+String readLine( ) throws IOException
+~~~
+
+readline 和read不一样
+
+
+
+PrintStream 继承了 OutputStream类，并且实现了方法 write()。这样，write() 也可以用来往控制台写操作。
+
+PrintStream 定义 write() 的最简单格式如下所示：
+
+~~~java	
+void write(int byteval)
+~~~
+
+write() 方法不经常使用，因为 print() 和 println() 方法用起来更为方便。
+
+![img](https://www.runoob.com/wp-content/uploads/2013/12/iostream2xx.png)
+
+| `Reader`           | 抽象类 (输入流) | 所有字符输入流的超类，处理字符的输入操作。                |
+| ------------------ | --------------- | --------------------------------------------------------- |
+| `Writer`           | 抽象类 (输出流) | 所有字符输出流的超类，处理字符的输出操作。                |
+| `FileReader`       | 输入流          | 从文件中读取字符数据。                                    |
+| `FileWriter`       | 输出流          | 将字符数据写入文件。                                      |
+| `BufferedReader`   | 输入流          | 为字符输入流提供缓冲功能，支持按行读取，提高读取效率。    |
+| `BufferedWriter`   | 输出流          | 为字符输出流提供缓冲功能，支持按行写入，提高写入效率。    |
+| `CharArrayReader`  | 输入流          | 将字符数组作为输入源。                                    |
+| `CharArrayWriter`  | 输出流          | 将数据写入到字符数组。                                    |
+| `StringReader`     | 输入流          | 将字符串作为输入源。                                      |
+| `StringWriter`     | 输出流          | 将数据写入到字符串缓冲区。                                |
+| `PrintWriter`      | 输出流          | 便捷的字符输出流，支持自动刷新和格式化输出。              |
+| `PipedReader`      | 输入流          | 用于在管道中读取字符数据，通常与 `PipedWriter` 配合使用。 |
+| `PipedWriter`      | 输出流          | 用于在管道中写入字符数据，通常与 `PipedReader` 配合使用。 |
+| `LineNumberReader` | 输入流          | 带行号的缓冲字符输入流，允许跟踪读取的行号。              |
+| `PushbackReader`   | 输入流          | 允许在读取字符后将字符推回流中，以便再次读取。            |
+
+| `InputStream`           | 抽象类 (输入流) | 所有字节输入流的超类，处理字节的输入操作。                   |
+| ----------------------- | --------------- | ------------------------------------------------------------ |
+| `OutputStream`          | 抽象类 (输出流) | 所有字节输出流的超类，处理字节的输出操作。                   |
+| `FileInputStream`       | 输入流          | 从文件中读取字节数据。                                       |
+| `FileOutputStream`      | 输出流          | 将字节数据写入文件。                                         |
+| `BufferedInputStream`   | 输入流          | 为字节输入流提供缓冲功能，提高读取效率。                     |
+| `BufferedOutputStream`  | 输出流          | 为字节输出流提供缓冲功能，提高写入效率。                     |
+| `ByteArrayInputStream`  | 输入流          | 将内存中的字节数组作为输入源。                               |
+| `ByteArrayOutputStream` | 输出流          | 将数据写入到内存中的字节数组。                               |
+| `DataInputStream`       | 输入流          | 允许从输入流中读取 Java 原生数据类型（如 `int`、`float`、`boolean`）。 |
+| `DataOutputStream`      | 输出流          | 允许向输出流中写入 Java 原生数据类型。                       |
+| `ObjectInputStream`     | 输入流          | 从输入流中读取序列化对象。                                   |
+| `ObjectOutputStream`    | 输出流          | 将对象序列化并写入输出流中。                                 |
+| `PipedInputStream`      | 输入流          | 用于在管道中读取字节数据，通常与 `PipedOutputStream` 配合使用。 |
+| `PipedOutputStream`     | 输出流          | 用于在管道中写入字节数据，通常与 `PipedInputStream` 配合使用。 |
+| `FilterInputStream`     | 输入流          | 字节输入流的包装类，用于对其他输入流进行过滤处理。           |
+| `FilterOutputStream`    | 输出流          | 字节输出流的包装类，用于对其他输出流进行过滤处理。           |
+| `SequenceInputStream`   | 输入流          | 将多个输入流串联为一个输入流进行处理。                       |
+
+
+
+## 辅助类
+
+| `File`             | 文件和目录操作 | 用于表示文件或目录，并提供文件操作，如创建、删除、重命名等。 |
+| ------------------ | -------------- | ------------------------------------------------------------ |
+| `RandomAccessFile` | 随机访问文件   | 支持文件的随机访问，可以从文件的任意位置读写数据。           |
+| `Console`          | 控制台输入输出 | 提供对系统控制台的输入和输出支持。                           |
+
+## FileInputStream
+
+该流用于从文件读取数据，它的对象可以用关键字 new 来创建。
+
+有多种构造方法可用来创建对象。
+
+可以使用字符串类型的文件名来创建一个输入流对象来读取文件：
+
+~~~java	
+InputStream f = new FileInputStream("C:/java/hello");
+~~~
+
+也可以使用一个文件对象来创建一个输入流对象来读取文件。我们首先得使用 File() 方法来创建一个文件对象：
+
+~~~java
+File f = new File("C:/java/hello"); 
+InputStream in = new FileInputStream(f);
+~~~
+
+| `int read()`                           | 读取一个字节的数据，返回值为 0 到 255 之间的整数。如果到达流的末尾，返回 -1。 | `int data = inputStream.read();`                             |
+| -------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `int read(byte[] b)`                   | 从输入流中读取字节，并将其存储在字节数组 `b` 中，返回实际读取的字节数。如果到达流的末尾，返回 -1。 | `byte[] buffer = new byte[1024]; int bytesRead = inputStream.read(buffer);` |
+| `int read(byte[] b, int off, int len)` | 从输入流中读取最多 `len` 个字节，并将它们存储在字节数组 `b` 的 `off` 偏移位置，返回实际读取的字节数。如果到达流的末尾，返回 -1。 | `byte[] buffer = new byte[1024]; int bytesRead = inputStream.read(buffer, 0, buffer.length);` |
+| `long skip(long n)`                    | 跳过并丢弃输入流中的 `n` 个字节，返回实际跳过的字节数。      | `long skippedBytes = inputStream.skip(100);`                 |
+| `int available()`                      | 返回可以读取的字节数（不阻塞）。                             | `int availableBytes = inputStream.available();`              |
+| `void close()`                         | 关闭输入流并释放与该流相关的所有资源。                       | `inputStream.close();`                                       |
+| `void mark(int readlimit)`             | 在流中的当前位置设置标记，`readlimit` 是可以读取的字节数上限。 | `inputStream.mark(1024);`                                    |
+| `void reset()`                         | 将流重新定位到上次标记的位置，如果没有标记或标记失效，抛出 `IOException`。 | `inputStream.reset();`                                       |
+| `boolean markSupported()`              | 检查当前输入流是否支持 `mark()` 和 `reset()` 操作。          | `boolean isMarkSupported = inputStream.markSupported();`     |
+
+**输入流必须要 `close()`**，否则可能会导致一些问题，尤其是资源管理和性能方面的问题。

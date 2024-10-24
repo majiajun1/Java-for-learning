@@ -1,21 +1,23 @@
 import java.io.*;
 
-public class FileTest {
+public class FileinputTest {
     public static void main(String[] args) throws IOException {   //throws
         InputStream f=new FileInputStream("D:/Document/JAVA/test.txt");  //文件输入流
-        FileInputStream fortest=new FileInputStream("D:/Document/JAVA/test.txt");   //区别在哪？ InputStream f 是更通用的父类，灵活性较大，但功能有限。 FileInputStream f2 是更具体的子类，可以访问更多文件流相关的功能。
-        //或者
+        //FileInputStream fortest=new FileInputStream("D:/Document/JAVA/test.txt");   //区别在哪？ InputStream f 是更通用的父类，灵活性较大，但功能有限。
+        // FileInputStream f2 是更具体的子类，可以访问更多文件流相关的功能。
+        //
         File f2=new File("D:/Document/JAVA/test.txt");
         InputStream in=new FileInputStream(f2);
+        //FileInputStream fortest2=new FileInputStream(f2); 一样的
         //String data = in.read();
         //System.out.println(data);
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();// Stringbuffer 和builder差不多
         try {
 
 
             // 读取文件中的所有数据
             int data;
-            while ((data = in.read()) != -1) { // 每次只读取一个字节 try才能读取
+            while ((data = in.read()) != -1) { // 每次只读取一个字节 try才能读取  data=in.read()这一段读取了数据
                 sb.append((char) data); // 将字节转换为字符并添加到字符串构建器中
             }
 
