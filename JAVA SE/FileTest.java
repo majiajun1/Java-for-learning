@@ -1,8 +1,9 @@
 import java.io.*;
 
 public class FileTest {
-    public static void main(String[] args) throws IOException {
-        InputStream f=new FileInputStream("D:/Document/JAVA/test.txt");
+    public static void main(String[] args) throws IOException {   //throws
+        InputStream f=new FileInputStream("D:/Document/JAVA/test.txt");  //文件输入流
+        FileInputStream fortest=new FileInputStream("D:/Document/JAVA/test.txt");   //区别在哪？ InputStream f 是更通用的父类，灵活性较大，但功能有限。 FileInputStream f2 是更具体的子类，可以访问更多文件流相关的功能。
         //或者
         File f2=new File("D:/Document/JAVA/test.txt");
         InputStream in=new FileInputStream(f2);
@@ -14,7 +15,7 @@ public class FileTest {
 
             // 读取文件中的所有数据
             int data;
-            while ((data = in.read()) != -1) { // 每次只读取一个字节
+            while ((data = in.read()) != -1) { // 每次只读取一个字节 try才能读取
                 sb.append((char) data); // 将字节转换为字符并添加到字符串构建器中
             }
 
