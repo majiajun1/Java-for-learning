@@ -10,3 +10,12 @@ public class Animal {
         System.out.println("Eating...");
     }
 }
+class Chenglianglun extends Animal{    //不能有public 否则报错
+    public Chenglianglun(String myname,int myid){
+        super(myname,myid);
+    }
+    public void getWage()
+    {
+        System.out.println("3000");
+    }
+}
