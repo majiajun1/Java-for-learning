@@ -682,3 +682,270 @@ InputStream in = new FileInputStream(f);
 | `boolean markSupported()`              | 检查当前输入流是否支持 `mark()` 和 `reset()` 操作。          | `boolean isMarkSupported = inputStream.markSupported();`     |
 
 **输入流必须要 `close()`**，否则可能会导致一些问题，尤其是资源管理和性能方面的问题。
+
+
+
+## FileOutputStream
+
+| `void write(int b)`                      | 将指定的字节写入输出流，`b` 的低 8 位将被写入流中。          | `outputStream.write(255);`                                   |
+| ---------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `void write(byte[] b)`                   | 将字节数组 `b` 中的所有字节写入输出流。                      | `byte[] data = "Hello".getBytes(); outputStream.write(data);` |
+| `void write(byte[] b, int off, int len)` | 将字节数组 `b` 中从偏移量 `off` 开始的 `len` 个字节写入输出流。 | `byte[] data = "Hello".getBytes(); outputStream.write(data, 0, data.length);` |
+| `void flush()`                           | 刷新输出流并强制写出所有缓冲的数据，确保数据被立即写入目标输出。 | `outputStream.flush();`                                      |
+| `void close()`                           | 关闭输出流并释放与该流相关的所有资源。关闭后不能再写入。     | `outputStream.close();`                                      |
+
+
+
+
+
+- **mkdir( )**方法创建一个文件夹，成功则返回true，失败则返回false。失败表明File对象指定的路径已经存在，或者由于整个路径还不存在，该文件夹不能被创建。
+- **mkdirs()**方法创建一个文件夹和它的所有父文件夹
+
+
+
+`mkdir()` 只能创建**单个目录**，如果父目录不存在，它不会自动创建。例如，假设路径 `"D:/Document/JAVA/tmp/justfortest"` 中的 `"D:/Document/JAVA/tmp"` 目录不存在，`mkdir()` 会失败。
+
+
+
+
+
+
+
+## Scanner 
+
+我们可以通过 Scanner 类来获取用户的输入。
+
+next() 识别到空格就无了
+
+### next() 与 nextLine() 区别
+
+next():
+
+- 1、一定要读取到有效字符后才可以结束输入。
+- 2、对输入有效字符之前遇到的空白，next() 方法会自动将其去掉。
+- 3、只有输入有效字符后才将其后面输入的空白作为分隔符或者结束符。
+- next() 不能得到带有空格的字符串。
+
+nextLine()：
+
+- 1、以Enter为结束符,也就是说 nextLine()方法返回的是输入回车之前的所有字符。
+- 2、可以获得空白。
+
+
+
+
+
+如果要输入 int 或 float 类型的数据，在 Scanner 类中也有支持，但是在输入之前最好先使用 hasNextXxx() 方法进行验证，再使用 nextXxx() 来读取：
+
+
+
+
+
+
+
+## Java 异常处理
+
+
+
+- **try**：用于包裹可能会抛出异常的代码块。
+- **catch**：用于捕获异常并处理异常的代码块。
+- **finally**：用于包含无论是否发生异常都需要执行的代码块。
+- **throw**：用于手动抛出异常。
+- **throws**：用于在方法声明中指定方法可能抛出的异常。
+- **Exception**类：是所有异常类的父类，它提供了一些方法来获取异常信息，如 **getMessage()、printStackTrace()** 等。
+
+![img](https://www.runoob.com/wp-content/uploads/2013/12/exception-hierarchy.png)
+
+
+
+| ArithmeticException             | 当出现异常的运算条件时，抛出此异常。例如，一个整数"除以零"时，抛出此类的一个实例。 |
+| ------------------------------- | ------------------------------------------------------------ |
+| ArrayIndexOutOfBoundsException  | 用非法索引访问数组时抛出的异常。如果索引为负或大于等于数组大小，则该索引为非法索引。 |
+| ArrayStoreException             | 试图将错误类型的对象存储到一个对象数组时抛出的异常。         |
+| ClassCastException              | 当试图将对象强制转换为不是实例的子类时，抛出该异常。         |
+| IllegalArgumentException        | 抛出的异常表明向方法传递了一个不合法或不正确的参数。         |
+| IllegalMonitorStateException    | 抛出的异常表明某一线程已经试图等待对象的监视器，或者试图通知其他正在等待对象的监视器而本身没有指定监视器的线程。 |
+| IllegalStateException           | 在非法或不适当的时间调用方法时产生的信号。换句话说，即 Java 环境或 Java 应用程序没有处于请求操作所要求的适当状态下。 |
+| IllegalThreadStateException     | 线程没有处于请求操作所要求的适当状态时抛出的异常。           |
+| IndexOutOfBoundsException       | 指示某排序索引（例如对数组、字符串或向量的排序）超出范围时抛出。 |
+| NegativeArraySizeException      | 如果应用程序试图创建大小为负的数组，则抛出该异常。           |
+| NullPointerException            | 当应用程序试图在需要对象的地方使用 `null` 时，抛出该异常     |
+| NumberFormatException           | 当应用程序试图将字符串转换成一种数值类型，但该字符串不能转换为适当格式时，抛出该异常。 |
+| SecurityException               | 由安全管理器抛出的异常，指示存在安全侵犯。                   |
+| StringIndexOutOfBoundsException | 此异常由 `String` 方法抛出，指示索引或者为负，或者超出字符串的大小。 |
+| UnsupportedOperationException   | 当不支持请求的操作时，抛出该异常。                           |
+
+| ClassNotFoundException     | 应用程序试图加载类时，找不到相应的类，抛出该异常。           |
+| -------------------------- | ------------------------------------------------------------ |
+| CloneNotSupportedException | 当调用 `Object` 类中的 `clone` 方法克隆对象，但该对象的类无法实现 `Cloneable` 接口时，抛出该异常。 |
+| IllegalAccessException     | 拒绝访问一个类的时候，抛出该异常。                           |
+| InstantiationException     | 当试图使用 `Class` 类中的 `newInstance` 方法创建一个类的实例，而指定的类对象因为是一个接口或是一个抽象类而无法实例化时，抛出该异常。 |
+| InterruptedException       | 一个线程被另一个线程中断，抛出该异常。                       |
+| NoSuchFieldException       | 请求的变量不存在                                             |
+| NoSuchMethodException      | 请求的方法不存在                                             |
+
+
+
+| 1    | **public String getMessage()** 返回关于发生的异常的详细信息。这个消息在Throwable 类的构造函数中初始化了。 |
+| ---- | ------------------------------------------------------------ |
+| 2    | **public Throwable getCause()** 返回一个 Throwable 对象代表异常原因。 |
+| 3    | **public String toString()** 返回此 Throwable 的简短描述。   |
+| 4    | **public void printStackTrace()** 将此 Throwable 及其回溯打印到标准错误流。 |
+| 5    | **public StackTraceElement [] getStackTrace()** 返回一个包含堆栈层次的数组。下标为0的元素代表栈顶，最后一个元素代表方法调用堆栈的栈底。 |
+| 6    | **public Throwable fillInStackTrace()** 用当前的调用栈层次填充Throwable 对象栈层次，添加到栈层次任何先前信息中。 |
+
+
+
+
+
+
+
+~~~java	
+try
+{
+   // 程序代码
+}catch(ExceptionName e1)
+{
+   //Catch 块
+}
+
+~~~
+
+无非就是把编译器的活也干了 让代码本身抛异常 方便查错吗？
+
+在Java中， **throw** 和 **throws** 关键字是用于处理异常的。
+
+**throw** 关键字用于在代码中抛出异常，而 **throws** 关键字用于在方法声明中指定可能会抛出的异常类型。
+
+finally 关键字用来创建在 try 代码块后面执行的代码块。
+
+无论是否发生异常，finally 代码块中的代码总会被执行。
+
+在 finally 代码块中，可以运行清理类型等收尾善后性质的语句。
+
+finally 代码块出现在 catch 代码块最后，语法如下：
+
+~~~java	
+try{
+  // 程序代码
+}catch(异常类型1 异常的变量名1){
+  // 程序代码
+}catch(异常类型2 异常的变量名2){
+  // 程序代码
+}finally{
+  // 程序代码
+}
+~~~
+
+- catch 不能独立于 try 存在。
+- 在 try/catch 后面添加 finally 块并非强制性要求的。
+- try 代码后不能既没 catch 块也没 finally 块。
+- try, catch, finally 块之间不能添加任何代码。
+
+
+
+JDK7 之后，Java 新增的 **try-with-resource** 语法结构，旨在自动管理资源，确保资源在使用后能够及时关闭，避免资源泄露 。
+
+try-with-resources 是一种异常处理机制，它能够自动关闭在 try 块中声明的资源，无需显式地在 finally 块中关闭。
+
+在 try-with-resources 语句中，你只需要在 try 关键字后面声明资源，然后跟随一个代码块。无论代码块中的操作是否成功，资源都会在 try 代码块执行完毕后自动关闭。。
+
+~~~java	
+try (resource declaration) {
+  // 使用的资源
+} catch (ExceptionType e1) {
+  // 异常块
+}
+~~~
+
+## 声明自定义异常
+
+在 Java 中你可以自定义异常。编写自己的异常类时需要记住下面的几点。
+
+- 所有异常都必须是 Throwable 的子类。
+- 如果希望写一个检查性异常类，则需要继承 Exception 类。
+- 如果你想写一个运行时异常类，那么需要继承 RuntimeException 类。
+
+可以像下面这样定义自己的异常类：
+
+~~~java	
+class MyException extends Exception{
+}
+~~~
+
+将自定义异常改为 `RuntimeException` 之后，能够解决“在相应的 try 语句主体中不能抛出异常”的错误，主要是因为 **检查型异常** 和 **非检查型异常**（运行时异常）之间的区别。以下是详细解释：
+
+### 1. **检查型异常与非检查型异常的区别**
+
+- **检查型异常 (Checked Exception)**：
+  - 需要在方法签名中显式声明，或者在方法内部处理。
+  - 例如，`IOException`、`SQLException` 等。
+  - 这种设计旨在强制开发者在编译时处理这些异常，以确保程序的健壮性。
+- **非检查型异常 (Unchecked Exception)**：
+  - 不需要在方法签名中声明，也不需要在调用时处理。
+  - 例如，`RuntimeException` 及其子类（如 `NullPointerException`、`ArrayIndexOutOfBoundsException`、`IllegalArgumentException` 等）。
+  - 这种设计允许开发者在代码中选择性地处理异常，通常用于表示程序逻辑错误。
+
+### 2. **为什么改为 `RuntimeException` 就好**
+
+- **无需显式声明**：如果你的自定义异常类继承自 `RuntimeException`，那么在方法中抛出该异常时，不需要在方法签名中添加 `throws` 声明。因此，调用这个方法的代码不必显式地处理这个异常。
+- **灵活性**：由于非检查型异常允许更大的灵活性，开发者可以选择在合适的地方处理异常，而不被编译器强制要求。
+
+必须在方法签名中使用 `throws` 声明（如 `public void AgeCount() throws Ageerrorthrowtest`）
+
+不需要在方法签名中声明，可以直接抛出（如 `public void AgeCount()`）。
+
+
+
+## 类的继承
+
+需要注意的是 Java 不支持多继承，但支持多重继承。
+
+
+
+![img](https://www.runoob.com/wp-content/uploads/2013/12/java-extends-2020-12-08.png)
+
+
+
+### implements关键字
+
+使用 implements 关键字可以变相的使java具有多继承的特性，使用范围为类继承接口的情况，可以同时继承多个接口（接口跟接口之间采用逗号分隔）。
+
+### super 与 this 关键字
+
+**super 关键字：**我们可以通过 super 关键字来实现对父类成员的访问，用来引用当前对象的父类。
+
+**this 关键字：**指向自己的引用，引用当前对象，即它所在的方法或构造函数所属的对象实例。。
+
+
+
+## 重写(Override)
+
+重写（Override）是指子类定义了一个与其父类中具有相同名称、参数列表和返回类型的方法，并且子类方法的实现覆盖了父类方法的实现。 **即外壳不变，核心重写！**
+
+重写就是   
+
+~~~java	
+父类 a = new 子类();
+父类和子类有相同的方法，那么执行时用的是子类方法。
+但如果子类有而父类没有 ，那么执行会出错，除非是 子类 a =new 子类（）;
+~~~
+
+
+
+当需要在子类中调用父类的被重写方法时，要使用 super 关键字。
+
+## 重载(Overload)
+
+重载(overloading) 是在一个类里面，方法名字相同，而参数不同。返回类型可以相同也可以不同。
+
+每个重载的方法（或者构造函数）都必须有一个独一无二的参数类型列表。
+
+最常用的地方就是构造器的重载。
+
+## Java 多态
+
+ 多态就是
+
+
+
