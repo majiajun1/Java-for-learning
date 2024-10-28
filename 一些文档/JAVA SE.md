@@ -1307,5 +1307,34 @@ Class<?> clazz = Class.forName("java.lang.String"); 要配合try
 
 Java 数据结构
 
+### 列表（Lists）
+
+~~~java
+List<String> arrayList = new ArrayList<>();
+List<Integer> linkedList = new LinkedList<>();
+
+List<String> list = new ArrayList<>();
+list.add("apple");
+list.add(0, "banana"); // 在索引 0 处插入 "banana"
+String firstElement = list.get(0); // 获取第一个元素
+list.set(1, "orange"); // 将第二个元素改为 "orange"
+list.remove(0); // 删除第一个元素
+list.remove("orange"); // 删除元素 "orange"
+contains(Object o)：检查列表中是否包含指定元素。
+indexOf(Object o)：返回指定元素首次出现的索引。
+lastIndexOf(Object o)：返回指定元素最后出现的索引。
+isEmpty()：检查列表是否为空。
+size()：返回列表中的元素数量。
+clear()：清空列表中的所有元素。
+List<String> subList = list.subList(1, 3); // 获取从索引 1 到 3 的子列表
+Collections.sort(list); // 排序
+Collections.fill(list, "kiwi"); // 用 "kiwi" 替换所有元素
+String[] array = list.toArray(new String[0]);toArray()：将 List 转换为对象数组。
+toArray(T[] array)：将 List 转换为指定类型的数组。
+
+~~~
+
+
+
 
 
