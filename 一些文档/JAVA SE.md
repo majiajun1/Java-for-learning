@@ -1261,3 +1261,51 @@ public class Test
 }
 ~~~
 
+
+
+
+
+package关键字  加入类 创建包
+
+下面的 payroll 包已经包含了 Employee 类，接下来向 payroll 包中添加一个 Boss 类。Boss 类引用 Employee 类的时候可以不用使用 payroll 前缀，Boss 类的实例如下。
+
+~~~java	
+package payroll;
+ 
+public class Boss
+{
+   public void payEmployee(Employee e)
+   {
+      e.mailCheck();
+   }
+}
+~~~
+
+# Java 反射（Reflection）
+
+Java 反射（Reflection）是一个强大的特性，它允许程序在运行时查询、访问和修改类、接口、字段和方法的信息。反射提供了一种动态地操作类的能力，这在很多框架和库中被广泛使用，例如Spring框架的依赖注入。
+
+
+
+具体看https://www.runoob.com/java/java-reflection.html
+
+
+
+
+
+~~~java	
+Class<?> clazz = String.class;
+
+String str = "Hello";
+
+
+Class<?> clazz = str.getClass();
+Class<?> clazz = Class.forName("java.lang.String"); 要配合try 
+~~~
+
+
+
+Java 数据结构
+
+
+
