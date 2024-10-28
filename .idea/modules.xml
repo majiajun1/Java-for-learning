@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Document.iml" filepath="$PROJECT_DIR$/Document.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JAVA-DS-Algorithm/JAVA-DS-Algorithm.iml" filepath="$PROJECT_DIR$/JAVA-DS-Algorithm/JAVA-DS-Algorithm.iml" />
     </modules>
   </component>
 </project>
