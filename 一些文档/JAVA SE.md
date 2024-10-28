@@ -945,7 +945,319 @@ class MyException extends Exception{
 
 ## Java 多态
 
- 多态就是
+ 多态就是继承+重写
+
+# Java 抽象类
+
+在面向对象的概念中，所有的对象都是通过类来描绘的，但是反过来，并不是所有的类都是用来描绘对象的，如果一个类中没有包含足够的信息来描绘一个具体的对象，这样的类就是抽象类。
+
+抽象类除了不能实例化对象之外，类的其它功能依然存在，成员变量、成员方法和构造方法的访问方式和普通类一样。
 
 
+
+## 抽象类总结规定
+
+- \1. 抽象类不能被实例化(初学者很容易犯的错)，如果被实例化，就会报错，编译无法通过。只有抽象类的非抽象子类可以创建对象。
+- \2. 抽象类中不一定包含抽象方法，但是有抽象方法的类必定是抽象类。
+- \3. 抽象类中的抽象方法只是声明，不包含方法体，就是不给出方法的具体实现也就是方法的具体功能。
+- \4. 构造方法，类方法（用 static 修饰的方法）不能声明为抽象方法。
+- \5. 抽象类的子类必须给出抽象类中的抽象方法的具体实现，除非该子类也是抽象类。
+
+# Java 封装
+
+在面向对象程式设计方法中，封装（英语：Encapsulation）是指一种将抽象性函式接口的实现细节部分包装、隐藏起来的方法。
+
+封装可以被认为是一个保护屏障，防止该类的代码和数据被外部类定义的代码随机访问。
+
+要访问该类的代码和数据，必须通过严格的接口控制。
+
+封装最主要的功能在于我们能修改自己的实现代码，而不用修改那些调用我们代码的程序片段。
+
+适当的封装可以让程式码更容易理解与维护，也加强了程式码的安全性。
+
+
+
+## 实现Java封装的步骤
+
+修改属性的可见性来限制对属性的访问（一般限制为private）
+
+ 对每个值属性提供对外的公共方法访问，也就是创建一对赋取值方法，用于对私有属性的访问
+
+# Java 接口
+
+接口（英文：Interface），在JAVA编程语言中是一个抽象类型，是抽象方法的集合，接口通常以interface来声明。一个类通过继承接口的方式，从而来继承接口的抽象方法。   interface和implement
+
+接口并不是类，编写接口的方式和类很相似，但是它们属于不同的概念。类描述对象的属性和方法。接口则包含类要实现的方法。
+
+除非实现接口的类是抽象类，否则该类要定义接口中的所有方法。
+
+接口无法被实例化，但是可以被实现。一个实现接口的类，必须实现接口内所描述的所有方法，否则就必须声明为抽象类。另外，在 Java 中，接口类型可用来声明一个变量，他们可以成为一个空指针，或是被绑定在一个以此接口实现的对象。
+
+### 接口与类相似点：
+
+- 一个接口可以有多个方法。
+- 接口文件保存在 .java 结尾的文件中，文件名使用接口名。
+- 接口的字节码文件保存在 .class 结尾的文件中。
+- 接口相应的字节码文件必须在与包名称相匹配的目录结构中。
+
+### 接口与类的区别：
+
+- 接口不能用于实例化对象。
+- 接口没有构造方法。
+- 接口中所有的方法必须是抽象方法，Java 8 之后 接口中可以使用 default 关键字修饰的非抽象方法。
+- 接口不能包含成员变量，除了 static 和 final 变量。
+- 接口不是被类继承了，而是要被类实现。
+- 接口支持多继承。
+
+### 接口特性
+
+- 接口中每一个方法也是隐式抽象的,接口中的方法会被隐式的指定为 **public abstract**（只能是 public abstract，其他修饰符都会报错）。
+- 接口中可以含有变量，但是接口中的变量会被隐式的指定为 **public static final** 变量（并且只能是 public，用 private 修饰会报编译错误）。
+- 接口中的方法是不能在接口中实现的，只能由实现接口的类来实现接口中的方法。
+
+### 抽象类和接口的区别
+
+- \1. 抽象类中的方法可以有方法体，就是能实现方法的具体功能，但是接口中的方法不行。
+- \2. 抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是 **public static final** 类型的。
+- \3. 接口中不能含有静态代码块以及静态方法(用 static 修饰的方法)，而抽象类是可以有静态代码块和静态方法。
+- \4. 一个类只能继承一个抽象类，而一个类却可以实现多个接口。
+
+
+
+- 接口是隐式抽象的，当声明一个接口的时候，不必使用**abstract**关键字。
+- 接口中每一个方法也是隐式抽象的，声明时同样不需要**abstract**关键字。
+- 接口中的方法都是公有的。
+
+当类实现接口的时候，类要实现接口中所有的方法。否则，类必须声明为抽象的类。
+
+类使用implements关键字实现接口。在类声明中，Implements关键字放在class声明后面。
+
+
+
+ Java 教程 
+
+[Java 教程](https://www.runoob.com/java/java-tutorial.html)[Java 简介](https://www.runoob.com/java/java-intro.html)[Java 开发环境配置](https://www.runoob.com/java/java-environment-setup.html)[Java AI 编程助手](https://www.runoob.com/java/fitten-code-java.html)[Java 基础语法](https://www.runoob.com/java/java-basic-syntax.html)[Java 注释](https://www.runoob.com/java/java-comments.html)[Java 对象和类](https://www.runoob.com/java/java-object-classes.html)[Java 基本数据类型](https://www.runoob.com/java/java-basic-datatypes.html)[Java 变量类型](https://www.runoob.com/java/java-variable-types.html)[Java 变量命名规则](https://www.runoob.com/java/java-variable-naming-rules.html)[Java 修饰符](https://www.runoob.com/java/java-modifier-types.html)[Java 运算符](https://www.runoob.com/java/java-operators.html)[Java 循环结构](https://www.runoob.com/java/java-loop.html)[Java 条件语句](https://www.runoob.com/java/java-if-else-switch.html)[Java switch case](https://www.runoob.com/java/java-switch-case.html)[Java Number & Math 类](https://www.runoob.com/java/java-number.html)[Java Character 类](https://www.runoob.com/java/java-character.html)[Java String 类](https://www.runoob.com/java/java-string.html)[Java StringBuffer](https://www.runoob.com/java/java-stringbuffer.html)[Java 数组](https://www.runoob.com/java/java-array.html)[Java 日期时间](https://www.runoob.com/java/java-date-time.html)[Java 正则表达式](https://www.runoob.com/java/java-regular-expressions.html)[Java 方法](https://www.runoob.com/java/java-methods.html)[Java Stream、File、IO](https://www.runoob.com/java/java-files-io.html)[Java Scanner 类](https://www.runoob.com/java/java-scanner-class.html)[Java 异常处理](https://www.runoob.com/java/java-exceptions.html)
+
+## Java 面向对象
+
+[Java 继承](https://www.runoob.com/java/java-inheritance.html)[Java Override/Overload](https://www.runoob.com/java/java-override-overload.html)[Java 多态](https://www.runoob.com/java/java-polymorphism.html)[Java 抽象类](https://www.runoob.com/java/java-abstraction.html)[Java 封装](https://www.runoob.com/java/java-encapsulation.html)[ Java 接口](https://www.runoob.com/java/java-interfaces.html)[Java 枚举](https://www.runoob.com/java/java-enum.html)[Java 包(package)](https://www.runoob.com/java/java-package.html)[Java 反射](https://www.runoob.com/java/java-reflection.html)
+
+## Java 高级教程
+
+[Java 数据结构](https://www.runoob.com/java/java-data-structures.html)[Java 集合框架](https://www.runoob.com/java/java-collections.html)[Java ArrayList](https://www.runoob.com/java/java-arraylist.html)[Java LinkedList](https://www.runoob.com/java/java-linkedlist.html)[Java HashSet](https://www.runoob.com/java/java-hashset.html)[Java HashMap](https://www.runoob.com/java/java-hashmap.html)[Java Iterator](https://www.runoob.com/java/java-iterator.html)[Java Object](https://www.runoob.com/java/java-object-class.html)[Java 泛型](https://www.runoob.com/java/java-generics.html)[Java 序列化](https://www.runoob.com/java/java-serialization.html)[Java 网络编程](https://www.runoob.com/java/java-networking.html)[Java 发送邮件](https://www.runoob.com/java/java-sending-email.html)[Java 多线程编程](https://www.runoob.com/java/java-multithreading.html)[Java Applet 基础](https://www.runoob.com/java/java-applet-basics.html)[Java 文档注释](https://www.runoob.com/java/java-documentation.html)[Java 实例](https://www.runoob.com/java/java-examples.html)[Java 8 新特性](https://www.runoob.com/java/java8-new-features.html)[Java MySQL 连接](https://www.runoob.com/java/java-mysql-connect.html)[Java 9 新特性](https://www.runoob.com/java/java9-new-features.html)[Java 测验](https://www.runoob.com/quiz/java-quiz.html)
+
+ [Java 封装](https://www.runoob.com/java/java-encapsulation.html)
+
+[Java 枚举](https://www.runoob.com/java/java-enum.html) 
+
+[![img](https://static.jyshare.com/images/re/tylm-53-10-1.png)](https://developer.aliyun.com/article/1605527)
+
+# Java 接口
+
+接口（英文：Interface），在JAVA编程语言中是一个抽象类型，是抽象方法的集合，接口通常以interface来声明。一个类通过继承接口的方式，从而来继承接口的抽象方法。
+
+接口并不是类，编写接口的方式和类很相似，但是它们属于不同的概念。类描述对象的属性和方法。接口则包含类要实现的方法。
+
+除非实现接口的类是抽象类，否则该类要定义接口中的所有方法。
+
+接口无法被实例化，但是可以被实现。一个实现接口的类，必须实现接口内所描述的所有方法，否则就必须声明为抽象类。另外，在 Java 中，接口类型可用来声明一个变量，他们可以成为一个空指针，或是被绑定在一个以此接口实现的对象。
+
+### 接口与类相似点：
+
+- 一个接口可以有多个方法。
+- 接口文件保存在 .java 结尾的文件中，文件名使用接口名。
+- 接口的字节码文件保存在 .class 结尾的文件中。
+- 接口相应的字节码文件必须在与包名称相匹配的目录结构中。
+
+### 接口与类的区别：
+
+- 接口不能用于实例化对象。
+- 接口没有构造方法。
+- 接口中所有的方法必须是抽象方法，Java 8 之后 接口中可以使用 default 关键字修饰的非抽象方法。
+- 接口不能包含成员变量，除了 static 和 final 变量。
+- 接口不是被类继承了，而是要被类实现。
+- 接口支持多继承。
+
+### 接口特性
+
+- 接口中每一个方法也是隐式抽象的,接口中的方法会被隐式的指定为 **public abstract**（只能是 public abstract，其他修饰符都会报错）。
+- 接口中可以含有变量，但是接口中的变量会被隐式的指定为 **public static final** 变量（并且只能是 public，用 private 修饰会报编译错误）。
+- 接口中的方法是不能在接口中实现的，只能由实现接口的类来实现接口中的方法。
+
+### 抽象类和接口的区别
+
+- \1. 抽象类中的方法可以有方法体，就是能实现方法的具体功能，但是接口中的方法不行。
+- \2. 抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是 **public static final** 类型的。
+- \3. 接口中不能含有静态代码块以及静态方法(用 static 修饰的方法)，而抽象类是可以有静态代码块和静态方法。
+- \4. 一个类只能继承一个抽象类，而一个类却可以实现多个接口。
+
+> **注**：JDK 1.8 以后，接口里可以有静态方法和方法体了。
+>
+> **注**：JDK 1.8 以后，接口允许包含具体实现的方法，该方法称为"默认方法"，默认方法使用 default 关键字修饰。更多内容可参考 [Java 8 默认方法](https://www.runoob.com/java/java8-default-methods.html)。
+>
+> **注**：JDK 1.9 以后，允许将方法定义为 private，使得某些复用的代码不会把方法暴露出去。更多内容可参考 [Java 9 私有接口方法](https://www.runoob.com/java/java9-private-interface-methods.html)。
+
+------
+
+## 接口的声明
+
+接口的声明语法格式如下：
+
+[可见度] interface 接口名称 [extends 其他的接口名] {        // 声明变量        // 抽象方法 }
+
+Interface关键字用来声明一个接口。下面是接口声明的一个简单例子。
+
+## NameOfInterface.java 文件代码：
+
+/* 文件名 : NameOfInterface.java */ import java.lang.*; //引入包  public interface NameOfInterface {   //任何类型 final, static 字段   //抽象方法 }
+
+
+
+接口有以下特性：
+
+
+
+- 接口是隐式抽象的，当声明一个接口的时候，不必使用**abstract**关键字。
+- 接口中每一个方法也是隐式抽象的，声明时同样不需要**abstract**关键字。
+- 接口中的方法都是公有的。
+
+### 实例
+
+## Animal.java 文件代码：
+
+/* 文件名 : Animal.java */ interface Animal {   public void eat();   public void travel(); }
+
+------
+
+## 接口的实现
+
+当类实现接口的时候，类要实现接口中所有的方法。否则，类必须声明为抽象的类。
+
+类使用implements关键字实现接口。在类声明中，Implements关键字放在class声明后面。
+
+实现一个接口的语法，可以使用这个公式：
+
+## 接口语法：
+
+...implements 接口名称[, 其他接口名称, 其他接口名称..., ...] ...
+
+### 实例
+
+## MammalInt.java 文件代码：
+
+/* 文件名 : MammalInt.java */ public class MammalInt implements Animal{    public void eat(){      System.out.println("Mammal eats");   }    public void travel(){      System.out.println("Mammal travels");   }     public int noOfLegs(){      return 0;   }    public static void main(String args[]){      MammalInt m = new MammalInt();      m.eat();      m.travel();   } }
+
+以上实例编译运行结果如下:
+
+```
+Mammal eats
+Mammal travels
+```
+
+重写接口中声明的方法时，需要注意以下规则：
+
+- 类在实现接口的方法时，不能抛出强制性异常，只能在接口中，或者继承接口的抽象类中抛出该强制性异常。
+- 类在重写方法时要保持一致的方法名，并且应该保持相同或者相兼容的返回值类型。
+- 如果实现接口的类是抽象类，那么就没必要实现该接口的方法。
+
+在实现接口的时候，也要注意一些规则：
+
+- 一个类可以同时实现多个接口。
+- 一个类只能继承一个类，但是能实现多个接口。
+- 一个接口能继承另一个接口，这和类之间的继承比较相似。
+
+------
+
+## 接口的继承
+
+一个接口能继承另一个接口，和类之间的继承方式比较相似。接口的继承使用extends关键字，子接口继承父接口的方法。
+
+在Java中，类的多继承是不合法，但接口允许多继承。
+
+
+
+没有任何方法的接口被称为标记接口。标记接口主要用于以下两种目的：
+
+- 建立一个公共的父接口：
+
+  正如EventListener接口，这是由几十个其他接口扩展的Java API，你可以使用一个标记接口来建立一组接口的父接口。例如：当一个接口继承了EventListener接口，Java虚拟机(JVM)就知道该接口将要被用于一个事件的代理方案。
+
+- 向一个类添加数据类型：
+
+  这种情况是标记接口最初的目的，实现标记接口的类不需要定义任何接口方法(因为标记接口根本就没有方法)，但是该类通过多态性变成一个接口类型。
+
+## 接口的多继承
+
+通过接口的多继承，可以创建一个复合接口，将多个接口的能力合并到一个接口中，为实现类提供更丰富的行为组合。
+
+
+
+## Java 枚举
+
+
+
+```java
+ enum Color 
+{ 
+    RED, GREEN, BLUE; 
+} 
+public class MyClass { 
+  public static void main(String[] args) { 
+    for (Color myVar : Color.values()) {
+      System.out.println(myVar);
+    }
+  } 
+}
+```
+
+RED
+GREEN
+BLUE
+
+### values(), ordinal() 和 valueOf() 方法
+
+enum 定义的枚举类默认继承了 java.lang.Enum 类，并实现了 java.lang.Serializable 和 java.lang.Comparable 两个接口。
+
+values(), ordinal() 和 valueOf() 方法位于 java.lang.Enum 类中：
+
+- values() 返回枚举类中所有的值。
+- ordinal()方法可以找到每个枚举常量的索引，就像数组索引一样。
+- valueOf()方法返回指定字符串值的枚举常量。
+
+.
+
+枚举跟普通类一样可以用自己的变量、方法和构造函数，构造函数只能使用 private 访问修饰符，所以外部无法调用
+
+枚举既可以包含具体方法，也可以包含抽象方法。 如果枚举类具有抽象方法，则枚举类的每个实例都必须实现它。
+
+
+
+~~~java
+enum Color
+{
+    RED, GREEN, BLUE;
+ 
+    // 构造函数
+    private Color()
+    {
+        System.out.println("Constructor called for : " + this.toString());
+    }
+ 
+    public void colorInfo()
+    {
+        System.out.println("Universal Color");
+    }
+}
+ 
+public class Test
+{    
+    // 输出
+    public static void main(String[] args)
+    {
+        Color c1 = Color.RED;
+        System.out.println(c1);
+        c1.colorInfo();
+    }
+}
+~~~
 
