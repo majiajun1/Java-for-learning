@@ -1336,5 +1336,79 @@ toArray(T[] array)：将 List 转换为指定类型的数组。
 
 
 
+**HashSet:**
 
+- **特点：** 无序集合，基于HashMap实现。
+- **优点：** 高效的查找和插入操作。
+- **缺点：** 不保证顺序。
+
+**TreeSet:**
+
+- **特点：**TreeSet 是有序集合，底层基于红黑树实现，不允许重复元素。
+- **优点：** 提供自动排序功能，适用于需要按顺序存储元素的场景。
+- **缺点：** 性能相对较差，不允许插入 null 元素。
+
+函数跟list一样
+
+### 映射（Maps）
+
+映射（Maps）用于存储键值对，常见的实现有 HashMap 和 TreeMap。
+
+```
+Map<String, Integer> hashMap = new HashMap<>();
+Map<String, Integer> treeMap = new TreeMap<>();
+```
+
+**HashMap:**
+
+- **特点：** 基于哈希表实现的键值对存储结构。
+- **优点：** 高效的查找、插入和删除操作。
+- **缺点：** 无序，不保证顺序。
+
+**TreeMap:**
+
+- **特点：** 基于红黑树实现的有序键值对存储结构。
+- **优点：** 有序，支持按照键的顺序遍历。
+- **缺点：** 插入和删除相对较慢。
+
+### 队列（Queue）
+
+队列（Queue）遵循先进先出（FIFO）原则，常见的实现有 LinkedList 和 PriorityQueue。
+
+```
+Queue<String> queue = new LinkedList<>();
+```
+
+**Queue 接口:**
+
+- **特点：** 代表一个队列，通常按照先进先出（FIFO）的顺序操作元素。
+- **实现类：** LinkedList, PriorityQueue, ArrayDeque。
+
+### 堆（Heap）
+
+堆（Heap）优先队列的基础，可以实现最大堆和最小堆。
+
+```
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+```
+
+### 树（Trees）
+
+Java 提供了 TreeNode 类型，可以用于构建二叉树等数据结构。
+
+```
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int x) { val = x; }
+}
+```
+
+**Dictionary 类在较新的 Java 版本中已经被弃用（deprecated），推荐使用 Map 接口及其实现类，如 HashMap、TreeMap 等，来代替 Dictionary。**
+
+## 集合框架
+
+![img](https://www.runoob.com/wp-content/uploads/2014/01/2243690-9cd9c896e0d512ed.gif)
 
