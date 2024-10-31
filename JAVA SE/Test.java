@@ -33,6 +33,7 @@ public class Test{
         System.out.println(sb);
         sb.delete(5,8);
         System.out.println(sb);
+        System.out.println(str.equals("Runoob"));
 
    }
 }
