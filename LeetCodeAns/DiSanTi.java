@@ -3,7 +3,7 @@ import java.util.*;
 public class DiSanTi {
     public static void main(String[] args) {
         String a="dvdf";
-        int ans=lengthOfLongestSubstring2(a);
+        int ans=lengthOfLongestSubstring3(a);
 
         System.out.println(ans);
         System.out.println(a.charAt(2));
@@ -61,7 +61,6 @@ public class DiSanTi {
         }
         return maxLength;
     }
-
 
 
 
