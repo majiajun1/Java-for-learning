@@ -1410,5 +1410,486 @@ class TreeNode {
 
 ## 集合框架
 
+https://www.runoob.com/java/java-collections.html
+
+感觉不太重要 略过好了
+
 ![img](https://www.runoob.com/wp-content/uploads/2014/01/2243690-9cd9c896e0d512ed.gif)
+
+![img](https://www.runoob.com/wp-content/uploads/2014/01/java-coll-2020-11-16.png)
+
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/574e95e38a794f52a40aab63b8f32a18.png)
+
+List、Set集合是继承了Colection接口，跟Collection是继承关系
+
+而ArrayList、LinkedList跟List是继承关系，HashSet、TreeSet跟Set也是继承关系，HashMap、TreeMap跟Map也是继承关系
+
+- Collection接口：泛指广义上集合，主要表示List和Set两种存储方式。
+
+- List接口：表示列表，规定了允许记录添加顺序，允许元素重复的规范。
+
+- Set接口：表示狭义上集合，规定了不记录添加顺序，不允许元素重复的规范。
+
+- Map接口：表示映射关系，规定了两个集合映射关系的规范。
+
+  
+
+  List(列表)：允许记录添加顺序，允许元素重复。=> **元素有序且可重复** Set(数据集)：不记录添加顺序，不允许元素重复。=> **元素无序且唯一**
+
+## ArrayList
+
+
+
+![img](https://www.runoob.com/wp-content/uploads/2020/06/ArrayList-1-768x406-1.png)
+
+~~~java	
+ArrayList<E> objectName =new ArrayList<>();
+Integer（用于 int）
+Double（用于 double）
+Float（用于 float）
+Character（用于 char）
+Boolean（用于 boolean）
+Byte、Short、Long（分别用于 byte、short、long）
+ArrayList 可以存储任何 Java 类或接口的实例，包括自定义类。
+ArrayList<String> stringList = new ArrayList<>(); // 用于存储字符串
+ArrayList<MyClass> myClassList = new ArrayList<>(); // 用于存储 MyClass 的实例
+其他数据结构和集合类型
+ArrayList<HashMap<String, Integer>> mapList = new ArrayList<>(); // 用于存储 HashMap 对象
+ArrayList<ArrayList<Integer>> listOfLists = new ArrayList<>(); // 用于存储整数列表的列表
+通配符类型（? extends 或 ? super）
+使用通配符可以在 ArrayList 中存储具有泛型限制的对象，比如 ArrayList<? extends Number> 可以存储 Number 类型或其子类型。
+ArrayList<? extends Number> numList = new ArrayList<Integer>(); // 可存储 Integer、Double 等 Number 的子类型 //这行代码有问题
+通配符 ? extends 适用于只读情况，因为编译器无法确定具体类型而限制了添加操作。如果需要动态修改 ArrayList，建议直接使用具体类型 Number 或 Integer
+不如 ArrayList<Number> intarray=new ArrayList<>();
+~~~
+
+`ArrayList<? extends Number>` 使用了通配符 `? extends Number`，它表示这个 `ArrayList` 的元素可以是 `Number` 类型或其子类型，但不允许添加元素。这样设计是因为编译器无法确定具体的子类型，因此限制了添加操作。
+
+
+
+add()  set(index,element)   size()  remove() Collections.sort
+
+在 Java 中，`Collections.sort()` 方法只能对实现了 `Comparable` 接口的元素类型进行排序。然而，`Number` 类本身并没有实现 `Comparable` 接口，因此不能直接对 `ArrayList<Number>` 进行排序。
+
+如果原列表中有元素，可以使用 `addAll()` 方法将所有元素复制到新列表中：
+
+`ArrayList<Integer>` 不能自动转换为 `ArrayList<Number>`，反之亦然。
+
+强转为integer
+
+~~~java
+List<Number> numberList = List.of(1, 2.5, 3, 4.0); // 示例 `Number` 类型
+List<Integer> integerList = new ArrayList<>();
+
+for (Number num : numberList) {
+    integerList.add(num.intValue());  // 将 `Number` 转换为 `Integer` 并添加到新列表中
+}
+
+System.out.println(integerList);  // 输出 [1, 2, 3, 4]
+
+~~~
+
+| [add()](https://www.runoob.com/java/java-arraylist-add.html) | 将元素插入到指定位置的 arraylist 中           |
+| ------------------------------------------------------------ | --------------------------------------------- |
+| [addAll()](https://www.runoob.com/java/java-arraylist-addall.html) | 添加集合中的所有元素到 arraylist 中           |
+| [clear()](https://www.runoob.com/java/java-arraylist-clear.html) | 删除 arraylist 中的所有元素                   |
+| [clone()](https://www.runoob.com/java/java-arraylist-clone.html) | 复制一份 arraylist                            |
+| [contains()](https://www.runoob.com/java/java-arraylist-contains.html) | 判断元素是否在 arraylist                      |
+| [get()](https://www.runoob.com/java/java-arraylist-get.html) | 通过索引值获取 arraylist 中的元素             |
+| [indexOf()](https://www.runoob.com/java/java-arraylist-indexof.html) | 返回 arraylist 中元素的索引值                 |
+| [removeAll()](https://www.runoob.com/java/java-arraylist-removeall.html) | 删除存在于指定集合中的 arraylist 里的所有元素 |
+| [remove()](https://www.runoob.com/java/java-arraylist-remove.html) | 删除 arraylist 里的单个元素                   |
+| [size()](https://www.runoob.com/java/java-arraylist-size.html) | 返回 arraylist 里元素数量                     |
+| [isEmpty()](https://www.runoob.com/java/java-arraylist-isempty.html) | 判断 arraylist 是否为空                       |
+| [subList()](https://www.runoob.com/java/java-arraylist-sublist.html) | 截取部分 arraylist 的元素                     |
+| [set()](https://www.runoob.com/java/java-arraylist-set.html) | 替换 arraylist 中指定索引的元素               |
+| [sort()](https://www.runoob.com/java/java-arraylist-sort.html) | 对 arraylist 元素进行排序                     |
+| [toArray()](https://www.runoob.com/java/java-arraylist-toarray.html) | 将 arraylist 转换为数组                       |
+| [toString()](https://www.runoob.com/java/java-arraylist-tostring.html) | 将 arraylist 转换为字符串                     |
+| [ensureCapacity](https://www.runoob.com/java/java-arraylist-surecapacity.html)() | 设置指定容量大小的 arraylist                  |
+| [lastIndexOf()](https://www.runoob.com/java/java-arraylist-lastindexof.html) | 返回指定元素在 arraylist 中最后一次出现的位置 |
+| [retainAll()](https://www.runoob.com/java/java-arraylist-retainall.html) | 保留 arraylist 中在指定集合中也存在的那些元素 |
+| [containsAll()](https://www.runoob.com/java/java-arraylist-containsall.html) | 查看 arraylist 是否包含指定集合中的所有元素   |
+| [trimToSize()](https://www.runoob.com/java/java-arraylist-trimtosize.html) | 将 arraylist 中的容量调整为数组中的元素个数   |
+| [removeRange()](https://www.runoob.com/java/java-arraylist-removerange.html) | 删除 arraylist 中指定索引之间存在的元素       |
+| [replaceAll()](https://www.runoob.com/java/java-arraylist-replaceall.html) | 将给定的操作内容替换掉数组中每一个元素        |
+| [removeIf()](https://www.runoob.com/java/java-arraylist-removeif.html) | 删除所有满足特定条件的 arraylist 元素         |
+| [forEach()](https://www.runoob.com/java/java-arraylist-foreach.html) | 遍历 arraylist 中每一个元素并执行特定操作     |
+
+
+
+## Linkedlist
+
+![img](https://www.runoob.com/wp-content/uploads/2020/06/linkedlist-2020-11-16.png)
+
+LinkedList 继承了 AbstractSequentialList 类。
+
+LinkedList 实现了 Queue 接口，可作为队列使用。
+
+LinkedList 实现了 List 接口，可进行列表的相关操作。
+
+LinkedList 实现了 Deque 接口，可作为队列使用。
+
+LinkedList 实现了 Cloneable 接口，可实现克隆。
+
+LinkedList 实现了 java.io.Serializable 接口，即可支持序列化，能通过序列化去传输。
+
+| public boolean add(E e)                        | 链表末尾添加元素，返回是否成功，成功为 true，失败为 false。  |
+| ---------------------------------------------- | ------------------------------------------------------------ |
+| public void add(int index, E element)          | 向指定位置插入元素。                                         |
+| public boolean addAll(Collection c)            | 将一个集合的所有元素添加到链表后面，返回是否成功，成功为 true，失败为 false。 |
+| public boolean addAll(int index, Collection c) | 将一个集合的所有元素添加到链表的指定位置后面，返回是否成功，成功为 true，失败为 false。 |
+| public void addFirst(E e)                      | 元素添加到头部。                                             |
+| public void addLast(E e)                       | 元素添加到尾部。                                             |
+| public boolean offer(E e)                      | 向链表末尾添加元素，返回是否成功，成功为 true，失败为 false。 |
+| public boolean offerFirst(E e)                 | 头部插入元素，返回是否成功，成功为 true，失败为 false。      |
+| public boolean offerLast(E e)                  | 尾部插入元素，返回是否成功，成功为 true，失败为 false。      |
+| public void clear()                            | 清空链表。                                                   |
+| public E removeFirst()                         | 删除并返回第一个元素。                                       |
+| public E removeLast()                          | 删除并返回最后一个元素。                                     |
+| public boolean remove(Object o)                | 删除某一元素，返回是否成功，成功为 true，失败为 false。      |
+| public E remove(int index)                     | 删除指定位置的元素。                                         |
+| public E poll()                                | 删除并返回第一个元素。                                       |
+| public E remove()                              | 删除并返回第一个元素。                                       |
+| public boolean contains(Object o)              | 判断是否含有某一元素。                                       |
+| public E get(int index)                        | 返回指定位置的元素。                                         |
+| public E getFirst()                            | 返回第一个元素。                                             |
+| public E getLast()                             | 返回最后一个元素。                                           |
+| public int indexOf(Object o)                   | 查找指定元素从前往后第一次出现的索引。                       |
+| public int lastIndexOf(Object o)               | 查找指定元素最后一次出现的索引。                             |
+| public E peek()                                | 返回第一个元素。                                             |
+| public E element()                             | 返回第一个元素。                                             |
+| public E peekFirst()                           | 返回头部元素。                                               |
+| public E peekLast()                            | 返回尾部元素。                                               |
+| public E set(int index, E element)             | 设置指定位置的元素。                                         |
+| public Object clone()                          | 克隆该列表。                                                 |
+| public Iterator descendingIterator()           | 返回倒序迭代器。                                             |
+| public int size()                              | 返回链表元素个数。                                           |
+| public ListIterator listIterator(int index)    | 返回从指定位置开始到末尾的迭代器。                           |
+| public Object[] toArray()                      | 返回一个由链表元素组成的数组。                               |
+| public T[] toArray(T[] a)                      | 返回一个由链表元素转换类型而成的数组。                       |
+
+
+
+## Hashset
+
+
+
+![img](https://www.runoob.com/wp-content/uploads/2020/07/java-hashset-hierarchy.png)
+
+HashSet 基于 HashMap 来实现的，是一个不允许有重复元素的集合。HashSet 是无序的，即不会记录插入的顺序。![HashSet](https://i-blog.csdnimg.cn/blog_migrate/1dd73c82382e0c52779ac411a8fa5331.png)
+
+
+
+
+
+## Hashmap
+
+![img](https://www.runoob.com/wp-content/uploads/2020/07/WV9wXLl.png)
+
+HashMap 是无序的，即不会记录插入的顺序。
+
+![img](https://static.jyshare.com/images/mix/java-map.svg)
+
+
+
+添加键值对(key-value)可以使用 put() 方法
+
+get(key) 方法来获取 key 对应的 value
+
+remove(key) 方法来删除 key 对应的键值对(key-value):
+
+删除所有键值对(key-value)可以使用 clear 方法
+
+计算 HashMap 中的元素数量可以使用 size() 方法
+
+可以使用 for-each 来迭代 HashMap 中的元素。
+
+如果你只想获取 key，可以使用 keySet() 方法，然后可以通过 get(key) 获取对应的 value，如果你只想获取 value，可以使用 values() 方法。
+
+| [clear()](https://www.runoob.com/java/java-hashmap-clear.html) | 删除 hashMap 中的所有键/值对                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [clone()](https://www.runoob.com/java/java-hashmap-clone.html) | 复制一份 hashMap                                             |
+| [isEmpty()](https://www.runoob.com/java/java-hashmap-isempty.html) | 判断 hashMap 是否为空                                        |
+| [size()](https://www.runoob.com/java/java-hashmap-size.html) | 计算 hashMap 中键/值对的数量                                 |
+| [put()](https://www.runoob.com/java/java-hashmap-put.html)   | 将键/值对添加到 hashMap 中                                   |
+| [putAll()](https://www.runoob.com/java/java-hashmap-putall.html) | 将所有键/值对添加到 hashMap 中                               |
+| [putIfAbsent()](https://www.runoob.com/java/java-hashmap-putifabsent.html) | 如果 hashMap 中不存在指定的键，则将指定的键/值对插入到 hashMap 中。 |
+| [remove()](https://www.runoob.com/java/java-hashmap-remove.html) | 删除 hashMap 中指定键 key 的映射关系                         |
+| [containsKey()](https://www.runoob.com/java/java-hashmap-containskey.html) | 检查 hashMap 中是否存在指定的 key 对应的映射关系。           |
+| [containsValue()](https://www.runoob.com/java/java-hashmap-containsvalue.html) | 检查 hashMap 中是否存在指定的 value 对应的映射关系。         |
+| [replace()](https://www.runoob.com/java/java-hashmap-replace.html) | 替换 hashMap 中是指定的 key 对应的 value。                   |
+| [replaceAll()](https://www.runoob.com/java/java-hashmap-replaceall.html) | 将 hashMap 中的所有映射关系替换成给定的函数所执行的结果。    |
+| [get()](https://www.runoob.com/java/java-hashmap-get.html)   | 获取指定 key 对应对 value                                    |
+| [getOrDefault()](https://www.runoob.com/java/java-hashmap-getordefault.html) | 获取指定 key 对应对 value，如果找不到 key ，则返回设置的默认值 |
+| [forEach()](https://www.runoob.com/java/java-hashmap-foreach.html) | 对 hashMap 中的每个映射执行指定的操作。                      |
+| [entrySet()](https://www.runoob.com/java/java-hashmap-entryset.html) | 返回 hashMap 中所有映射项的集合集合视图。                    |
+| [keySet](https://www.runoob.com/java/java-hashmap-keyset.html)() | 返回 hashMap 中所有 key 组成的集合视图。                     |
+| [values()](https://www.runoob.com/java/java-hashmap-values.html) | 返回 hashMap 中存在的所有 value 值。                         |
+| [merge()](https://www.runoob.com/java/java-hashmap-merge.html) | 添加键值对到 hashMap 中                                      |
+| [compute()](https://www.runoob.com/java/java-hashmap-compute.html) | 对 hashMap 中指定 key 的值进行重新计算                       |
+| [computeIfAbsent()](https://www.runoob.com/java/java-hashmap-computeifabsent.html) | 对 hashMap 中指定 key 的值进行重新计算，如果不存在这个 key，则添加到 hashMap 中 |
+| [computeIfPresent()](https://www.runoob.com/java/java-hashmap-computeifpresent.html) | 对 hashMap 中指定 key 的值进行重新计算，前提是该 key 存在于 hashMap 中。 |
+
+
+
+## Iterator
+
+![img](https://www.runoob.com/wp-content/uploads/2020/07/ListIterator-Class-Diagram.jpg)
+
+集合想获取一个迭代器可以使用 iterator() 方法:
+
+让迭代器 it 逐个返回集合中所有元素最简单的方法是使用 while 循环：
+
+~~~java	
+while(it.hasNext()) {
+    System.out.println(it.next());
+}
+~~~
+
+iter感觉是指针，  执行next()就下一个了
+
+remove() 方法移除
+
+hasNext() - 用于判断集合中是否还有下一个元素可以访问。
+
+通过使用迭代器，我们可以逐个访问集合中的元素，而不需要使用传统的 for 循环或索引。这种方式更加简洁和灵活，并且适用于各种类型的集合。
+
+
+
+
+
+## Object 类
+
+Java Object 类是所有类的父类，也就是说 Java 的所有类都继承了 Object，**子类可以使用 Object 的所有方法**
+
+| 1    | [protected Object clone()](https://www.runoob.com/java/java-object-clone.html)创建并返回一个对象的拷贝 |
+| ---- | ------------------------------------------------------------ |
+| 2    | [boolean equals(Object obj)](https://www.runoob.com/java/java-object-equals.html)比较两个对象是否相等 |
+| 3    | [protected void finalize()](https://www.runoob.com/java/java-object-finalize.html)当 GC (垃圾回收器)确定不存在对该对象的有更多引用时，由对象的垃圾回收器调用此方法。 |
+| 4    | [Class getClass()](https://www.runoob.com/java/java-object-getclass.html)获取对象的运行时对象的类 |
+| 5    | [int hashCode()](https://www.runoob.com/java/java-object-hashcode.html)获取对象的 hash 值 |
+| 6    | [void notify()](https://www.runoob.com/java/java-object-notify.html)唤醒在该对象上等待的某个线程 |
+| 7    | [void notifyAll()](https://www.runoob.com/java/java-object-notifyall.html)唤醒在该对象上等待的所有线程 |
+| 8    | [String toString()](https://www.runoob.com/java/java-object-tostring.html)返回对象的字符串表示形式 |
+| 9    | [void wait()](https://www.runoob.com/java/java-object-wait.html)让当前线程进入等待状态。直到其他线程调用此对象的 notify() 方法或 notifyAll() 方法。 |
+| 10   | [void wait(long timeout)](https://www.runoob.com/java/java-object-wait-timeout.html)让当前线程处于等待(阻塞)状态，直到其他线程调用此对象的 notify() 方法或 notifyAll() 方法，或者超过参数设置的timeout超时时间。 |
+| 11   | [void wait(long timeout, int nanos)](https://www.runoob.com/java/java-object-wait-nanos.html)与 wait(long timeout) 方法类似，多了一个 nanos 参数，这个参数表示额外时间（以纳秒为单位，范围是 0-999999）。 所以超时的时间还需要加上 nanos 纳秒。。 |
+
+
+
+
+
+## 泛型
+
+下面是定义泛型方法的规则：
+
+- 所有泛型方法声明都有一个类型参数声明部分（由尖括号分隔），该类型参数声明部分在方法返回类型之前（在下面例子中的 **<E>**）。
+- 每一个类型参数声明部分包含一个或多个类型参数，参数间用逗号隔开。一个泛型参数，也被称为一个类型变量，是用于指定一个泛型类型名称的标识符。
+- 类型参数能被用来声明返回值类型，并且能作为泛型方法得到的实际参数类型的占位符。
+- 泛型方法体的声明和其他方法一样。注意类型参数只能代表引用型类型，不能是原始类型（像 **int、double、char** 等）。
+
+**java 中泛型标记符：**
+
+- **E** - Element (在集合中使用，因为集合中存放的是元素)
+- **T** - Type（Java 类）
+- **K** - Key（键）
+- **V** - Value（值）
+- **N** - Number（数值类型）
+- **？** - 表示不确定的 java 类型
+
+有点像函数模版
+
+~~~java
+public static < E > void printArray( E[] inputArray )
+    <E> 是泛型声明，需要放在返回类型之前声明  
+public static <T extends Comparable<T>> T maximum(T x, T y, T z)
+  希望接受Number或者Number子类的实例。这就是有界类型参数的目的。
+    
+<T extends Comparable<T>>表明T实现了Comaprable<T>接口，此条件强制约束， 声明该泛型的类型必须是Comparable<T>的子类 泛型类型为T
+   一整个<>是泛型声明 第三个T指的是返回函数返回T类型 而不是void+
+    
+    Comparable<T> 接口是Java中的一个泛型接口
+   public interface Comparable<T> {
+    int compareTo(T o);
+}
+e1.compareTo(e2) > 0 即 e1 > e2
+e1.compareTo(e2) = 0 即 e1 = e2
+e1.compareTo(e2) < 0 即 e1 < e2
+ 实现了Comparable接口的类的对象的列表或数组可以通过Collections.sort或Arrays.sort进行自动排序。
+    一个类型实现了Compareable接口，表明了这个类具有了可排序的功能或者说标准，两个对象通过Compareable接口中的compareTo方法的返回值来比较大小。
+    int、double 这些基本数据类型在 Java 中并不能直接使用 compareTo 方法，因为它们不是对象类型。compareTo 是属于接口方法，而基本数据类型没有实现任何接口，也没有任何方法。因此，我们无法对 int、double 这样的类型直接使用 compareTo 方法。
+    Java 的自动装箱机制（autoboxing）使得 int 可以自动转换为 Integer，double 可以转换为 Double 等，而这些包装类都实现了 Comparable 接口。
+~~~
+
+要声明一个有界的类型参数，首先列出类型参数的名称，后跟extends关键字，最后紧跟它的上界。
+
+## 泛型类
+
+~~~java	
+public class Box<T> {
+   
+  private T t;
+ 
+  public void add(T t) {
+    this.t = t;
+  }
+ 
+  public T get() {
+    return t;
+  }
+ 
+  public static void main(String[] args) {
+    Box<Integer> integerBox = new Box<Integer>();
+    Box<String> stringBox = new Box<String>();
+ 
+    integerBox.add(new Integer(10));
+    stringBox.add(new String("菜鸟教程"));
+ 
+    System.out.printf("整型值为 :%d\n\n", integerBox.get());
+    System.out.printf("字符串为 :%s\n", stringBox.get());
+  }
+}
+~~~
+
+类型通配符一般是使用 **?** 代替具体的类型参数。例如 **List<?>** 在逻辑上是 **List<String>,List<Integer>** 等所有 **List<具体类型实参>** 的父类
+
+
+
+~~~java	
+import java.util.*;
+ 
+public class GenericTest {
+     
+    public static void main(String[] args) {
+        List<String> name = new ArrayList<String>();
+        List<Integer> age = new ArrayList<Integer>();
+        List<Number> number = new ArrayList<Number>();
+        
+        name.add("icon");
+        age.add(18);
+        number.add(314);
+ 
+        getData(name);
+        getData(age);
+        getData(number);
+       
+   }
+ 
+   public static void getData(List<?> data) {
+      System.out.println("data :" + data.get(0));
+   }
+}
+~~~
+
+类型通配符上限通过形如List来定义，如此定义就是通配符泛型值接受Number及其下层子类类型。
+
+~~~java	
+   public static void getUperNumber(List<? extends Number> data) {
+          System.out.println("data :" + data.get(0));
+       }
+ //1 处会出现错误，因为 getUperNumber() 方法中的参数已经限定了参数泛型上限为 Number，所以泛型为 String 是不在这个范围之内，所以会报错。
+~~~
+
+类型通配符下限通过形如 **List<? super Number>** 来定义，表示类型只能接受 **Number** 及其上层父类类型，如 **Object** 类型的实例。
+
+## 序列化
+
+Java 序列化是一种将对象转换为字节流的过程，以便可以将对象保存到磁盘上，将其传输到网络上，或者将其存储在内存中，以后再进行反序列化，将字节流重新转换为对象。
+
+序列化在 Java 中是通过 **java.io.Serializable** 接口来实现的，该接口没有任何方法，只是一个标记接口，用于标识类可以被序列化。
+
+当你序列化对象时，你把它包装成一个特殊文件，可以保存、传输或存储。反序列化则是打开这个文件，读取序列化的数据，然后将其还原为对象，以便在程序中使用。
+
+序列化是一种用于保存、传输和还原对象的方法，它使得对象可以在不同的计算机之间移动和共享，这对于分布式系统、数据存储和跨平台通信非常有用。
+
+以下是 Java 序列化的基本概念和用法：
+
+实现 Serializable 接口： 要使一个类可序列化，需要让该类实现 java.io.Serializable 接口，这告诉 Java 编译器这个类可以被序列化，例如
+
+~~~java
+import java.io.Serializable;
+
+public class MyClass implements Serializable {
+    // 类的成员和方法
+}
+MyClass obj = new MyClass();
+try {
+    FileOutputStream fileOut = new FileOutputStream("object.ser");
+    ObjectOutputStream out = new ObjectOutputStream(fileOut);   //创建一个对象输出流 out，它包装了 fileOut。ObjectOutputStream 可以将对象序列化，并将其内容写入文件。
+    out.writeObject(obj); //方法将对象 obj 序列化，并写入到文件 "object.ser" 中。注意，obj 必须实现 Serializable 接口，才能被序列化，否则会抛出 NotSerializableException 异常。
+    out.close();
+    fileOut.close();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+~~~
+
+
+
+
+
+使用 ObjectInputStream 类来从字节流中反序列化对象
+
+~~~java	
+MyClass obj = null;
+try {
+    FileInputStream fileIn = new FileInputStream("object.ser");
+    ObjectInputStream in = new ObjectInputStream(fileIn);
+    obj = (MyClass) in.readObject();//表示从流中读取的对象需要强制转换成 MyClass 类型。
+    in.close();
+    fileIn.close();
+} catch (IOException e) {
+    e.printStackTrace();
+} catch (ClassNotFoundException e) {
+    e.printStackTrace();
+}
+~~~
+
+
+
+请注意，一个类的对象要想序列化成功，必须满足两个条件：
+
+该类必须实现 java.io.Serializable 接口。
+
+该类的所有属性必须是可序列化的。如果有一个属性不是可序列化的，则该属性必须注明是短暂的。
+
+如果你想知道一个 Java 标准类是否是可序列化的，请查看该类的文档。检验一个类的实例是否能序列化十分简单， 只需要查看该类有没有实现 java.io.Serializable接口。
+
+
+
+![TCP/IP 四层模型](https://oss.javaguide.cn/github/javaguide/cs-basics/network/tcp-ip-4-model.png)
+
+如上图所示，OSI 七层协议模型中，表示层做的事情主要就是对应用层的用户数据进行处理转换为二进制流。反过来的话，就是将二进制流转换成应用层的用户数据。这不就对应的是序列化和反序列化么？
+
+因为，OSI 七层协议模型中的应用层、表示层和会话层对应的都是 TCP/IP 四层模型中的应用层，所以序列化协议属于 TCP/IP 协议应用层的一部分 
+
+JDK 自带的序列化，只需实现 `java.io.Serializable`接口即可。
+
+序列化号 `serialVersionUID` 属于版本控制的作用。反序列化时，会检查 `serialVersionUID` 是否和当前类的 `serialVersionUID` 一致。如果 `serialVersionUID` 不一致则会抛出 `InvalidClassException` 异常。强烈推荐每个序列化类都手动指定其 `serialVersionUID`，如果不手动指定，那么编译器会动态生成默认的 `serialVersionUID`。
+
+`static` 修饰的变量是静态变量，属于类而非类的实例，本身是不会被序列化的。然而，`serialVersionUID` 是一个特例，`serialVersionUID` 的序列化做了特殊处理。当一个对象被序列化时，`serialVersionUID` 会被写入到序列化的二进制流中；在反序列化时，也会解析它并做一致性判断，以此来验证序列化对象的版本一致性。如果两者不匹配，反序列化过程将抛出 `InvalidClassException`，因为这通常意味着序列化的类的定义已经发生了更改，可能不再兼容。
+
+也就是说，`serialVersionUID` 只是用来被 JVM 识别，实际并没有被序列化。
+
+`transient` 关键字的作用是：阻止实例中那些用此关键字修饰的的变量序列化；当对象被反序列化时，被 `transient` 修饰的变量值不会被持久化和恢复。
+
+关于 `transient` 还有几点注意：
+
+- `transient` 只能修饰变量，不能修饰类和方法。
+- `transient` 修饰的变量，在反序列化后变量值将会被置成类型的默认值。例如，如果是修饰 `int` 类型，那么反序列后结果就是 `0`。
+- `static` 变量因为不属于任何对象(Object)，所以无论有没有 `transient` 关键字修饰，均不会被序列化。
+
+使用 `transient` 的主要原因是：
+
+- 不希望某些敏感数据（如密码）存储到硬盘中。
+- 某些字段的值在序列化后并不需要保存（如缓存数据、临时计算结果等），所以无需在反序列化时还原这些字段的内容。
+
+Kryo 是专门针对 Java 语言序列化方式并且性能非常好，如果你的应用是专门针对 Java 语言的话可以考虑使用，并且 Dubbo 官网的一篇文章中提到说推荐使用 Kryo 作为生产环境的序列化方式\
+
+
+
+
 
