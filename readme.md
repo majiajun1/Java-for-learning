@@ -1,4 +1,4 @@
-leetcode(5/300)
+leetcode(6/300)
 
 # JAVA路线
 
