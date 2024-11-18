@@ -717,4 +717,74 @@ set()  remove(int index)还会返回原来的元素
 
  clear()就是全设置为null
 
- 
+ arraylist默认为10 第一次扩容就扩容到10（插入第一个元素）
+
+第二次扩容是在超过10个后扩容的   扩容是 new=origin>>1+origin     就是1.5倍
+
+- 当我们要 `add` 进第 1 个元素到 `ArrayList` 时，`elementData.length` 为 0 （因为还是一个空的 list），因为执行了 `ensureCapacityInternal()` 方法 ，所以 `minCapacity` 此时为 10。此时，`minCapacity - elementData.length > 0`成立，所以会进入 `grow(minCapacity)` 方法。
+- 当 `add` 第 2 个元素时，`minCapacity` 为 2，此时 `elementData.length`(容量)在添加第一个元素后扩容成 `10` 了。此时，`minCapacity - elementData.length > 0` 不成立，所以不会进入 （执行）`grow(minCapacity)` 方法。
+- 添加第 3、4···到第 10 个元素时，依然不会执行 grow 方法，数组容量都为 10。
+
+直到添加第 11 个元素，`minCapacity`(为 11)比 `elementData.length`（为 10）要大。进入 `grow` 方法进行扩容。 
+
+`copyOf()`内部实际调用了 `System.arraycopy()` 方法
+
+`arraycopy()` 需要目标数组，将原数组拷贝到你自己定义的数组里或者原数组，而且可以选择拷贝的起点和长度以及放入新数组中的位置
+
+ `copyOf()` 是系统自动在内部新建一个数组，并返回该数组。
+
+
+
+
+
+## LinkedList源码
+
+我们在项目中一般是不会使用到 `LinkedList` 的，需要用到 `LinkedList` 的场景几乎都可以使用 `ArrayList` 来代替，并且，性能通常会更好！就连 `LinkedList` 的作者约书亚 · 布洛克（Josh Bloch）自己都说从来不会使用 `LinkedList` 。
+
+`LinkedList` 仅仅在头尾插入或者删除元素的时候时间复杂度近似 O(1)，其他情况增删元素的平均时间复杂度都是 O(n)
+
+`ArrayList` 同样继承了 `AbstractList` ， 所以 `LinkedList` 会有大部分方法和 `ArrayList` 相似。
+
+`LinkedList` 实现了以下接口：
+
+- `List` : 表明它是一个列表，支持添加、删除、查找等操作，并且可以通过下标进行访问。
+- `Deque` ：继承自 `Queue` 接口，具有双端队列的特性，支持从两端插入和删除元素，方便实现栈和队列等数据结构。需要注意，`Deque` 的发音为 "deck" [dɛk]，这个大部分人都会读错。
+- `Cloneable` ：表明它具有拷贝能力，可以进行深拷贝或浅拷贝操作。
+- `Serializable` : 表明它可以进行序列化操作，也就是可以将对象转换为字节流进行持久化存储或网络传输，非常方便。
+
+
+
+![LinkedList 类图](https://oss.javaguide.cn/github/javaguide/java/collection/linkedlist--class-diagram.png)
+
+
+
+获取元素其实都是新建一个节点 然后指向这个节点的
+
+
+
+`get(int index)` 或 `remove(int index)` 等方法内部都调用了该方法来获取对应的节点。
+
+从这个方法的源码可以看出，该方法通过比较索引值与链表 size 的一半大小来确定从链表头还是尾开始遍历。如果索引值小于 size 的一半，就从链表头开始遍历，反之从链表尾开始遍历。这样可以在较短的时间内找到目标节点，充分利用了双向链表的特性来提高效率
+
+`removeFirst()`：删除并返回链表的第一个元素。
+
+`removeLast()`：删除并返回链表的最后一个元素。
+
+`remove(E e)`：删除链表中首次出现的指定元素，如果不存在该元素则返回 false。
+
+`remove(int index)`：删除指定索引处的元素，并返回该元素的值。
+
+`void clear()`：移除此链表中的所有元素。
+
+`unlink()` 方法的逻辑如下：
+
+1. 首先获取待删除节点 x 的前驱和后继节点；
+2. 判断待删除节点是否为头节点或尾节点：
+   - 如果 x 是头节点，则将 first 指向 x 的后继节点 next
+   - 如果 x 是尾节点，则将 last 指向 x 的前驱节点 prev
+   - 如果 x 不是头节点也不是尾节点，执行下一步操作
+3. 将待删除节点 x 的前驱的后继指向待删除节点的后继 next，断开 x 和 x.prev 之间的链接；
+4. 将待删除节点 x 的后继的前驱指向待删除节点的前驱 prev，断开 x 和 x.next 之间的链接；
+5. 将待删除节点 x 的元素置空，修改链表长度。
+
+判断hasnext不是查是不是Null而是根据下标是否大于size而定。
