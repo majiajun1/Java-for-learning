@@ -1,6 +1,6 @@
 leetcode(7/300)
 
-leetcode75  41/75
+leetcode75  43/75
 
 # JAVA路线 
 
@@ -10,8 +10,8 @@ https://javaguide.cn/home.html
 
 - [x] GIT的学习 
 - [x] JAVA se  还有集合源码 IO啥的 10.20-11.22
-- [ ] Java 多线程和并发  11.23-12.1
-- [ ] JVM   
+- [ ] Java 多线程和并发  11.23-11.27
+- [ ] JVM   11.27
 - [ ] Java web
 - [ ] 复习以上
 - [ ] Springboot

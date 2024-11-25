@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/JAVA-High" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/LeetCodeAns" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Leetcode75" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/JavaThreadLearning" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

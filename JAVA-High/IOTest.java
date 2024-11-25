@@ -15,8 +15,8 @@ public class IOTest {
     System.out.println();
     BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream("a.txt"));
 
-    String result= new String(bufferedInputStream.readAllBytes());
-    System.out.println(result);
+    //String result= new String(bufferedInputStream.readAllBytes()); //java8没有这个库 先放着了
+    //System.out.println(result);
     fis.close();
 } catch (IOException e) {
     e.printStackTrace();
