@@ -855,4 +855,57 @@ return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
 
 
 
-hashmap 底层 没有定义容量大小  只有阈值和负载因子
+hashmap 底层 没有定义容量大小  只有阈值treshold和负载因子loadFactor   而threshold又根据容量大小和负载因子计算得出的      容量大小只在新建的时候输入（初始化的容量大小）
+
+通过 tableSizeFor 将其扩容到与 initialCapacity 最接近的 2 的幂次方大小，然后暂时赋值给 threshold ，后续通过 resize 方法将 threshold 赋值给 newCap 进行 table 的初始化。
+
+通过将 Key 的 hash 值与 length-1 进行 & 运算,实现了当前 Key 的定位,2 的幂次方可以减少冲突(碰撞)的次数,提高 HashMap 查询效率;
+
+如果 length 为 2 的次幂 则 length-1 转化为二进制必定是 11111……的形式,在于 h 的二进制与操作效率会非常的快,而且空间不浪费;+
+
+
+
+**`threshold`** 的默认值是在 `HashMap` 的构造函数中根据初始容量和负载因子计算得来的：
+
+~~~java
+this.threshold = (int) (DEFAULT_INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+~~~
+
+~~~java	
+final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
+    int s = m.size();
+    if (s > 0) {
+        // 判断table是否已经初始化
+        if (table == null) { // pre-size
+            /*
+             * 未初始化，s为m的实际元素个数，ft=s/loadFactor => s=ft*loadFactor, 跟我们前面提到的
+             * 阈值=容量*负载因子 是不是很像，是的，ft指的是要添加s个元素所需的最小的容量
+             */
+            float ft = ((float)s / loadFactor) + 1.0F;
+            int t = ((ft < (float)MAXIMUM_CAPACITY) ?
+                    (int)ft : MAXIMUM_CAPACITY);
+            /*
+             * 根据构造函数可知，table未初始化，threshold实际上是存放的初始化容量，如果添加s个元素所
+             * 需的最小容量大于初始化容量，则将最小容量扩容为最接近的2的幂次方大小作为初始化。
+             * 注意这里不是初始化阈值
+             */只有当 t > threshold 时，才会更新 threshold 的值。
+            if (t > threshold)
+                threshold = tableSizeFor(t);
+        }
+        // 已初始化，并且m元素个数大于阈值，进行扩容处理
+        else if (s > threshold)
+            resize();
+        // 将m中的所有元素添加至HashMap中，如果table未初始化，putVal中会调用resize初始化或扩容
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
+            K key = e.getKey();
+            V value = e.getValue();
+            putVal(hash(key), key, value, false, evict);
+        }
+    }
+}
+~~~
+
+### [resize 方法](#resize-方法)
+
+进行扩容，会伴随着一次重新 hash 分配，并且会遍历 hash 表中所有的元素，是非常耗时的。在编写程序中，要尽量避免 resize。resize 方法实际上是将 table 初始化和 table 扩容 进行了整合，底层的行为都是给 table 赋值一个新的数组。
+
