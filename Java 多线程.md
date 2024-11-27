@@ -96,3 +96,147 @@ lambda 表达式  函数式编程
 
    ### 不在于谁调用sleep 而在于sleep写在哪
 
+
+
+
+
+# 并发编程
+
+
+
+Callable效率比runnable 高？ 相对罢了  
+
+
+
+## 线程和进程
+
+
+
+进程是资源分配的最小单位  线程是资源调度的最小单位
+
+进程：一个程序   程序的集合  jar  exe
+
+一个进程往往可以包含多个线程
+
+java默认 两个线程    main和gc
+
+线程： 写字的自动保存(线程负责)   
+
+Thread runnable callable
+
+Java真的能开启线程吗？
+
+~~~java	
+
+    public synchronized void start() {
+        /**
+         * This method is not invoked for the main method thread or "system"
+         * group threads created/set up by the VM. Any new functionality added
+         * to this method in the future may have to also be added to the VM.
+         *
+         * A zero status value corresponds to state "NEW".
+         */
+        if (threadStatus != 0)
+            throw new IllegalThreadStateException();
+
+        /* Notify the group that this thread is about to be started
+         * so that it can be added to the group's list of threads
+         * and the group's unstarted count can be decremented. */
+        group.add(this);
+
+        boolean started = false;
+        try {
+            start0();
+            started = true;
+        } finally {
+            try {
+                if (!started) {
+                    group.threadStartFailed(this);
+                }
+            } catch (Throwable ignore) {
+                /* do nothing. If start0 threw a Throwable then
+                  it will be passed up the call stack */
+            }
+        }
+    }
+  //
+    private native void start0();
+~~~
+
+调用本地方法 底层CPP   JAVA无法直接操作硬件
+
+## 并发和并行
+
+
+
+并发（多线程操作同一个资源）
+
+CPU  一核  模拟多线程 快速交替
+
+并行（多个人一起行走）：
+
+多核CPU  线程池
+
+
+
+并发编程的本质：充分利用CPU的资源
+
+所有的公司都很看重
+
+
+
+
+
+### 线程的状态
+
+```
+public enum State {
+    /**
+     * Thread state for a thread which has not yet started.
+     */
+    NEW,  //新生
+
+    RUNNABLE,  //运行
+
+    BLOCKED,  //阻塞
+
+    WAITING, //等待
+
+    TIMED_WAITING, //超时等待
+ 
+    TERMINATED; //终止
+}
+```
+
+
+
+### wait 与sleep的区别
+
+1、 来自不同的类   wait在object类  sleep在Thread类
+
+企业当中 用TimeUnit比较多
+
+2、关于锁的释放
+
+wait会释放锁  sleep睡觉   抱着锁睡觉  不会释放
+
+3、使用范围不同
+
+wait必须在同步代码块中 (要有人等）
+
+sleep可在任何地方睡觉
+
+4、是否需要捕获异常
+
+wait不需要捕获异常 （除了InterruptedException）
+
+sleep必须要捕获异常
+
+
+
+## LOCK锁
+
+传统 Synchronized
+
+
+
