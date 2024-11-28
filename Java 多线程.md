@@ -238,5 +238,250 @@ sleep必须要捕获异常
 
 传统 Synchronized
 
+Lock的三个实现类   可重入锁(常用)   写锁 读锁
 
+ 
+
+
+
+公平锁：十分公平 可以先来后到 NonfairSync()
+
+非公平锁：十分不公平  可以插队 FairSync()    默认非公平锁
+
+
+
+lock锁与synchronized的区别：
+
+1、 synchronized是内置的关键字  Lock是一个类
+
+2、 synchronized 无法判断获取锁的状态  而Lock可以
+
+3、synchronized会自动释放锁   Lock手动解锁    如果不放 会死锁
+
+4、synchronized  线程1获得锁，阻塞  线程2等待，傻等； lock锁  不一定一直等
+
+5、synchronized  可重入锁，不可以中断的  非公平 ； lock，可重入  可以判断锁，可设置公平和非公平
+
+6、synchronized  适合锁少量的代码同步问题，  lock 适合锁大量的代码同步
+
+
+
+锁是什么，如何判断锁的是谁
+
+# 生产者和消费者问题
+
+面试：单例模式、排序算法、生产者和消费者、死锁问题
+
+生产者和消费者问题  Synchronized 版   
+
+~~~java	
+class Data{  //数字 资源类
+
+    int number =0;
+
+    // +1
+    public synchronized void  increment() throws InterruptedException
+    {
+        if(number!=0) //改为while 防止虚假唤醒
+        {
+            //等待
+            this.wait();
+        }
+        number++;
+        System.out.println(Thread.currentThread().getName()+"=>"+number);
+        //通知其他线程  我+1 完毕了
+        this.notifyAll();
+    }
+
+    public synchronized void decrement() throws InterruptedException
+    {
+        if(number==0)//改为while 防止虚假唤醒
+        {
+            //等待
+            this.wait();
+        }
+        number--;
+        System.out.println(Thread.currentThread().getName()+"=>"+number);
+        //通知其他线程  我-1完毕了
+        this.notifyAll();
+    }
+
+~~~
+
+
+
+问题存在  ABCD 四个线程！
+
+等待应该出现在循环中，防止虚假唤醒   if改为while判断
+
+wait和notify notify
+
+## juc版的生产者和消费者问题
+
+
+
+通过Lock找到Condition  await  signalAll方法  (Condition类)
+
+为什么不能直接使用await和signal:
+
+`await` 和 `signal` 是 `Condition` 接口的方法，用于实现线程之间的等待与通知机制。但是，它们的操作需要在**持有锁的前提下**进行
+
+`await` 和 `signal` 通常用于线程之间的通信，它们操作的是**共享资源**的状态（例如队列是否为空、是否已满）。如果没有锁来保护对共享资源的访问，多个线程可能同时修改资源，导致数据竞争或不一致的状态
+
+代码实现:
+
+~~~java
+class Data2{  //数字 资源类
+
+    int number =0;
+
+    Lock lock = new ReentrantLock();
+    Condition condition = lock.newCondition();
+
+    // +1
+    public  void  increment() throws InterruptedException
+    {
+
+        lock.lock();
+
+        try{
+            while(number!=0)
+        {
+            //等待
+            condition.await();
+
+        }
+        number++;
+        System.out.println(Thread.currentThread().getName()+"=>"+number);
+        //通知其他线程  我+1 完毕了
+        condition.signalAll();
+        }catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            lock.unlock();
+        }
+    }
+
+    public   void decrement() throws InterruptedException {
+        lock.lock();
+
+        try {
+            while (number == 0) {
+                //等待
+                condition.await();
+            }
+            number--;
+            System.out.println(Thread.currentThread().getName() + "=>" + number);
+            //通知其他线程  我-1完毕了
+            condition.signalAll();
+        }catch (InterruptedException e)
+        {
+            e.printStackTrace();
+
+        }
+        finally {
+
+            lock.unlock();
+        }
+    }
+~~~
+
+
+
+
+
+Condition可以精准的通知和唤醒线程
+
+ ~~~Java	
+ 
+ class Data3{
+     private Lock lock = new ReentrantLock();
+     private Condition condition1 = lock.newCondition();
+     private Condition condition2 = lock.newCondition();
+     private Condition condition3 = lock.newCondition();
+ 
+ 
+     private int number=1;  //1A  2B 3C
+     public void printA()
+     {
+         lock.lock();
+         try {
+             //业务代码，判断->执行->通知
+             while(number!=1)
+             {
+                 //等待
+                 condition1.await();
+             }
+             System.out.println(Thread.currentThread().getName()+"AAAAAA");
+             //唤醒,只唤醒指定的人 B
+             number=2;
+             condition2.signal();
+         }
+         catch (Exception e) {
+             e.printStackTrace();
+ 
+         }
+         finally {
+             lock.unlock();
+         }
+ 
+     }
+ 
+     public void printB()
+     {
+         lock.lock();
+         try {
+             //业务代码，判断->执行->通知
+                 while(number!=2)
+             {
+                 //等待
+                 condition2.await();
+             }
+             System.out.println(Thread.currentThread().getName()+"BBBBBBBB");
+             //唤醒,只唤醒指定的人 B
+             number=3;
+             condition3.signal();
+         }
+         catch (Exception e) {
+             e.printStackTrace();
+ 
+         }
+         finally {
+             lock.unlock();
+         }
+     }
+     public void printC()
+     {
+         lock.lock();
+         try {
+             //业务代码，判断->执行->通知
+                while(number!=3)
+             {
+                 //等待
+                 condition3.await();
+             }
+             System.out.println(Thread.currentThread().getName()+"CCCCCCC");
+             //唤醒,只唤醒指定的人 B
+             number=1;
+             condition1.signal();
+         }
+         catch (Exception e) {
+             e.printStackTrace();
+ 
+         }
+         finally {
+             lock.unlock();
+         }
+     }
+ 
+         //生产线：下单->支付->交易->物流
+         
+ 
+ }
+ 
+ ~~~
+
+## 八锁现象
 
