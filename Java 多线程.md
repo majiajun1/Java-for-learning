@@ -485,3 +485,42 @@ Condition可以精准的通知和唤醒线程
 
 ## 八锁现象
 
+看代码
+
+new this 具体的一个手机
+
+static 锁的是class 唯一的一个模板
+
+
+
+## 集合类不安全
+
+Exception in thread "8" java.util.ConcurrentModificationException
+
+并发修改异常
+
+并发下 arraylist不安全
+
+vector是安全的
+
+用synchronized解决？想多了 vector底层已经帮你写好了    vector甚至比arraylist早
+
+使用collections库的安全版
+
+~~~java	
+ List<String> list = Collections.synchronizedList(new ArrayList<>());
+~~~
+
+JUC库
+
+```
+List<String> list = new CopyOnWriteArrayList<>();
+```
+
+CopyOnWrite 写入时复制  COW   计算机程序设计优化策略
+
+多个线程调用的时候，list，读取的时候，固定的，写入（覆盖）
+ 在写入的时候避免覆盖 ，造成数据问题
+
+CopyOnWriteArrayList<>() 比vector厉害在哪里？
+有synchronized的方法 速度慢一点  而前者用的LOCK锁  写入时复制也是用到lock锁
