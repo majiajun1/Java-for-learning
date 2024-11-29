@@ -78,7 +78,7 @@ lambda 表达式  函数式编程
 
 实现接口的方式：
 
-1、实现匿名内部类的形式来减少类的定义
+1、实现匿名内部类的形式来减少类的定义  implement runable 重写run方法
 
 2、使用lambda表达式进一步简化代码 不需要关注其他内容
 
@@ -524,3 +524,258 @@ CopyOnWrite 写入时复制  COW   计算机程序设计优化策略
 
 CopyOnWriteArrayList<>() 比vector厉害在哪里？
 有synchronized的方法 速度慢一点  而前者用的LOCK锁  写入时复制也是用到lock锁
+
+
+
+## set不安全
+
+Hashmap也一样会出BUG
+
+1.collection 类转化
+
+```
+Set<String> set = Collections.synchronizedSet(new HashSet<>());
+```
+
+2.JUC写法  但是实现不了hashset???
+
+```
+Set<String> set = new CopyOnWriteArraySet<>();
+```
+
+hashset底层是hashmap    key是无法重复的
+
+```
+public HashSet() {
+    map = new HashMap<>();
+}
+public boolean add(E e) {
+        return map.put(e, PRESENT)==null;
+    }
+```
+
+用这个
+
+Set<String> set =ConcurrentHashMap.newKeySet();
+
+
+
+## map不安全
+
+并发修改异常 again
+
+Collections.synchronizedMap(map);    不行！！！
+
+没有copyonwrite
+
+有ConcurrentHashMap
+
+```
+Map<String,String> map = new ConcurrentHashMap<>();
+```
+
+## callable（简单）
+
+runnable不返回结果 也不抛出被检查的异常
+
+callable可以有返回值  可以抛出异常
+
+方法不同,run() 和call()的区别
+
+callable<V>  V为返回值类型
+
+V call()
+
+回顾：Thread只接受Runnable参数
+
+Callable 找方法跟runnable扯上关系
+
+
+
+FutureTask是runnable的实现类   
+
+RunnableFuture extends Runnable, Future
+
+futuretask implements RunnableFuture
+
+![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/07c4baa8fefb5a9ab12ede92c18f9f84.png)
+
+```
+ FutureTask(Callable<V> callable)
+```
+
+```
+public FutureTask(Runnable runnable, V result) {
+    this.callable = Executors.callable(runnable, result);
+    this.state = NEW;       // ensure visibility of callable
+}
+```
+
+
+
+~~~java	
+
+public class CallableLearning {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+
+        //new Thread(new MyThread()).start(); Runable不能用了
+
+        //new Thread().start();
+        MyThread2 thread = new MyThread2();
+
+        //适配类
+        FutureTask futureTask = new FutureTask(thread);
+
+        new Thread(futureTask, "A").start();
+         new Thread(futureTask, "B").start(); //会打印几个call? 一个 结果会被缓存，效率高
+
+
+            Integer o = (Integer) futureTask.get();  //get方法可能会产生阻塞 把他放到最后
+        //或者使用异步通信来处理！
+            System.out.println(o);
+
+    }
+
+}
+
+/*
+class MyThread implements Runnable {
+
+    public void run() {
+
+    }
+}
+*/
+
+class MyThread2 implements Callable<Integer>{
+
+    public Integer call(){
+        System.out.println("Call()");
+        //假设是耗时的操作 返回可能会产生阻塞
+        return 1024;
+    }
+}
+~~~
+
+`FutureTask` 是一个线程安全的、一次性执行的任务。
+
+- 一旦 `FutureTask` 的 `run()` 方法被执行，无论是由哪个线程调用，只会执行一次（即使有多个线程调用 `start()`）。
+- 因此，当多个线程使用同一个 `FutureTask` 实例时，只有一个线程会真正执行任务中的逻辑，其他线程尝试执行时会发现任务已经完成。
+
+细节：
+
+1、有缓存
+
+2、结果可能需要等待，会阻塞！
+
+
+
+
+
+## 常用的辅助类
+
+### CountDownlatch
+
+减法计数器
+
+~~~java	
+public class CountDownlatchLearning {
+    public static void main(String[] args) throws InterruptedException {
+        //倒计时 总是是6
+        //执行任务的时候再使用
+        CountDownLatch countDownLatch = new CountDownLatch(6);
+
+        for (int i = 0; i < 6; i++) {
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName()+"Go out");
+                countDownLatch.countDown();//数量减一
+            },String.valueOf(i)).start();
+        }
+        countDownLatch.await();//等待计数器归零 然后向下执行 没这个 就提前关门了
+        System.out.println("close door");
+
+    }
+}
+
+~~~
+
+ countDownLatch.await()  和  countDownLatch.countDown()  
+
+
+
+### CyclicBarrier
+
+加法计数器
+
+
+
+~~~java	
+public class CyclicBarrierLearning {
+    public static void main(String[] args) {
+        //召唤龙珠的线程
+
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(7,
+                ()->{System.out.println("召唤神龙成功");});
+
+
+        for (int i = 1; i <=7; i++) {
+            final int num = i;
+            new Thread(()->{      //类操作不了i 只能用中间变量
+                //System.out.println(num);
+                System.out.println(Thread.currentThread().getName()+"收集第"+num+"个龙珠");
+        try{
+                cyclicBarrier.await();}
+        catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+            }).start();
+
+        }
+
+
+    }
+}
+~~~
+
+### Semaphore
+
+经典信号量
+
+抢车位问题
+
+acquire和release
+
+满了就等待 等到被释放为止
+
+release放在 finally  跟Lock解锁是一样的 放finally
+
+release释放信号量(+1)
+
+~~~java
+public class SemaphoreLearning {
+    public static void main(String[] args) {
+        //线程数量:停车位 限流
+        Semaphore semaphore = new Semaphore(3);
+
+        for (int i = 1; i < 6; i++) {
+            new Thread(()->{
+                //acquire得到
+               try {
+                   semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName()+"抢到车位");
+                   TimeUnit.SECONDS.sleep(2);
+                   System.out.println(Thread.currentThread().getName()+"离开车位");
+
+               }
+               catch (InterruptedException e) {
+                   e.printStackTrace();
+               }finally {
+                   semaphore.release();//release释放
+               }
+
+            },String.valueOf(i)).start();
+        }
+    }
+}
+~~~
+
