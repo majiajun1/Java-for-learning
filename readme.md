@@ -9,8 +9,9 @@ https://javaguide.cn/home.html
 ## Base
 
 - [x] GIT的学习 
-- [x] JAVA se  还有集合源码 IO啥的 10.20-11.22
-- [ ] Java 多线程和并发  11.23-11.29
+- [x] JAVA se  还有集合源码 IO啥的 10.20-1
+- [ ] 1.22
+- [ ] Java 多线程和并发  11.23-12.2
 - [ ] JVM    
 - [ ] Java web
 - [ ] 复习以上

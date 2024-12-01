@@ -779,3 +779,71 @@ public class SemaphoreLearning {
 }
 ~~~
 
+
+
+## 读写锁
+
+细粒度的lock
+
+~~~java	
+private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+lock和unlock函数
+    /**
+ * 独占锁（写锁）
+ * 共享锁（读锁）
+ * 读-读可以共存
+ * 读-写不能共存
+ * 写-写不能共存
+ */
+~~~
+
+
+
+## 阻塞队列
+
+队列里的资源问题
+
+blockingQueue不是新的东西
+
+![Collections](D:\Document\JAVA\Collections.png)
+
+多线程，线程池 会用到
+
+
+
+## 学会使用队列
+
+添加、移除
+
+### 四组API
+
+1、抛出异常
+
+2、不会抛出异常
+
+3、阻塞等待
+
+4、超时等待
+
+
+
+| 方式       | 抛出异常 | 不抛异常，有返回值 | 阻塞等待 | 超时等待          |
+| ---------- | -------- | ------------------ | -------- | ----------------- |
+| 添加       | add      | offer              | put      | offer(多两个参数) |
+| 移除       | remove   | poll               | take     | poll同理          |
+| 判断队列首 | element  | peek               | -        | -                 |
+
+ 方法都可以混用的 但是最好不要
+
+
+
+## SynchronousQueue 同步队列
+
+没有容量，
+
+进去一个元素，必须等待取出来之后 才能再往里面放一个元素
+
+put、take方法
+
+
+
