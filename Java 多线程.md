@@ -892,3 +892,261 @@ public class SynchronousQueuelearn {
 
 
 
+## 线程池
+
+### 池化技术
+
+程序的运行，本质：占用系统的资源 ！ 优化资源的使用 ！ 池化技术
+
+
+
+线程池、连接池、内存池、对象池。。。。。。//创建、销毁 浪费时间和资源
+
+池化技术：事先准备好一些资源，有人要用，就来我这里拿，用完之后还给我
+
+### 线程池的好处
+
+1、降低资源的消耗
+
+2、提高响应的速度
+
+3、方便管理
+
+线程复用、可以控制最大并发数、管理线程
+
+
+
+### 线程池 三大方法  七大参数 四种拒接策略
+
+线程池不允许使用Executors去创建   而是通过ThreadPoolExecutor的方式
+
+规避资源耗尽的风险
+
+Executors ：
+
+FixedThreadPool和SingleThreadPool：允许请求队列长度为integer.Max_value 会堆积请求 导致OOM 
+
+CachedThreadPool和ScheduledThreadPool:允许创建线程数量为integer.Max_value，可能会创建大量的线程 导致OOM
+
+~~~java	
+public class ThreadLakeLearning {
+    public static void main(String[] args) {
+       // Executors.newSingleThreadExecutor(); //单个线程
+       // Executors.newFixedThreadPool(5); //创建固定的线程池大小
+       // Executors.newCachedThreadPool();//可伸缩的
+
+        //ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        //ExecutorService threadPool  = Executors.newFixedThreadPool(5);
+        ExecutorService threadPool  = Executors.newCachedThreadPool();
+        try{
+        for (int i = 0; i < 100; i++) {
+            //用了线程池 不用new Thread
+            threadPool.execute(()->{
+                System.out.println(Thread.currentThread().getName()+" OK");
+            });
+        }}
+        catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            threadPool.shutdown();
+
+        }
+
+        //线程池用完 程序结束 要关闭线程池
+
+    }
+}
+
+~~~
+
+
+
+### 七大参数
+
+```
+public static ExecutorService newSingleThreadExecutor() {
+    return new FinalizableDelegatedExecutorService
+        (new ThreadPoolExecutor(1, 1,
+                                0L, TimeUnit.MILLISECONDS,
+                                new LinkedBlockingQueue<Runnable>()));
+}
+```
+
+```
+public static ExecutorService newFixedThreadPool(int nThreads) {
+    return new ThreadPoolExecutor(nThreads, nThreads,
+                                  0L, TimeUnit.MILLISECONDS,
+                                  new LinkedBlockingQueue<Runnable>());
+}
+```
+
+```
+public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE, //约等于21亿
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue<Runnable>());
+}
+```
+
+本质：ThreadPoolExecutor
+
+```
+public ThreadPoolExecutor(int corePoolSize, //核心线程池大小
+                          int maximumPoolSize,//最大核心线程池大小
+                          long keepAliveTime, //超时了没有人调用就会释放
+                          TimeUnit unit,//超时单位
+                          BlockingQueue<Runnable> workQueue,//阻塞队列
+                          ThreadFactory threadFactory, //线程工厂，创建线程的，一般不用动
+                          RejectedExecutionHandler handler//拒绝策略) //七个参数
+                          
+                          
+                          {
+    if (corePoolSize < 0 ||
+        maximumPoolSize <= 0 ||
+        maximumPoolSize < corePoolSize ||
+        keepAliveTime < 0)
+        throw new IllegalArgumentException();
+    if (workQueue == null || threadFactory == null || handler == null)
+        throw new NullPointerException();
+    this.acc = System.getSecurityManager() == null ?
+            null :
+            AccessController.getContext();
+    this.corePoolSize = corePoolSize;
+    this.maximumPoolSize = maximumPoolSize;
+    this.workQueue = workQueue;
+    this.keepAliveTime = unit.toNanos(keepAliveTime);
+    this.threadFactory = threadFactory;
+    this.handler = handler;
+}
+```
+
+![image-20241202163821748](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241202163821748.png)
+
+四种拒绝策略
+
+```
+private static final RejectedExecutionHandler defaultHandler =
+    new AbortPolicy(); 默认拒绝策略   满了 还有人进来，不处理这个人 抛出异常
+```
+
+```
+最大承载：Deque+max
+```
+
+```
+CallerRunsPolicy()  哪里来的去哪里
+我的实验代码中 去main处理了
+
+DiscardPolicy() //队列满了 不抛异常 丢掉任务 
+```
+
+```
+DiscardOldestPolicy()  //队列满了 尝试和第一个竞争  不行 还是丢掉 不抛异常
+
+ public static class DiscardOldestPolicy implements RejectedExecutionHandler {
+        /**
+         * Creates a {@code DiscardOldestPolicy} for the given executor.
+         */
+        public DiscardOldestPolicy() { }
+
+        
+        public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
+            if (!e.isShutdown()) {
+                e.getQueue().poll();
+                e.execute(r);
+            }
+        }
+    }
+```
+
+
+
+## 小结和拓展
+
+最大线程该如何定义
+
+1、CPU密集型    几核 就定义为几   可以保证效率最高
+
+```
+Runtime.getRuntime().availableProcessors() 获取线程数 再去定义
+```
+
+2、IO密集型 
+
+假设 15个大型任务 IO十分占用资源       判断程序中十分耗IO的线程    设置两倍
+
+设置30个线程
+
+
+
+## 四大函数式接口
+
+lambda表达式、链式编程、函数式接口、Stream流式计算
+
+```
+public interface Runnable {
+    public abstract void run();
+}
+//简化编程模型，在新版本的框架底层大量应用！
+// foreach(消费者类的函数式接口)
+default void forEach(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
+        for (T t : this) {
+            action.accept(t);
+        }
+    }
+```
+
+Consumer、Function、Predicate、Supplier
+
+代码测试：  Function  函数式接口
+
+```
+public interface Function<T, R> {
+ 
+    R apply(T t);  传入参数类型T  返回类型R
+```
+
+```
+public static void main(String[] args) {
+    Function function=new Function<String,String>() {
+        @Override
+        public String apply(String str) {
+            return str;
+        }
+    };
+    
+    
+    System.out.println(function.apply("hello"));
+}
+
+Function function=(str)->{return  str;};  lambda表达式简化
+
+```
+
+Predicate:  有一个输入参数  返回值只能是布尔值！
+
+```
+public interface Predicate<T> {
+ 
+    boolean test(T t);
+    
+   Predicate predicate=new Predicate<String>() {
+            @Override
+            public boolean test(String o) {
+                
+                return false;
+            }
+        }
+        
+        
+        Predicate<String> predicate=(str)->{return str.isEmpty();};  简化 判断是否为空
+        
+```
+
+Consumer:
+
+
+
+
+
