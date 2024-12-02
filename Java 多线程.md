@@ -1144,9 +1144,48 @@ public interface Predicate<T> {
         
 ```
 
-Consumer:
+Consumer:  消费型接口   没有返回值 只有一个输入
+
+```
+public interface Consumer<T> {
+ 
+    void accept(T t);
+    
+    
+    
+ Consumer <String> consumer=(str)->{System.out.println(str);};
+```
+
+Supplier:供给型接口  只有返回值
+
+```
+public interface Supplier<T> {
+ 
+    T get();
+}
+
+Supplier<String> supplier=()->{return "hello";};
+System.out.println(supplier.get());
+```
+
+###  Stream流式计算
+
+大数据：存储+计算
+
+集合、MySQL本质就是存储东西的
+
+计算都应该交给流来操作！
 
 
 
-
+```
+list.stream().filter((u)->{
+    return u.getId()%2==0;
+})
+.filter((u)->{return u.getAge()>23;})
+.map((u)->{return u.getName().toUpperCase();})
+.sorted((uu1,uu2)->{return  uu1.compareTo(uu2);})
+.limit(1)
+.forEach(System.out::println);
+```
 
