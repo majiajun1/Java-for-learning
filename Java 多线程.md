@@ -1176,7 +1176,12 @@ System.out.println(supplier.get());
 
 计算都应该交给流来操作！
 
-
+```
+Stream<T> filter(Predicate<? super T> predicate);
+<R> Stream<R> map(Function<? super T, ? extends R> mapper);
+Stream<T> sorted(Comparator<? super T> comparator);
+Stream<T> limit(long maxSize);
+```
 
 ```
 list.stream().filter((u)->{
@@ -1189,3 +1194,151 @@ list.stream().filter((u)->{
 .forEach(System.out::println);
 ```
 
+## ForkJoin详解
+
+特点：工作窃取
+
+我做完了 资源空出来 把别人的任务“偷”过来
+
+双端队列
+
+```
+public void execute(ForkJoinTask<?> task) {
+    if (task == null)
+        throw new NullPointerException();
+    externalPush(task);
+}
+```
+
+ForkJoinTask的实现类：RecursiveAction 递归事件  没有返回值 
+
+  RecursiveTask递归任务 有返回值
+
+```
+public abstract class RecursiveTask<V> extends ForkJoinTask<V> {
+    private static final long serialVersionUID = 5232453952276485270L;
+
+ 
+    V result;
+
+ 
+    protected abstract V compute();
+
+    public final V getRawResult() {
+        return result;
+    }
+
+    protected final void setRawResult(V value) {
+        result = value;
+    }
+
+    /**
+     * Implements execution conventions for RecursiveTask.
+     */
+    protected final boolean exec() {
+        result = compute();
+        return true;
+    }
+
+}
+```
+
+
+
+```
+public class ForkJoinLearning extends RecursiveTask<Long> {
+    public ForkJoinLearning(Long start, Long end) {
+        this.end = end;
+        this.start = start;
+    }
+
+    private Long start;    //1
+    private Long end; //19909000000
+
+    //临界值
+    private Long temp=10000L;
+
+
+
+
+    //计算方法
+    @Override
+    protected Long compute()
+    {
+       if((end-start)<temp)
+        {
+            Long sum=0L;
+            for (Long i = start; i <=end; i++) {
+                    sum+=i;
+            }
+            return sum;
+
+        }else
+        {
+            //分支合并计算
+            //递归
+            long middle = (end+start)/2;
+            ForkJoinLearning test1=new ForkJoinLearning(start,middle);
+            test1.fork(); //拆分任务，把任务压入线程队列
+            ForkJoinLearning test2=new ForkJoinLearning(middle+1,end);
+            test2.fork();
+            return test1.join()+test2.join();
+        }
+    }
+}
+```
+
+
+
+
+
+```
+public class ForkJoinLearningTest {
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        //test1(); //6292
+        //test2(); //1939
+        test3(); //136
+    }
+
+
+    //普通程序员
+    public static void test1()
+    {
+        Long sum = 0L;
+        long start=System.currentTimeMillis();
+        for (Long i=1L;i<=10_0000_0000L;i++)
+        {
+            sum+=i;
+        }
+
+
+        long end=System.currentTimeMillis();
+        System.out.println("SUM= "+sum+"时间："+(end-start));
+    }
+
+    //会使用ForkJoin
+    public static void test2 ()throws InterruptedException,ExecutionException
+    {
+        long start=System.currentTimeMillis();
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ForkJoinTask<Long> task=new ForkJoinLearning(0L,10_0000_0000L);
+        ForkJoinTask<Long> submit=forkJoinPool.submit(task);
+
+        Long sum=submit.get();
+
+
+        long end=System.currentTimeMillis();
+        System.out.println("SUM= "+sum+"时间："+(end-start));
+    }
+
+    //Stream并行流
+    public static void test3()
+    {
+        long start=System.currentTimeMillis();
+        //Stream并行流    rangeClosed (]  区间不同 和range
+        long sum =LongStream.rangeClosed(0L, 10_0000_0000L).parallel().reduce(0L, Long::sum);
+        long end=System.currentTimeMillis();
+        System.out.println("SUM= "+sum+"时间："+(end-start));
+    }
+}
+```
