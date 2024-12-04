@@ -1341,4 +1341,286 @@ public class ForkJoinLearningTest {
         System.out.println("SUM= "+sum+"时间："+(end-start));
     }
 }
+
+
+
+
+Long::sum
+ public static long sum(long a, long b) {
+        return a + b;
+    }
+  T reduce(T identity, BinaryOperator<T> accumulator);
 ```
+
+
+
+## 异步回调
+
+每个线程上的不同任务所需时间不一样    调用者不需要等待被调用方法执行完成，而是可以继续执行其他任务。被调用的方法会在完成后，通过回调、通知或者某种机制告知调用者结果。
+
+## Class  CompletableFuture<T>
+
+- [java.lang.Object](../../../java/lang/Object.html) 
+- - java.util.concurrent.CompletableFuture<T> 
+
+- - All Implemented Interfaces: 
+
+    [CompletionStage](../../../java/util/concurrent/CompletionStage.html)  <T>， [Future](../../../java/util/concurrent/Future.html) <T> 
+
+```
+public class YibuDemo {
+    public static void main(String[] args)  throws InterruptedException,ExecutionException {
+
+        //发起一个请求
+        //没有返回值的runAsync异步回调
+/*       CompletableFuture<Void> completableFuture=CompletableFuture.runAsync(
+               ()->{
+                   try{
+                       TimeUnit.SECONDS.sleep(2);
+                   }catch (InterruptedException e)
+                   {
+                       e.printStackTrace();
+                   }
+                    System.out.println(Thread.currentThread().getName()+"runAsync=>Void");
+               });
+        System.out.println("11111");
+        completableFuture.get();  //获取阻塞执行结果*/
+        //有返回值的异步回调 supplyAsync
+        //ajax,成功和失败的回调
+        //返回的是错误信息
+        CompletableFuture<Integer> completableFuture= CompletableFuture.supplyAsync(()->{
+            System.out.println(Thread.currentThread().getName()+"==>Integer");
+            int i=10/0;   //分母除0错误
+            return 1024;});
+
+        System.out.println(completableFuture.whenComplete((t, u) -> {
+            System.out.println("t=>" + t);   //t代表正常的返回结果
+            System.out.println("u=>" + u);   //u代表异常错误信息
+        }).exceptionally((e) -> {
+            e.getMessage();
+            return 233;   //可以获取到错误的返回结果
+        }).get());
+        
+        /*
+          succee code 200
+          code 400
+         */
+
+    }
+}
+```
+
+
+
+
+
+
+
+## JMM
+
+Volatile是JAVA虚拟机提供**轻量级**的同步机制
+
+1、保证可见性
+
+2、不保证原子性
+
+3、禁止指令重排
+
+
+
+ 什么是JMM
+
+JMM：Java内存模型，不存在的东西，概念 约定
+
+
+
+
+
+JMM的同步的约定：
+
+1、线程解锁前，必须把共享变量立刻刷回主存
+
+2、线程加锁前，必须读取主存中的最新值到工作内存中！
+
+3、加锁和解锁是同一把锁
+
+
+
+线程   工作内存、主内存
+
+8种操作
+
+1、Read操作
+
+2、load操作
+
+3、Use操作
+
+4、assign操作
+
+5、write操作
+
+6、storage操作   
+
+7、lock操作
+
+8、Unlock操作
+
+ 先storage后write 图错了
+
+
+
+![image-20241203173911423](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241203173911423.png)
+
+问题：线程B修改了值 但是线程A不能及时可见 
+
+引入volatile
+
+ 
+
+- - lock   （锁定）：作用于主内存的变量，把一个变量标识为线程独占状态
+  - unlock （解锁）：作用于主内存的变量，它把一个处于锁定状态的变量释放出来，释放后的变量才可以被其他线程锁定
+  - read  （读取）：作用于主内存变量，它把一个变量的值从主内存传输到线程的工作内存中，以便随后的load动作使用
+  - load   （载入）：作用于工作内存的变量，它把read操作从主存中变量放入工作内存中
+  - use   （使用）：作用于工作内存中的变量，它把工作内存中的变量传输给执行引擎，每当虚拟机遇到一个需要使用到变量的值，就会使用到这个指令
+  - assign （赋值）：作用于工作内存中的变量，它把一个从执行引擎中接受到的值放入工作内存的变量副本中
+  - store  （存储）：作用于主内存中的变量，它把一个从工作内存中一个变量的值传送到主内存中，以便后续的write使用
+  - write 　（写入）：作用于主内存中的变量，它把store操作从工作内存中得到的变量的值放入主内存的变量中
+
+　　JMM对这八种指令的使用，制定了如下规则：
+
+- - 不允许read和load、store和write操作之一单独出现。即使用了read必须load，使用了store必须write
+  - 不允许线程丢弃他最近的assign操作，即工作变量的数据改变了之后，必须告知主存
+  - 不允许一个线程将没有assign的数据从工作内存同步回主内存
+  - 一个新的变量必须在主内存中诞生，不允许工作内存直接使用一个未被初始化的变量。就是怼变量实施use、store操作之前，必须经过assign和load操作
+  - 一个变量同一时间只有一个线程能对其进行lock。多次lock后，必须执行相同次数的unlock才能解锁
+  - 如果对一个变量进行lock操作，会清空所有工作内存中此变量的值，在执行引擎使用这个变量前，必须重新load或assign操作初始化变量的值
+  - 如果一个变量没有被lock，就不能对其进行unlock操作。也不能unlock一个被其他线程锁住的变量
+  - 对一个变量进行unlock操作之前，必须把此变量同步回主内存
+
+问题：程序不知道主内存的值已经被修改过了
+
+
+
+![image-20241203175030459](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241203175030459.png)
+
+> volatile保证可见性
+
+```
+public class JMMLearning {
+    private static volatile int  num=0;
+    public static void main(String[] args) {//main
+
+
+        new Thread(()->{   //线程1
+
+            while(num==0)
+            {
+
+            }
+        }).start();
+
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+
+        num=1;
+        System.out.println(num);
+    }
+}
+
+```
+
+> 不保证原子性
+
+原子性： 不可分割
+
+线程A 执行任务中  不可被打扰  也不能被分割。  要么同时成功 要么同时失败
+
+```
+public class VolatileLearning {
+
+
+    private volatile   static  int num=0;
+    public   static void add()
+    {
+        num++;
+    }
+
+
+    public static void main(String[] args) {
+        //不保证原子性
+        //理论上 number结果为两万 但实际不是
+        //synchronized化方法能解决 加锁 能保证原子性
+        //volatile化参数仍然不行 不保证原子性  只能看见 不能加锁
+        //
+        for (int i = 0; i < 20; i++) {
+            new Thread(()->{
+                for (int j = 0; j < 1000; j++) {
+                    add();
+                }
+            }).start();
+        }
+
+
+        while(Thread.activeCount()>2)  //main gc
+        {
+            Thread.yield();
+        }
+        System.out.println(Thread.currentThread().getName()+":"+num);
+
+    }
+}
+```
+
+如果不加Lock和synchronized，怎么保证原子性？
+
+使用原子类 来解决原子性问题
+
+非常高效
+
+原子类为什么那么高级  底层是C++ 本地方法
+
+Unsafe类 是一个很特殊的存在
+
+```
+public final int getAndIncrement() {
+    return unsafe.getAndAddInt(this, valueOffset, 1);
+}
+```
+
+> 禁止指令重排
+
+什么是指令重排
+
+你写的程序，计算机并不是按照你写的那样去执行的。
+
+源代码-- 编译器优化的重排--指令并行也可能会重排--内存系统也会重排--执行
+
+**指令重排要考虑数据之间的依赖性**
+
+~~~java	
+
+
+int x=1;  //1
+
+int y=2;  //2
+
+x=x+5;  ///3
+
+y=x*x; //4
+我们所期望的 1234 但是 会变成2134  1324
+    不可能是4123  
+~~~
+
+
+
+volatile可以避免指令重排
+
+内存屏障
+
+1、保证特定的操作的执行顺序
+
+2、可以保证某些变量的内存可见性（利用这些特性volatile实现了可见性）
