@@ -1624,3 +1624,600 @@ volatile可以避免指令重排
 1、保证特定的操作的执行顺序
 
 2、可以保证某些变量的内存可见性（利用这些特性volatile实现了可见性）
+
+在单例模式用的最多
+
+
+
+## 单例模式
+
+### 饿汉式  DCL懒汉式
+
+
+
+```
+public class LazyLearning {
+
+    private LazyLearning() {
+        System.out.println(Thread.currentThread().getName()+"ok");
+    }
+
+
+    private volatile static LazyLearning lazyLearning; //volatile防止重排
+    //双重检测锁模式的懒汉式单例  DCL懒汉式
+    public static LazyLearning getInstance() {
+        //要加锁
+        if(lazyLearning == null) {
+            synchronized(LazyLearning.class) {
+                if (lazyLearning == null) {
+            lazyLearning = new LazyLearning();
+        }
+            }
+        }
+
+        return lazyLearning;  //此时lazyman还没有完成构造
+    }
+
+    //单线程下 确实单例OK
+    //多线程
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            new Thread(()->{
+                lazyLearning.getInstance();   //不是原子性操作
+                /*
+                1、分配内存空间
+                2、执行构造方法，初始化对象
+                3、把这个对象指向这个空间
+                 */
+
+
+            }).start();
+
+        }
+
+    }
+
+}
+```
+
+也可以用静态内部类 但都是不安全的   反射可以破解
+
+~~~java	
+public class HolderLearning {
+
+     private HolderLearning() {
+
+
+     }
+     public static HolderLearning getInstance() {
+          return InnerClass.INSTANCE;
+     }
+     public static class InnerClass{
+
+          private static final HolderLearning INSTANCE = new HolderLearning();
+     }
+
+
+
+}
+
+~~~
+
+### **静态内部类单例的特点**
+
+1. **线程安全**：
+   - Java 的类加载机制确保了类的加载过程是线程安全的。
+   - 静态内部类 `InnerClass` 在第一次加载时，会初始化 `INSTANCE`，此时 Java 虚拟机会保证线程安全，不需要额外的同步。
+2. **延迟加载**：
+   - `HolderLearning` 的实例会在第一次调用 `getInstance()` 方法时初始化。
+   - 如果不调用 `getInstance()` 方法，`InnerClass` 和 `INSTANCE` 永远不会加载，从而节省资源。
+3. **高效**：
+   - 通过静态内部类的机制，避免了双重检查锁（DCL）中同步的开销。
+   - 同时又能实现懒加载的特性。
+
+
+
+**反射**可以破解懒汉式单例模式，甚至可以破解大多数单例模式，包括常用的**饿汉式**和**静态内部类**实现。反射通过直接操作类的构造方法，可以无视访问权限，强行创建新的实例，从而破坏单例模式的唯一性。
+
+```
+Constructor<LazyLearning> declaredConstructor=LazyLearning.class.getDeclaredConstructor(null);
+declaredConstructor.setAccessible(true);
+LazyLearning lazyLearning2 = declaredConstructor.newInstance();
+```
+
+```
+private LazyLearning() {
+    synchronized (LazyLearning.class) {   //用标志加密  解决全部用反射的问题
+        if(qinjiang==false)
+        {
+            qinjiang=true;
+        }
+        else  {
+            throw new RuntimeException("不要试图使用反射破坏异常");
+        }
+    }
+
+    System.out.println(Thread.currentThread().getName()+"ok");
+}
+
+private LazyLearning() {  //如果一个反射 一个正常 那用这个解决
+        synchronized (LazyLearning.class) {
+            if(lazyLearning != null) {
+                throw new RuntimeException("不要试图使用反射破坏异常");
+            }
+        }
+
+        System.out.println(Thread.currentThread().getName()+"ok");
+    }
+```
+
+```
+//反射再次破坏上述的qinjiang信号量方法
+public static void main(String[] args) throws Exception {
+     
+    Field qinjiang1 = LazyLearning.class.getDeclaredField("qinjiang");
+    qinjiang1.setAccessible(true);
+
+    Constructor<LazyLearning> declaredConstructor=LazyLearning.class.getDeclaredConstructor(null);
+    declaredConstructor.setAccessible(true);
+    LazyLearning lazyLearning2 = declaredConstructor.newInstance();
+    qinjiang1.set(lazyLearning2, false);
+    LazyLearning lazyLearning3 = declaredConstructor.newInstance();
+
+
+    System.out.println(lazyLearning3);
+    System.out.println(lazyLearning2);
+    //反射可以破坏单例
+
+}
+```
+
+**道高一尺魔高一丈!!**!!!
+
+```
+public T newInstance(Object ... initargs)
+    throws InstantiationException, IllegalAccessException,
+           IllegalArgumentException, InvocationTargetException
+{
+    if (!override) {
+        if (!Reflection.quickCheckMemberAccess(clazz, modifiers)) {
+            Class<?> caller = Reflection.getCallerClass();
+            checkAccess(caller, clazz, null, modifiers);
+        }
+    }
+    if ((clazz.getModifiers() & Modifier.ENUM) != 0)
+        throw new IllegalArgumentException("Cannot reflectively create enum objects");
+    ConstructorAccessor ca = constructorAccessor;   // read volatile
+    if (ca == null) {
+        ca = acquireConstructorAccessor();
+    }
+    @SuppressWarnings("unchecked")
+    T inst = (T) ca.newInstance(initargs);
+    return inst;
+}
+```
+
+用枚举解决！  有参构造   String 和int 
+
+```
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+public enum EnumLearning {
+    INSTANCE;
+
+    public EnumLearning getEnumLearning() {
+
+        return INSTANCE;
+    }
+}
+
+
+class EnumTest
+{
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        EnumLearning instance1 = EnumLearning.INSTANCE;
+        Constructor<EnumLearning> declaredConstructor = EnumLearning.class.getDeclaredConstructor(String.class, int.class);  //无参构造是骗人的 真正是有参构造的
+        declaredConstructor.setAccessible(true); //反射
+        EnumLearning instance2 = declaredConstructor.newInstance();
+        //EnumLearning instance2 = EnumLearning.INSTANCE;
+
+        System.out.println(instance1);
+        System.out.println(instance2);
+    }
+}
+```
+
+
+
+## 深入理解 CAS
+
+什么是CAS  比较当前工作内存中的值和主内存中的值，如果这个值是期望的，那么则执行操作！ 如果不是就一直循环！  自带原子性
+
+缺点：
+
+1、循环会耗时
+
+2、一次性只能保证一个共享变量的原子性
+
+3、存在ABA问题
+
+```
+public final boolean compareAndSet(int expect, int update) {
+    return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+}
+```
+
+unsafe 类
+
+```
+public final int getAndIncrement() {
+    return unsafe.getAndAddInt(this, valueOffset, 1);
+}
+```
+
+![image-20241204163259572](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241204163259572.png)
+
+```
+public final int getAndAddInt(Object var1, long var2, int var4) {
+    int var5;
+    do {
+        var5 = this.getIntVolatile(var1, var2);
+    } while(!this.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+    return var5;
+}
+自旋锁 
+
+```
+
+> ABA问题
+
+狸猫换太子
+
+![image-20241204165015291](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241204165015291.png)
+
+```
+public class CASLearning {
+    //CAS  compareAndSet比较并交换！
+    public static void main(String[] args) {
+
+        AtomicInteger atomicInteger = new AtomicInteger(2020);
+        //public final boolean compareAndSet(int expect, int update) {
+        //
+        // 期望、更新
+        //如果期望值达到了 就更新 否则不更新  CAS是CPU的并发原语
+        //对于我们平时写的SQL : 乐观锁！
+        //捣乱的线程===================
+        atomicInteger.compareAndSet(2020,2021);
+        System.out.println(atomicInteger.get());
+
+        System.out.println(atomicInteger.compareAndSet(2021, 2020));
+        System.out.println(atomicInteger.get());
+
+
+        //期望的线程===========================
+        System.out.println(atomicInteger.compareAndSet(2020, 6666));
+        System.out.println(atomicInteger.get());
+    }
+}
+```
+
+## 原子引用
+
+带版本号的原子操作
+
+解决ABA问题 引入原子引用  对应思想：乐观锁
+
+```
+public AtomicStampedReference(V initialRef, int initialStamp) {
+    pair = Pair.of(initialRef, initialStamp);
+}
+```
+
+```
+//Interger  包装类的坑：使用了对象缓存机制，默认范围是-128至127
+// 超过这个区间都不会复用已有对象  
+//所有包装类的对比 都是用equals更好
+```
+
+```
+public class CASLearning {
+    //CAS  compareAndSet比较并交换！
+    public static void main(String[] args) {
+        //Interger  包装类的坑：使用了对象缓存机制，默认范围是-128至127
+        // 超过这个区间都不会复用已有对象
+        //所有包装类的对比 都是用equals更好
+        //        AtomicInteger atomicInteger = new AtomicInteger(2020);
+        AtomicStampedReference<Integer>  atomicInteger =
+                new AtomicStampedReference<>(1,1);
+        //public final boolean compareAndSet(int expect, int update) {
+        //
+        // 期望、更新
+        //如果期望值达到了 就更新 否则不更新  CAS是CPU的并发原语
+        //对于我们平时写的SQL : 乐观锁！
+        //捣乱的线程===================
+//        atomicInteger.compareAndSet(2020,2021);
+//        System.out.println(atomicInteger.get());
+//
+//        System.out.println(atomicInteger.compareAndSet(2021, 2020));
+//        System.out.println(atomicInteger.get());
+//
+//
+//        //期望的线程===========================
+//        System.out.println(atomicInteger.compareAndSet(2020, 6666));
+//        System.out.println(atomicInteger.get());
+
+
+
+        new Thread(()->{
+            int stamp = atomicInteger.getStamp();//获得版本号
+            System.out.println("a1=>"+stamp);
+            try{
+                TimeUnit.SECONDS.sleep(2);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            //version+1
+            System.out.println(atomicInteger.compareAndSet(1, 2,
+                    atomicInteger.getStamp(), atomicInteger.getStamp() + 1));
+            System.out.println("a2=>"+atomicInteger.getStamp());
+
+            System.out.println(atomicInteger.compareAndSet(2, 1,
+                    atomicInteger.getStamp(), atomicInteger.getStamp() + 1));
+            System.out.println("a3=>"+atomicInteger.getStamp());
+        },"a").start();
+
+
+         new Thread(()->{
+            int stamp = atomicInteger.getStamp();//获得版本号
+             System.out.println("b1=>"+stamp);
+              try{
+                TimeUnit.SECONDS.sleep(2);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+             System.out.println(atomicInteger.compareAndSet(1, 6,
+                     stamp, stamp + 1));
+
+             System.out.println("b2=>"+atomicInteger.getStamp());
+
+        },"b").start();
+
+    }
+}
+```
+
+
+
+## 各种锁
+
+公平锁：非常公平，不能插队 先来后到
+
+非公平锁：非常不公平，可以插队    
+
+默认非公平锁
+
+可以重载
+
+```
+public ReentrantLock(boolean fair) {
+    sync = fair ? new FairSync() : new NonfairSync();
+}
+```
+
+### 可重入锁
+
+递归锁  
+
+```
+//锁必须配对，否则就会死在里面
+```
+
+~~~java
+public synchronized void method1() {
+    System.out.println("Method 1");
+    method2(); // 当前线程在持有锁时可以再次进入
+}
+
+public synchronized void method2() {
+    System.out.println("Method 2");
+}
+
+~~~
+
+### **可重入锁的优势**
+
+1. 避免递归或嵌套调用中的死锁
+
+   在递归函数或方法调用链中，锁不会因为多次被获取而阻塞线程。
+
+2. 更高的灵活性
+
+   可重入锁可以配合计数器机制，允许线程更灵活地处理加锁和解锁的逻辑。   
+
+    
+
+    
+
+ **可重入锁**允许线程在持有锁的情况下再次获取同一把锁，这是并发编程中非常重要的特性，可以避免死锁问题，特别是在递归或嵌套调用中。
+
+
+
+## 自旋锁
+
+spinlock
+
+```
+public class ZiXuanLockLearning {
+    // int 0
+    //Thread null
+    AtomicReference<Thread> atomicReference=new AtomicReference<>();
+
+    //加锁
+    public void myLock()
+    {
+        Thread thread=Thread.currentThread();
+
+
+        while(!atomicReference.compareAndSet(null,thread))
+        {
+
+        }
+        System.out.println(Thread.currentThread().getName()+"==> mylock");
+    }
+
+    //解锁
+    public void myUnlock()
+    {
+        Thread thread=Thread.currentThread();
+        System.out.println(Thread.currentThread().getName()+"==> myunlock");
+        atomicReference.compareAndSet(thread,null);
+
+    }
+}
+
+```
+
+```
+public class ZiXuanLockTest {
+    public static void main(String[] args) throws InterruptedException {
+//        ReentrantLock reentrantLock = new ReentrantLock();
+//        reentrantLock.lock();
+//        reentrantLock.unlock();
+//
+        //底层使用的自旋锁 CAS
+
+        ZiXuanLockLearning lock=new ZiXuanLockLearning();
+
+        new Thread(()->{
+            lock.myLock();
+        try{
+            TimeUnit.SECONDS.sleep(5);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.myUnlock();
+        }
+
+        },"T1").start();
+        TimeUnit.SECONDS.sleep(1);
+    ////////////////////
+        new Thread(()->{
+            lock.myLock();
+            try{
+             TimeUnit.SECONDS.sleep(1);
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.myUnlock();
+        }
+
+
+        },"T2").start();
+//        lock.myLock();
+//        lock.myUnlock();
+    }
+}
+```
+
+T2在自旋
+
+运行情况：
+
+T1==> mylock
+T1==> myunlock
+T2==> mylock
+T2==> myunlock
+
+
+
+## 死锁排查
+
+怎么排除死锁
+
+```
+public class Deadlocklearning {
+    public static void main(String[] args) {
+
+        String lockA="lockA";
+        String lockB="lockB";
+
+        new Thread(new MyThreadB(lockA,lockB),"T1").start();
+        new Thread(new MyThreadB(lockB,lockA),"T2").start();
+    }
+}
+
+
+
+
+
+class MyThreadB implements Runnable {
+
+    private String lockA;
+    private String lockB;
+
+    public  MyThreadB(String lockA, String lockB) {
+        this.lockA = lockA;
+        this.lockB = lockB;
+    }
+
+    @Override
+    public void run() {
+        synchronized (lockA) {
+            System.out.println(Thread.currentThread().getName() + "lock:" +
+                    lockA+"==>get"+lockB);
+
+            try{TimeUnit.SECONDS.sleep(2);}
+            catch(InterruptedException e){
+                e.printStackTrace();
+            }
+
+
+            synchronized (lockB) {
+                System.out.println(Thread.currentThread().getName() + "lock:" +
+                    lockB+"==>get"+lockA);
+
+            }
+        }
+    }
+}
+```
+
+> 解决问题
+
+1、使用jps -l定位进程号
+
+D:\Document\JAVA>jps -l
+78628 Deadlocklearning
+79572 sun.tools.jps.Jps
+21292 
+31388 org.jetbrains.jps.cmdline.Launcher
+
+
+
+
+
+2、使用 jstack  +进程号    查看进行信息
+
+Java stack information for the threads listed above:
+
+"T2":
+        at MyThreadB.run(Deadlocklearning.java:42)
+        - waiting to lock <0x0000000716d8f588> (a java.lang.String)
+                - locked <0x0000000716d8f5c0> (a java.lang.String)
+                at java.lang.Thread.run(Unknown Source)
+        "T1":
+                at MyThreadB.run(Deadlocklearning.java:42)
+                - waiting to lock <0x0000000716d8f5c0> (a java.lang.String)
+                        - locked <0x0000000716d8f588> (a java.lang.String)
+                        at java.lang.Thread.run(Unknown Source)
+
+Found 1 deadlock.
+
+排查问题：
+
+1、日志
+
+2、堆栈信息
