@@ -25,13 +25,13 @@ public class EightLockB {
             phone.sendSms();},"A").start();
 
        try{
-           TimeUnit.SECONDS.sleep(1);}
+           TimeUnit.SECONDS.sleep(1);} //阻塞main线程
        catch(InterruptedException e){
            e.printStackTrace();
        }
 
         new Thread(()->{
-            phone2.call();},"B").start();
+            phone2.hello();},"B").start();
 
 
     }
