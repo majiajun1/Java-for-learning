@@ -9,46 +9,50 @@ public class CorruptedOrange994 {
         System.out.println(answer);
     }
     public static int orangesRotting(int[][] grid) {
-         int rows = grid.length;
-        int cols = grid[0].length;
+        int rows=grid.length;
+        int cols=grid[0].length;
 
-        // 用队列存储腐烂橘子的坐标和时间
+        int fresh=0;
+
         Queue<int[]> queue = new LinkedList<>();
-        int freshCount = 0;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (grid[i][j] == 2) {
-                    queue.offer(new int[]{i, j, 0}); // {x, y, time}
-                } else if (grid[i][j] == 1) {
-                    freshCount++;
+        for(int i=0;i<rows;i++){
+            for(int j=0;j<cols;j++){
+                if(grid[i][j]==2){
+                    queue.add(new int[]{i,j});
+                }
+                if(grid[i][j]==1){
+                    fresh++;
                 }
             }
         }
+        int time=0;
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        int minutes = 0;
+        while(!queue.isEmpty()&&fresh>0){
+            int q_len=queue.size();
+            for(int i=0;i<q_len;i++){
+                int[] cur=queue.poll();
+                for(int[] d:directions)
+                {
+                    int x=cur[0]+d[0];
+                    int y=cur[1]+d[1];
+                    if(x<0||x>grid.length-1||y<0||y>grid[0].length-1||grid[x][y]!=1){
+                        continue;
+                    }
+                    grid[x][y]=2;
+                    queue.add(new int[]{x,y});
+                    fresh--;
 
-         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int x = current[0];
-            int y = current[1];
-            int time = current[2];
-            minutes = time;
-
-            // 遍历四个方向
-            for (int[] dir : directions) {
-                int newX = x + dir[0];
-                int newY = y + dir[1];
-
-                // 如果新位置是新鲜橘子，感染它
-                if (newX >= 0 && newX < rows && newY >= 0 && newY < cols && grid[newX][newY] == 1) {
-                    grid[newX][newY] = 2; // 标记为腐烂
-                    queue.offer(new int[]{newX, newY, time + 1});
-                    freshCount--; // 新鲜橘子数量减1
                 }
-            }
-        }
-         return freshCount == 0 ? minutes : -1;
-    }
 
+            }
+            time++;
+        }
+        if(fresh!=0){
+            return -1;
+        }else
+        {
+            return time;
+        }
+    }
 
 }
