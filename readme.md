@@ -11,8 +11,8 @@ https://javaguide.cn/home.html
 - [x] GIT的学习 
 - [x] JAVA se  还有集合源码 IO啥的 10.20-11.22
 - [x] Java 多线程和并发  11.23-12.4
-- [ ] 注解和反射 12.10-12.1x
-- [ ] JVM     12.1x
+- [x] 注解和反射 12.10-12.14
+- [ ] JVM     12.15
 - [ ] Java web
 - [ ] 复习以上
 - [ ] Springboot
