@@ -30,6 +30,8 @@ public class Test04 {
 class user
 {
 
+    private void test(){}
+
     public String getName() {
         return name;
     }
@@ -54,7 +56,7 @@ class user
         this.name = name;
     }
 
-    String name;
+    private String name;
 
     public void setId(int id) {
         this.id = id;
