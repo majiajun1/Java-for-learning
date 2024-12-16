@@ -78,17 +78,68 @@ APP->EXC--BOOT
 
 ![image-20241214201240237](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241214201240237.png)
 
+## 6、Native
+
+```
+private native void start0();  
+```
+
+```
+//native:凡是带了native关键字的方法，说明java的作用范围达不到了
+//会去调用底层C语言的库！
+//会进入本地方法栈
+//调用本地方法接口， JNI
+//JNI作用：扩展JAVA的使用，融合不同的编程语言为Java所用！
+//最初：C、C++
+//Java诞生的时候 C和C++横行   想要立足、必须要用C和C++的程序
+//它在内存区域中专门开辟了一条标记区域：Native Method Stack,登记natvie方法
+//在最终执行的时候 加载本地方法库中的方法  通过JNI
+
+//JAVA程序驱动打印机，管理系统
+//掌握即可，在企业级应用中较为少见！
+```
+
+PC寄存器
+
+＋1 
+
+
+
+## 8、方法区
+
+![image-20241215213549596](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241215213549596.png)
+
+static  final   class模板  常量池 ——》方法区
+
+其他在堆
+
+## 9、栈
+
+主管程序的运行，生命周期和线程同步
+
+一旦线程结束，栈就结束 
+
+不存在垃圾回收的问题
+
+栈：8大基本类型+对象引用+实例的方法
+
+
+
+栈运行原理：栈帧
+
+![image-20241215215157958](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20241215215157958.png)
+
+栈满了:StackOverflowwError
+
+栈＋堆＋方法区：交互关系
+
+**栈**是线程私有的，主要用来管理方法调用和执行时的数据。在栈帧中保存了方法的局部变量表、操作数栈、动态链接和返回地址等信息。
+
+## 10、三种JVM
 
 
 
 
-
-
-8、方法区
-
-9、栈
-
-10、三种JVM
 
 11、堆
 
