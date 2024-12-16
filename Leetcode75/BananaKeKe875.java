@@ -10,22 +10,23 @@ public class BananaKeKe875 {
     }
 
     public static int minEatingSpeed(int[] piles, int h) {
-        Arrays.sort(piles);
-        long sum=0;
-        for(int i=0;i<piles.length;i++){
-            sum+=piles[i];
+//        Arrays.sort(piles);
+//        long sum=0;
+//        for(int i=0;i<piles.length;i++){
+//            sum+=piles[i];
+//
+//        }
+//        long  temp=sum/h;
 
-        }
-        long  temp=sum/h;
-
-        long left=temp;
-        long right=piles[piles.length-1];
+        long left=1;
+        long right=Integer.MAX_VALUE;
 
 
 
        while(left<right){
         long mid = (left+right)/2;
-        if(!Alleatable(piles,h,mid)){
+        long time=Alleatable(piles,h,mid); //先赋值再判断 速度更快
+        if(time>h){
             left = mid+1;
         }else{
             right= mid;
@@ -35,13 +36,13 @@ public class BananaKeKe875 {
 
     }
 
-    public static  boolean Alleatable(int[] piles, int H,long speed)
+    public static  long Alleatable(int[] piles, int H,long speed)
     {
         long h=0;
         for(int k:piles)
         {
-            h+=(long) Math.ceil((double)k/speed);
+            h+=  (k+speed-1)/speed; //Math.ceil库速度太慢了
         }
-        return h<=H;
+        return h;
     }
 }
