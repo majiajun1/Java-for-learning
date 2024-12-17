@@ -115,7 +115,7 @@ static  final   class模板  常量池 ——》方法区
 
 ## 9、栈
 
-主管程序的运行，生命周期和线程同步
+主管程序的运行，生命周期和线程同步  线程独占
 
 一旦线程结束，栈就结束 
 
@@ -123,7 +123,7 @@ static  final   class模板  常量池 ——》方法区
 
 栈：8大基本类型+对象引用+实例的方法
 
-
+本地变量就是局部变量的意思
 
 栈运行原理：栈帧
 
@@ -137,11 +137,60 @@ static  final   class模板  常量池 ——》方法区
 
 ## 10、三种JVM
 
+Sun公司 HotSpot  一般是这个
+
+BEA公司 JRockit  
+
+IBM公司 J9VM  JIT编译器 
 
 
 
 
-11、堆
+
+ ## 堆
+
+Heap   一个JVM只有一个堆内存
+
+堆内存的大小是可以调节的。
+
+类加载器读取了类文件后，一般会把什么东西放到堆中呢  
+
+类，方法，常量，变量   保存我们所有引用类型的真实对象 （实例） 数组
+
+堆内存细分三个区域：新生区（伊甸园区）、老年区、永久区
+
+
+
+新生区：伊甸园、幸存区0区、幸存区1区    动态概念    轻GC后没有被回收 进入幸存区    0和1区会交互
+
+假设GC次数为20
+
+活下来后去养老区
+
+
+
+养老区满了会触发重量级GC  (full GC)
+
+
+
+永久存储区
+
+GC垃圾回收主要是在伊甸园区和养老区
+
+
+
+OOM爆了
+
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at java.util.Arrays.copyOf(Unknown Source)
+	at java.lang.AbstractStringBuilder.ensureCapacityInternal(Unknown Source)
+	at java.lang.AbstractStringBuilder.append(Unknown Source)
+	at java.lang.StringBuilder.append(Unknown Source)
+	at JVM.Edenlearning.main(Edenlearning.java:9)
+
+
+
+
 
 12、新生区、老年区
 
