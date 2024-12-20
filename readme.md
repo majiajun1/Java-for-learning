@@ -1,6 +1,6 @@
 leetcode(7/300)
 
-leetcode75  59/75
+leetcode75  60/75
 
 # JAVA路线 
 
@@ -13,13 +13,13 @@ https://javaguide.cn/home.html
 - [x] Java 多线程和并发  11.23-12.4
 - [x] 注解和反射 12.10-12.14
 - [x] JVM     12.14-12.18
-- [ ] Java web
+- [ ] Java web 
 - [ ] 复习以上
 - [ ] Springboot
 - [ ] Redis
 - [ ] MQ
-- [ ] MySql
-- [ ] SSM
+- [ ] MySql 12.18-
+- [ ] SSM（不一定要）
 - [ ] 微服务
 - [ ] linux
 - [ ] 一个项目
