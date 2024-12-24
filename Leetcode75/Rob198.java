@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 public class Rob198 {
     public static void main(String[] args) {
-        int[] houses={1,2,3,1};
+        int[] houses={2,7,9,3,1};
         System.out.println(rob(houses));
     }
 
