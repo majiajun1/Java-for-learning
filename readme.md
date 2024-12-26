@@ -1,6 +1,6 @@
 leetcode(7/300)
 
-leetcode75  67/75
+leetcode75  70/75
 
 # JAVA路线 
 
