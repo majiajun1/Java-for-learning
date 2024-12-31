@@ -382,7 +382,7 @@ INSERT INTO `grade`( `gradename`)VALUES('大一'),('大二'),('大三'),('大四
 
 ## 修改
 
-
+update
 
 
 
