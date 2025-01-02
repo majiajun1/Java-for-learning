@@ -2,7 +2,7 @@
 
 leetcode75  75/75 完成
 
-leetcode150 (3/150)
+leetcode150 (6/150)
 
 # JAVA路线 
 
