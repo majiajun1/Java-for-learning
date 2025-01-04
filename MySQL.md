@@ -384,13 +384,159 @@ INSERT INTO `grade`( `gradename`)VALUES('大一'),('大二'),('大三'),('大四
 
 update
 
+```sql
+UPDATE `student` SET `name`='MJJ' WHERE id=1;
+where是指定条件 
+UPDATE `student` SET `name`='MJJ2',`email`='sdadas@s.com' WHERE id=2;
+update多个
 
+```
 
+where条件子句   id等于某个值 大于某个值   在区间内修改
 
+<>  不等于运算符
 
+!= 不等于运算符
 
+'>' 大于
 
+<小于
 
+<=  >=       
+
+between.... and .....  在某个闭合区间内
+
+通过多个条件
+
+AND   相当于&&
+
+OR   相当于||
+
+ 
 
 ## 删除
+
+delete 命令
+
+~~~sql
+DELETE FROM `student` WHERE id=1;
+删掉id=1的行
+~~~
+
+
+
+> TRUNCATE命令
+
+清空表的数据
+
+和delete from  的区别： TRUNCATE重新设置自增计数器 
+
+不会影响事务（事务)
+
+
+
+delete删除的问题： 
+
+对于innodb 重启数据库后 自增也会从1开始
+
+对于MylSAM  继续从上一个增量开始 没有重置自增
+
+
+
+# 查询
+
+DQL
+
+data query language
+
+SELECT
+
+数据库最核心
+
+
+
+指定查询字段
+
+```sql
+
+
+SELECT * FROM student
+查询所有学生 * 通配符
+SELECT `studentno`,`studentname` FROM student
+查列
+
+
+别名
+给结果起一个名字
+SELECT `studentno` AS 学号,`studentname` AS 学生姓名 FROM student
+也可以给表起别名
+
+
+函数  concat(a,b)
+
+SELECT CONCAT('姓名：',Studentname) AS 新名字  FROM student
+```
+
+> 去重 distinct
+
+```sql
+SELECT DISTINCT `studentno` FROM result
+去重 
+SELECT 100*3-1  AS 计算结果   查计算机表达式
+SELECT VERSION()   查版本    函数
+SELECT @@auto_increment_increment   查变量  查询自增步长
+
+SELECT `studentno`,`studentresult`+1 AS '提分后' FROM result
+加分
+
+
+```
+
+select 表达式 from 表
+
+ 
+
+
+
+## where条件
+
+
+
+> 逻辑运算符   尽量用英文符号
+
+与或非
+
+and  &&    
+
+or   ||   
+
+not  !
+
+between   ....and ....
+
+!=   也可以表示为   not xxx = sss
+
+
+
+
+
+
+
+> 模糊查询
+
+比较运算符
+
+IS NULL       a为空 则为真
+
+IS NOT NULL   不空则真
+
+BETWEEN       a between  b and c   如果a在b和c之间 则为真
+
+Like    a like b      SQL匹配   如果a匹配b   则为真
+
+In     a in (a1,a2,a3.......)   在某一个值中则为真
+
+
+
+
 
