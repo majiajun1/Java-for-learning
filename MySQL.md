@@ -538,5 +538,21 @@ In     a in (a1,a2,a3.......)   在某一个值中则为真
 
 
 
+```sql
+SELECT  `studentno`,`studentname` FROM `student` WHERE studentname LIKE '张%'
+%代表任何字符 任何字数
+SELECT  `studentno`,`studentname` FROM `student` WHERE studentname LIKE '张_'   只有一个字符的
+SELECT  `studentno`,`studentname` FROM `student` WHERE studentname LIKE '%B%'
+名字中间有B的  都查出来
+
+SELECT  `studentno`,`studentname` FROM `student` WHERE studentno IN (1001,1000)
+
+SELECT  `studentno`,`studentname` FROM `student` WHERE `address` IN ('广东深圳')
+IN只能具体   LIKE才能模糊查
+
+SELECT  `studentno`,`studentname` FROM `student` WHERE `address`='' OR address IS NULL
+```
 
 
+
+##  联表查询
