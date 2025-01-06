@@ -556,3 +556,287 @@ SELECT  `studentno`,`studentname` FROM `student` WHERE `address`='' OR address I
 
 
 ##  联表查询
+
+
+
+- `INNER JOIN`：如果表中有至少一个匹配，则返回行；
+- 2、`LEFT JOIN`：即使右表中没有匹配，也从左表返回所有的行；
+- 3、`RIGHT JOIN`：即使左表中没有匹配，也从右表返回所有的行；
+- 4、`FULL JOIN`：只要其中一个表中存在匹配，则返回行
+
+![img](https://i-blog.csdnimg.cn/blog_migrate/7db7f7dd78c1352b04c8c96103140357.png)
+
+ 逻辑上 leftjoin  (right join) where is not null   等价于 inner join
+
+
+
+**`ON`**：定义表之间的连接规则，决定哪些行参与连接。
+
+**`WHERE`**：过滤连接后的结果集，决定哪些行出现在最终结果中。
+
+在复杂查询中，理解 `ON` 和 `WHERE` 的执行顺序和作用范围是正确设计 SQL 查询的关键。
+
+ 只有innerjoin  where和on 能混用
+
+select 我要查的数据
+
+从哪个表查 from  xxxx    join  连接的表 on 交叉条件
+
+
+
+```sql
+SELECT  s.studentno,studentname,subjectno,studentresult
+FROM student AS s 
+INNER JOIN result AS r
+WHERE s.studentno=r.studentno
+ 
+
+
+SELECT  s.studentno,studentname,subjectno,studentresult
+FROM student AS s 
+RIGHT JOIN result AS r
+ON s.studentno=r.studentno
+ 
+
+
+
+
+SELECT  s.studentno,studentname,subjectno,studentresult
+FROM student AS s 
+LEFT JOIN result AS r
+ON s.studentno=r.studentno
+
+
+
+```
+
+
+
+> 自连接
+
+自己的表和自己的表连接
+
+一张表拆为两张一样的表即可
+
+查询父类信息
+
+```sql
+SELECT a.`categoryName`  AS '父栏目',b.`categoryname` AS '子栏目'
+FROM `category` AS a, `category` AS b
+WHERE a.`categoryid`=b.`pid`
+
+```
+
+![image-20250105165205570](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250105165205570.png)
+
+![image-20250105165318531](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250105165318531.png)
+
+
+
+## 分页和排序
+
+升序ASC  降序DESC
+
+order by 
+
+```sql
+
+SELECT  s.studentno,studentname,subjectname,studentresult
+FROM student AS s 
+RIGHT JOIN result AS r
+ON r.studentno=s.studentno
+INNER JOIN `subject` sub
+ON r.subjectno=sub.subjectno
+WHERE subjectname LIKE '高等数学%'  
+（因为表数据少 所以用like模糊查）
+ORDER BY studentresult DESC
+```
+
+分页 缓解数据库压力
+
+limit 当前页 页面的大小
+
+```sql
+SELECT  s.studentno,studentname,subjectname,studentresult
+FROM student AS s 
+RIGHT JOIN result AS r
+ON r.studentno=s.studentno
+INNER JOIN `subject` sub
+ON r.subjectno=sub.subjectno
+WHERE subjectname LIKE '高等数学%'
+ORDER BY studentresult DESC
+LIMIT 0,2   0到2  （由0开始，大小为2）
+```
+
+(n-1)*pagesize, pagesize    n为当前页
+
+
+
+
+
+## 子查询
+
+where  (这个值是算出来的)
+
+嵌套一个子查询语句    支持like 就是要concat结果 使得字段带 _或者带%   不然不行
+
+where  
+
+```sql
+ 
+SELECT   studentno, subjectno,studentresult 
+FROM `result` 
+WHERE subjectno =(SELECT subjectno FROM `subject` WHERE subjectname='高等数学-1' )
+order by studentresult desc
+```
+
+其实inner更快
+
+
+
+
+
+# MySQL函数
+
+## 常用函数
+
+~~~	 sql 
+ABS() 绝对值
+CEILING()  向上取整
+FLOOR()  向下取整
+RAND()   0到1的随机数
+SIGN()  判断符号
+CHAR_LENGTH()   返回字符串长度
+CONCAT()  拼接函数
+INSERT(str,pos,posize,str)    字符串的某个位置开始固定长度替换为其他字符串
+LOWER() 小写
+upper() 大写
+instr(str,substr)   第一次出现子串的位置
+SELECT REPLACE('abc','ab','ss')     替换出现的指定字符串 （注意要完全匹配才能换）
+substr(str,pos,pos) 返回指定的字符串  从指定位置开始固定长度
+reverse()  反转
+
+ current_date() 日期
+ now() 时间
+localtime()  本地时间
+sysdate() 系统时间
+year(now())  年
+month(now())  月  以此类推  day hour minute second
+
+system_user()或user()
+VERSION() 版本
+~~~
+
+## 聚合函数
+
+~~~sql
+count()
+sum()
+avg()
+max()
+min()
+
+
+
+
+SELECT COUNT(studentname) FROM student; 会忽略所有的Null值 
+SELECT COUNT(*) FROM student;  包括null值  计算行数
+
+SELECT COUNT(1) FROM student;  计算行数和上面没啥区别
+
+SELECT SUM(`studentresult`) AS 总和  FROM result 
+
+
+
+SELECT  subjectname,AVG(studentresult) ,MAX(studentresult)   FROM result AS r
+INNER JOIN `subject` AS sub
+ON r.`subjectno`=sub.`subjectno`
+GROUP BY r.subjectno
+HAVING AVG(studentresult) >=80
+
+~~~
+
+​	where在group by之前执行的  所以要having过滤
+
+
+
+## MD5加密
+
+不可逆
+
+具体值的MD5加密值一样  比对加密值 是否对齐  
+
+```sql
+UPDATE testmd5 SET pwd=MD5(pwd)
+```
+
+
+
+
+
+## select 总结
+
+```sql
+SELECT
+    [ALL | DISTINCT | DISTINCTROW ]
+    [HIGH_PRIORITY]
+    [STRAIGHT_JOIN]
+    [SQL_SMALL_RESULT] [SQL_BIG_RESULT] [SQL_BUFFER_RESULT]
+    [SQL_CACHE | SQL_NO_CACHE] [SQL_CALC_FOUND_ROWS]
+    select_expr [, select_expr] ...
+    [into_option]
+    [FROM table_references
+      [PARTITION partition_list]]
+    [WHERE where_condition]
+    [GROUP BY {col_name | expr | position}
+      [ASC | DESC], ... [WITH ROLLUP]]
+    [HAVING where_condition]
+    [ORDER BY {col_name | expr | position}
+      [ASC | DESC], ...]
+    [LIMIT {[offset,] row_count | row_count OFFSET offset}]
+    [PROCEDURE procedure_name(argument_list)]
+    [into_option]
+    [FOR UPDATE | LOCK IN SHARE MODE]
+ 
+ distinct 去重
+ xxxx join on
+ where
+ group by
+having
+order by
+limit
+
+
+
+```
+
+
+
+
+
+# 事务
+
+ SQL执行
+
+要是同时成功 要不同时失败
+
+
+
+将一组sql放在一个批次中执行
+
+事务原则  ACID
+
+原子性  一致性  隔离性  持久性   
+
+1. ‌**原子性（Atomicity）**‌：原子性确保事务中的所有操作要么全部成功执行，要么全部失败回滚。事务是数据库操作的最小单位，不能部分执行。即使系统崩溃，未完成的事务也不会对数据库产生任何影响，所有操作要么完全生效，要么完全无效。
+2. ‌**一致性（Consistency）**‌：一致性保证数据库在事务执行前后保持一致状态。任何事务执行前，数据库处于一致状态，事务执行结束后，也必须处于一致状态。如果事务中发生错误，一致性应该通过回滚操作得到保证。
+3. ‌**隔离性（Isolation）**‌：隔离性确保并发执行的事务不会互相干扰。即一个事务的中间状态不会对其他事务可见。事务必须独立执行，彼此之间看不到未提交的修改。不同的隔离级别可以提供不同程度的保护，防止脏读、不可重复读和幻读等。
+4. ‌**持久性（Durability）**‌：持久性确保一旦事务提交，数据将被永久保存在数据库中，即使系统崩溃或发生硬件故障，已提交的数据不会丢失。持久性通常依赖于数据库的日志记录和备份机制。
+
+‌**实现ACID原则的技术手段**‌包括使用日志和锁来保证原子性，通过约束检查防止违反数据完整性规则的操作，使用不同级别的锁定机制和并发控制来实现隔离性，以及依赖日志记录和备份机制来实现持久性。
+
+‌**ACID原则在分布式系统中的挑战**‌包括需要在多个节点间协调，确保整个分布式事务的原子性、一致性、隔离性和持久性。在分布式系统中，通常要在ACID属性和性能、可用性之间做出权衡。
+
+
+
+脏读 幻读  不可重复读
