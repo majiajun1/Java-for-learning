@@ -1182,3 +1182,108 @@ public class FirstClass {
 
 ```
 
+### 对象
+
+
+
+
+
+**静态代码块**是 Java 中用于在类加载时执行初始化代码的一段代码块。它用 **`static {}`** 定义，属于类本身（而不是某个对象），在类加载时仅执行一次。
+
+```java
+        //1.加载驱动
+        Class.forName("com.mysql.jdbc.Driver");//固定写法  静态代码块 自动注册
+
+
+
+
+public class Driver extends NonRegisteringDriver implements java.sql.Driver {
+    public Driver() throws SQLException {
+    }
+
+    static {
+        try {
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException var1) {
+            throw new RuntimeException("Can't register driver!");
+        }
+    }
+}
+
+
+
+ String url="jdbc:mysql://localhost:3306/jdbcstudy" +
+                "?useUnicode=true" +
+                "&characterEncoding=utf8&useSSL=false"; //版本问题 要false
+```
+
+mysql默认3306
+
+ 
+
+oralce  1521   jdbc:oracleLthinL@localhost:1521:sid
+
+connection 代表数据库
+
+```java
+Connection connection = DriverManager.getConnection(url, username, password
+  connection.rollback();
+        connection.commit();
+        connection.setAutoCommit(false);                                                  
+                                                    
+```
+
+Statement  执行sql的对象
+
+```java
+Statement statement = connection.createStatement();
+
+
+//5.执行sql的对象
+String sql="SELECT * FROM `users`";  写sql
+ResultSet resultSet = statement.executeQuery(sql);
+
+
+        statement.execute();
+        statement.executeUpdate(); //更新、插入、删除  返回一个受影响的行数
+        statement.executeQuery();
+        statement.executeBatch();
+```
+
+
+
+Resultset查询的结果集
+
+获得指定的数据类型
+
+```java
+ResultSet resultSet = statement.executeQuery(sql);
+
+        resultSet.getObject(); //不知道列的类型用这个
+        resultSet.getString();
+        resultSet.getInt();
+        resultSet.getFloat();
+        resultSet.getDate();
+        resultSet.getDate();
+
+
+遍历。resultSet.next()
+    
+resultSet.beforeFirst();  //移动最前面
+resultSet.afterLast();  //移动到最后
+        resultSet.previous();//移动到前一行
+        resultSet.absolute(1);//移动到指定行
+```
+
+释放资源很重要  
+
+```java
+resultSet.close();
+statement.close();
+connection.close();
+```
+
+
+
+## statement对象
+
