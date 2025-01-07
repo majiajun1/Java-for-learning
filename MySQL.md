@@ -1287,3 +1287,101 @@ connection.close();
 
 ## statement对象
 
+statement 对象用于向数据库发送sql语句
+
+ statement.executeQuery(); //查
+
+statement.executeUpdate(); //更新、插入、删除  返回一个受影响的行数
+
+
+
+代码实现
+
+~~~java
+public class Lesson2 {
+    public static void main(String[] args) throws SQLException {
+
+        Connection conn=null;
+        Statement st=null;
+
+
+        conn=JdbcUtils.getConnection(); //获得数据库连接
+        st=conn.createStatement(); //获得SQL的执行对象
+        String sql="INSERT INTO users(id,`name`,`password`,`email`,`birthday`)" +
+                "VALUES (5,'mjj2','123456','asdasdasd@qq,com','2020-01-01')";
+
+        String sql2=
+                "DELETE FROM users WHERE `id`=5";
+        String sql3=
+                "UPDATE users SET `name`='zjx' WHERE `name`='mjj'";
+        int i=st.executeUpdate(sql3);
+        if(i>0)
+        {
+            System.out.println("修改成功");
+        }
+
+        JdbcUtils.release(conn,st,null);
+
+
+
+    }
+    
+    
+    
+    
+package JDBClearning;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.*;
+import java.util.Properties;
+
+public class JdbcUtils {
+    private static String driver = null;
+    private static String url = null;
+    private static String username = null;
+    private static String password = null;
+
+
+
+    static{
+        try{
+            InputStream resourceAsStream = JdbcUtils.class.getClassLoader().getResourceAsStream("db.properties");
+            Properties properties = new Properties();
+            properties.load(resourceAsStream);
+
+            driver = properties.getProperty("driver");
+            url=properties.getProperty("url");
+            username=properties.getProperty("username");
+            password=properties.getProperty("password");
+            //1.驱动只需加载一次
+            Class.forName(driver);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //获取连接
+    public static Connection getConnection() throws SQLException {
+        return  DriverManager.getConnection(url, username, password);
+    }
+
+
+    //释放连接资源
+    public static void release(Connection conn, Statement stmt, ResultSet rs) throws SQLException {
+        if(rs!=null)
+        {
+            rs.close();
+        }
+        if(stmt!=null)
+        {
+            stmt.close();
+        }
+        if(conn!=null)
+        {
+            conn.close();
+        }
+    }
+}
+
+~~~
+
