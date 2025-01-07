@@ -10,8 +10,10 @@
       <sourceFolder url="file://$MODULE_DIR$/JVMLearn" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ZhuAndFanShe" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Leetcode" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MysqlLearning" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lib (2)" level="project" />
   </component>
 </module>

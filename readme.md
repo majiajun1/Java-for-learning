@@ -2,7 +2,7 @@
 
 leetcode75  75/75 完成
 
-leetcode150 (24/150)
+leetcode150 (25/150)
 
 # JAVA路线 
 
@@ -17,8 +17,8 @@ https://javaguide.cn/home.html
 - [x] JVM     12.14-12.18
 - [ ] Java web 
 - [ ] 复习以上
-- [ ] Springboot
-- [ ] Redis
+- [ ] Springboot 1.8-1.12 同步做项目
+- [ ] Redis  
 - [ ] MQ
 - [ ] MySql 12.18-1.7
 - [ ] SSM（不一定要）

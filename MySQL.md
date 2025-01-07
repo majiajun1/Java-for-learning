@@ -840,3 +840,345 @@ limit
 
 
 脏读 幻读  不可重复读
+
+
+
+
+
+## 事务 
+
+
+
+```sql
+-- 转账
+CREATE DATABASE shop  CHARACTER SET utf8  COLLATE utf8_general_ci
+USE shop
+CREATE TABLE `account` (
+ `id` INT(3) NOT NULL AUTO_INCREMENT,
+ `name` VARCHAR(30)  NOT NULL,
+ `money` DECIMAL(9,2)  NOT NULL,
+ PRIMARY KEY (`id`)
+)ENGINE=INNODB  DEFAULT CHARSET=utf8
+
+
+
+INSERT INTO account (`name`,`money`)
+VALUES ('A',2000.00),('B',10000.00)
+
+-- 模拟转账：事务
+SET autocommit =0;  -- 关闭自动转账
+START TRANSACTION -- 开启一个事务
+UPDATE account SET money=money-500  WHERE `name`='A' -- A减500
+UPDATE account SET money=money+500  WHERE `name`='B' -- B加500
+
+COMMIT; -- 提交事务
+
+ROLLBACK; -- 回滚  提交了无法回滚
+SET autocommit-1;  -- 恢复默认值
+```
+
+## 索引
+
+### 主键索引 primary key
+
+唯一的表示，主键不可能重复，只能有一个列作为主键
+
+　　主键必须保证每条记录都有唯一的标识符。这意味着在表中的每一行中，主键列的值都是唯一的，不能有重复。主键的值通常在数据的整个生命周期内保持不变，因为它用于唯一标识每一行。主键常被其他表用于建立关联关系，以实现数据的一致性和完整性。
+
+ 主键字段不允许为空值（NULL）。
+
+### 唯一索引 unique key 
+
+避免重复的列出现，唯一索引可以重复，多个列都可以标识为唯一索引
+
+一个表只能有一个PRIMARY KEY，但可以有多个UNIQUE KEY。唯一键列可以包含空值（NULL），但只能有一个空值。这与主键不允许空值不同。和主键一样，唯一键保证列中的值不能重复。一个表可以有多个唯一键，而主键在一个表中只能有一个。
+
+常规索引  key / index
+
+默认的
+
+全文索引  fulltext
+
+特定的数据库引擎下才有，快速定位数据
+
+
+
+```sql
+EXPLAIN SELECT * FROM student 
+分析sql执行的状况
+```
+
+
+
+### 测试索引
+
+```sql
+-- 插入一百万条数据
+DELIMITER $$ -- 写函数之前必须要写，标志
+CREATE FUNCTION mock_data()
+RETURNS INT
+BEGIN
+	DECLARE num INT DEFAULT 1000000;
+	DECLARE i INT DEFAULT 0;
+	WHILE i<num DO
+		INSERT INTO app_user(`name`,`email`,`phone`,`gender`,`password`,`age`)
+		VALUES (CONCAT('用户',i),'4684618668@qq.com',CONCAT('18',FLOOR(RAND()*((999999999-100000000)+100000000))),
+		FLOOR(RAND()*2),UUID(),FLOOR(RAND()*100));  
+		SET i=i+1;
+		
+	END WHILE;
+	RETURN i;
+
+
+
+
+END;
+
+SELECT mock_data(); -- 运行函数
+
+DROP FUNCTION mock_data;  -- 删除函数
+
+
+
+-- id_表名_字段名  命名方式
+-- create index 索引名 on 表(字段）
+CREATE INDEX id_app_user_name  ON app_user(`name`);
+SELECT * FROM app_user WHERE `name`='用户9999';  查得更快了
+
+索引在小数据量的时候 用处小 但是在大数据量的时候 区别十分明显
+
+```
+
+## 索引原则
+
+索引不是越多越好
+
+不要对经常变动的数据加索引
+
+小数据量不需要加索引
+
+索引一般加在常用来查询的字段上
+
+
+
+innodb默认btree     
+
+# 权限管理
+
+## 用户管理
+
+> SQL yog 可视化管理
+
+
+
+> sql 命令操作
+
+mysql.user 用户表
+
+```sql
+-- 创建用户
+CREATE USER mjj IDENTIFIED BY '123456'
+
+-- 修改密码（修改当前用户密码）
+SET PASSWORD = PASSWORD ('111111')
+
+-- 修改密码 （修改指定用户密码）
+SET PASSWORD FOR mjj = PASSWORD('111111')
+
+-- 重命名  
+RENAME USER mjj TO mjj2
+
+-- 用户授权
+GRANT ALL PRIVILEGES ON *.* TO mjj2
+-- 无论如何 只有root 才能grant
+
+-- 查询权限
+SHOW GRANTS FOR mjj2
+
+-- 查询指定用户权限
+SHOW GRANTS FOR mjj2
+-- 查root
+SHOW GRANTS FOR root@localhost
+
+-- 撤销权限 revoke 哪些权限，在哪个库撤销，给谁撤销
+REVOKE ALL PRIVILEGES ON *.*  FROM mjj2
+
+DROP USER mjj2  -- 删掉用户
+
+```
+
+## Mysql 备份
+
+方式：
+
+拷贝物理文件
+在sqlyog 这种可视化工具中手动导出
+
+使用命令行导出  mysqldump
+
+mysqldump -hlocalhost -uroot -p123456  school student >D:/desktop/1.sql
+
+source  导入（要登录）
+
+
+
+
+
+# 规范数据库设计
+
+良好的数据库设计：
+
+节省内存空间 
+
+保证数据库的完整性
+
+方便我们开发系统
+
+软件开发中 ，关于数据库的设计
+
+分析需求：分析业务和需要处理的数据库的需求
+
+概要设计：设计关系图  E-R 图
+
+
+
+> 设计数据库的步骤 个人博客为例
+
+- 收集信息和需求
+
+  -用户表 （用户登录和注销，个人信息，写博客，创建分类）
+
+ -分类表（文章分类，谁创建的）
+
+ -文章表（文章的信息）
+
+-评论表
+
+-友链表（友链信息）
+
+-自定义表（系统信息，某个关键的字，或者一些主字段）.
+
+说说表。。。。等等各种功能需求
+
+
+
+- 标识实体（把需求落地到每个字段）
+
+- 标识实体之间的关系
+
+写博客 user->blog
+
+创建分类：user ->category
+
+关注：user->user
+
+友链：links
+
+评论：user-user-blog
+
+
+
+
+
+## 三大范式
+
+第一范式：每一列都是不可分割的原子数据项
+
+第二范式：每张表只描述一件事情   
+
+需要确保数据库表中的每一列都和主键相关，而不能只与主键的某一部分相关（主要针对联合主键而言）。
+
+第三范式：在第二范式的基础上消除传递依赖
+
+确保每一列数据都和主键相关，而不能间接相关。
+
+
+
+故意增加冗余的字段（从多表查询中变为单表查询）
+
+故意增加一些计算列 （从大数据量降低为小数据量的查询：索引）
+
+
+
+# JDBC
+
+## 数据库驱动
+
+
+
+
+
+
+
+```
+CREATE DATABASE `jdbcStudy` CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+USE `jdbcStudy`;
+
+CREATE TABLE `users`(
+`id` INT PRIMARY KEY,
+`NAME` VARCHAR(40),
+`PASSWORD` VARCHAR(40),
+`email` VARCHAR(60),
+birthday DATE
+);
+
+INSERT INTO `users`(`id`,`NAME`,`PASSWORD`,`email`,`birthday`)
+VALUES('1','zhangsan','123456','zs@sina.com','1980-12-04'),
+('2','lisi','123456','lisi@sina.com','1981-12-04'),
+('3','wangwu','123456','wangwu@sina.com','1979-12-04')
+
+```
+
+带入jar包驱动
+
+写代码测试
+
+```java
+package JDBClearning;
+
+import java.sql.*;
+
+public class FirstClass {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        //1.加载驱动
+        Class.forName("com.mysql.jdbc.Driver");//固定写法
+
+
+
+
+        //2.用户信息和url
+        String url="jdbc:mysql://localhost:3306/jdbcstudy" +
+                "?useUnicode=true" +
+                "&characterEncoding=utf8&useSSL=false"; //版本问题 要false
+        String username="root";
+        String password="123456";
+
+        //3.连接成功，数据库对象
+        Connection connection = DriverManager.getConnection(url, username, password);
+
+
+        //4.执行sql的对象
+        Statement statement = connection.createStatement();
+
+
+        //5.执行sql的对象
+        String sql="SELECT * FROM `users`";
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        while (resultSet.next()) {
+            System.out.println(resultSet.getString("id"));
+            System.out.println(resultSet.getString("NAME"));
+            System.out.println(resultSet.getString("password"));
+
+            System.out.println(resultSet.getString("email"));
+            System.out.println(resultSet.getString("birthday"));
+            System.out.println("=================================");
+        }
+
+        //6.释放连接
+    }
+}
+
+```
+
