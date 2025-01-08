@@ -15,6 +15,9 @@ public class TransactionLearning {
         String sql1="update account set money=money-100 where name = 'A'";
         stmt=conn.prepareStatement(sql1);
         stmt.executeUpdate();
+         //人为设置错误  看看只执行sql1不执行sql2的情况
+
+
         String sql2="update account set money=money+100 where name = 'B'";
         stmt=conn.prepareStatement(sql2);
         stmt.executeUpdate();
@@ -23,7 +26,9 @@ public class TransactionLearning {
 
         try{
             conn.commit();
+
         System.out.println("成功！");
+
         }catch(SQLException e){
            try{
                conn.rollback();
@@ -33,7 +38,7 @@ public class TransactionLearning {
            }
         }
         finally {
-
+                conn.setAutoCommit(true);
                 JdbcUtils.release(conn, stmt, rs);
 
 

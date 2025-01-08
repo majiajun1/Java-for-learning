@@ -1605,3 +1605,131 @@ ACID 原则
 
 虚读 幻读：在一个事务内  读取到了别人插入的数据 导致前后读出来结果不一致
 
+```
+public class TransactionLearning {
+    public static void main(String[] args) throws SQLException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        conn=JdbcUtils.getConnection();
+
+        //关闭数据库的自动提交功能，自动会开启事务
+        conn.setAutoCommit(false); //开启事务
+        String sql1="update account set money=money-100 where name = 'A'";
+        stmt=conn.prepareStatement(sql1);
+        stmt.executeUpdate();
+         //人为设置错误  看看只执行sql1不执行sql2的情况
+
+
+        String sql2="update account set money=money+100 where name = 'B'";
+        stmt=conn.prepareStatement(sql2);
+        stmt.executeUpdate();
+
+        //提交事务
+
+        try{
+            conn.commit();
+
+        System.out.println("成功！");
+
+        }catch(SQLException e){
+           try{
+               conn.rollback();
+
+           }catch(SQLException e1){
+               e1.printStackTrace();
+           }
+        }
+        finally {
+                conn.setAutoCommit(true);
+                JdbcUtils.release(conn, stmt, rs);
+
+
+        }
+
+
+    }
+}
+```
+
+在数据库事务中，一旦执行了 **`commit`** 操作，事务就会被永久提交。事务的提交操作表示当前事务所做的所有更改已经被写入到数据库，并且无法撤销。因此，在 **`commit`** 之后，**`rollback`** 是无效的。
+
+
+
+##  数据库连接池
+
+数据库连接执行完毕-释放
+
+池化技术：准备一些预先的资源，过来就连接预先准备好的
+
+最小连接数与常用连接数      最大连接数（承载上限）
+
+等待超时
+
+
+
+连接池  实现接口：DataSource
+
+
+
+> 开源数据源实现
+
+DBCP  C3P0   Druid :阿里巴巴
+
+使用了这些数据库连接池之后，我们就不需要编写数据库的代码了！
+
+> DBCP
+
+commos  dbcp    commons  pool 包
+
+```java
+public class JdbcUtils_DBCP
+{
+    private static DataSource ds=null;
+ static{
+        try{
+            InputStream resourceAsStream = JdbcUtils_DBCP.class.getClassLoader().getResourceAsStream("dbcpconfig.properties");
+            Properties properties = new Properties();
+            properties.load(resourceAsStream);
+            //创建数据源 工厂模式--》创建
+            ds = BasicDataSourceFactory.createDataSource(properties);
+
+
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+ }
+    //获取连接
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();   //数据源中获取连接源
+    }
+
+
+    //释放连接资源
+    public static void release(Connection conn, Statement stmt, ResultSet rs) throws SQLException {
+        if(rs!=null)
+        {
+            rs.close();
+        }
+        if(stmt!=null)
+        {
+            stmt.close();
+        }
+        if(conn!=null)
+        {
+            conn.close();
+        }
+    }
+```
+
+
+
+> C3P0
+
+略了
+
+结论：数据源 都是调库
+
