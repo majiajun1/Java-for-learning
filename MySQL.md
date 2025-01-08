@@ -1435,3 +1435,173 @@ password=123456
 
 漏洞和攻击
 
+```sql
+
+SELECT * FROM users WHERE NAME=''OR'1=1' AND PASSWORD='123456';
+SELECT * FROM users WHERE NAME=''OR'1=1' AND PASSWORD=''OR'1=1'
+1=1标准sql注入操作
+
+```
+
+## PreparedStatement 
+
+更安全 防止sql注入
+
+效率更高
+
+比普通的Statement 多了问号占位符和预编译
+
+参数存在转义字符  会直接被转义
+
+
+
+```java
+public class Lesson3 {
+    public static void main(String[] args) throws SQLException {
+        Connection conn=null;
+        PreparedStatement ps=null;
+        ResultSet rs=null;
+        conn=JdbcUtils.getConnection();
+
+        //区别
+        //使用问号占位符  代替参数
+        String sql="INSERT INTO users(id,`name`,`password`,`email`,`birthday`)" +
+                "VALUES (?,?,?,?,?)";
+
+        ps=conn.prepareStatement(sql);//预编译sql,先写sql
+
+        //手动给参数赋值
+        ps.setInt(1,5);
+        ps.setString(2,"mjj2");
+        ps.setString(3,"123456");
+        ps.setString(4,"mjj2@gmail.com");
+        ps.setDate(5, new java.sql.Date(System.currentTimeMillis()));
+
+        //执行
+        int i=ps.executeUpdate();
+        if(i>0)
+        {
+            System.out.println("插入成功");
+        }
+
+        JdbcUtils.release(conn,ps,rs);
+
+
+
+    }
+}
+
+        //删除
+        String sql2="delete from users where id=?";
+        ps=conn.prepareStatement(sql2);
+        ps.setInt(1,5);
+//查
+         String sql3="select * from users where id=?";
+         ps=conn.prepareStatement(sql3);
+         ps.setInt(1,1);
+         rs=ps.executeQuery();
+         while(rs.next()){
+             System.out.println(rs.getString("name"));
+
+         }
+```
+
+## 使用IDEA连接数据库
+
+
+
+
+
+
+
+
+
+## 事务
+
+ACID 原则
+
+原子性 一致性 隔离性  持久性
+
+**CID原则** 是数据库事务的四个核心属性，用于确保数据库操作的可靠性和一致性。以下是每个属性的详细解释：
+
+------
+
+### **1. 原子性（Atomicity）**
+
+事务中的所有操作要么全部成功，要么全部失败，不能只执行部分操作。
+
+- **核心含义**：事务是最小的不可分割单元。
+
+- **实现方式**：通过回滚机制（Rollback），在事务执行失败时撤销已经完成的部分操作。
+
+- 举例
+
+  ：
+
+  - 银行转账：从账户 A 转账到账户 B，要么 A 扣款和 B 入账都成功，要么两个操作都取消。
+
+------
+
+### **2. 一致性（Consistency）**
+
+事务执行前后，数据库的状态必须保持一致，不能破坏数据库的完整性约束。
+
+- **核心含义**：数据库的数据遵循约束和规则，比如主键约束、外键约束等。
+
+- **实现方式**：依赖数据库的约束和事务管理机制。
+
+- 举例
+
+  ：
+
+  - 商品库存：当库存减少时，总销售量应同步增加，数据间的约束关系保持一致。
+
+------
+
+### **3. 隔离性（Isolation）**
+
+并发事务之间相互独立，不能互相干扰。一个事务未提交前，其操作对其他事务是不可见的。
+
+- **核心含义**：事务应该像独立执行一样，不受其他事务的影响。
+
+- 隔离级别
+
+  （从低到高）：
+
+  1. **读未提交（Read Uncommitted）**：事务可以读到其他未提交事务的数据，可能导致脏读问题。
+  2. **读已提交（Read Committed）**：只能读到已提交事务的数据，避免脏读。
+  3. **可重复读（Repeatable Read）**：同一事务中多次读的结果一致，避免不可重复读。
+  4. **序列化（Serializable）**：事务完全串行化执行，避免幻读。
+
+------
+
+### **4. 持久性（Durability）**
+
+事务一旦提交，所做的修改将永久保存在数据库中，即使发生系统故障。
+
+- **核心含义**：事务的结果具有永久性。
+
+- **实现方式**：通过日志（WAL）或快照（Snapshot）等技术，确保事务数据可以恢复。
+
+- 举例
+
+  ：
+
+  - 银行系统：转账事务提交后，扣款和存款操作永久生效，即使系统崩溃，转账记录也会保留。
+
+------
+
+### **ACID 的重要性**
+
+- **保障数据一致性**：确保在各种异常情况下数据不会出现逻辑错误。
+- **增强可靠性**：尤其在金融、医疗等对数据要求极高的领域，ACID原则是核心标准。
+- **对性能的权衡**：ACID原则提供可靠性，但也会对性能产生一定影响，通常需要权衡事务隔离级别和系统吞吐量。
+
+------
+
+  脏读：读取了另一个没有提交的事务
+
+不可重复读：重复读取表的数据 数据发生了改变
+
+虚读 幻读：在一个事务内  读取到了别人插入的数据 导致前后读出来结果不一致
+
