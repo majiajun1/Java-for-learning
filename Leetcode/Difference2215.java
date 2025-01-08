@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.*;
-public class Difference2215 {
+public class
+Difference2215 {
     public static void main(String[] args) {
         int[] nums = {1, 2, 3};
         int[] nums2 = {2, 4, 6};

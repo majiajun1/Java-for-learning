@@ -1383,5 +1383,55 @@ public class JdbcUtils {
     }
 }
 
+    
+    
+    
+    
+    
+    
+    
+    
+driver=com.mysql.jdbc.Driver
+url=jdbc:mysql://localhost:3306/jdbcstudy?useUnicode=true&characterEncoding=utf8&useSSL=false
+username=root
+password=123456
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public class TestSelect {
+    public static void main(String[] args) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet resultSet = null;
+
+        conn=JdbcUtils.getConnection();
+        stmt=conn.createStatement();
+        String sql="select * from users where id=1";
+        resultSet=stmt.executeQuery(sql);
+         while (resultSet.next()) {
+            System.out.println(resultSet.getString("id"));
+            System.out.println(resultSet.getString("NAME"));
+            System.out.println(resultSet.getString("password"));
+
+            System.out.println(resultSet.getString("email"));
+            System.out.println(resultSet.getString("birthday"));
+            System.out.println("=================================");
+        }
+         JdbcUtils.release(conn, stmt, resultSet);
+    }
+}
 ~~~
+
+## sql注入的问题  
+
+漏洞和攻击
 
