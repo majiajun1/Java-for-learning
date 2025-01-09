@@ -30,7 +30,7 @@ public static  List<Integer> findSubstring(String s, String[] words) {
 
         // 遍历每个偏移量
         for (int i = 0; i < wordLength; i++) {
-            int left = i, right = .i i, count = 0;
+            int left = i, right = i, count = 0;
             Map<String, Integer> currentCount = new HashMap<>();
 
             while (right + wordLength <= s.length()) {
