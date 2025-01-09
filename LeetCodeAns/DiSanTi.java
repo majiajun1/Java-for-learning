@@ -7,7 +7,7 @@ public class DiSanTi {
 
         System.out.println(ans);
         System.out.println(a.charAt(2));
-
+        Map<String,Integer> map=new HashMap<>();
     }
 
 
@@ -61,6 +61,7 @@ public class DiSanTi {
         }
         return maxLength;
     }
+
 
 
 
