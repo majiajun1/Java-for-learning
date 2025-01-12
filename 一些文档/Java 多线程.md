@@ -1655,7 +1655,7 @@ public class LazyLearning {
             }
         }
 
-        return lazyLearning;  //此时lazyman还没有完成构造
+        return lazyLearning;  //此时lazylearning还没有完成构造
     }
 
     //单线程下 确实单例OK

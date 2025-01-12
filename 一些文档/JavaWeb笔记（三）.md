@@ -475,17 +475,86 @@ Java的编译过程可以分成三个阶段：
 
 我们通过实战来演示一下Lombok的实用注解：
 
-* 我们通过添加`@Getter`和`@Setter`来为当前类的所有字段生成get/set方法，他们可以添加到类或是字段上，注意静态字段不会生成，final字段无法生成set方法。
+* 我们通过添加`@Getter`和`@Setter`来为当前类的所有字段生成get/set方法，他们可以添加到类或是字段上，注意静态字段 生成get/set 因为属于类本身而不是属于实例，所以生成的是静态方法 通过类去访问（通过实例访问也行，只不过不太好罢了），final字段无法生成set方法。
+
+* lazy是指多线程方式
   * 我们还可以使用@Accessors来控制生成Getter和Setter的样式。 
+  * chain链式调用  fluent 的话把set/get函数名都改成参数本身
+  
 * 我们通过添加`@ToString`来为当前类生成预设的toString方法。
+
+  默认：返回实例hashcode
+
+  ```
+  public String toString() {
+      return getClass().getName() + "@" + Integer.toHexString(hashCode());
+  }
+  
+  public @interface ToString {
+      boolean includeFieldNames() default true; //设定是否返回类型
+  
+      String[] exclude() default {};  //设定排除字段
+  
+      String[] of() default {}; //设定只返回的字段
+  
+      boolean callSuper() default false; //调用父类构造器
+  
+      boolean doNotUseGetters() default false; // tostring会调用get方法  如果这个设定为true 就不会调用get 而是直接返回字段数据(this.xxx)
+  
+      boolean onlyExplicitlyIncluded() default false;
+    //为true 则只返回类名
+      @Target({ElementType.FIELD})
+      @Retention(RetentionPolicy.SOURCE)
+      public @interface Exclude {  //一个新的注解 可以放在某一个字段参数上面，来排除输出这个字段  
+      
+      }
+  
+      @Target({ElementType.FIELD, ElementType.METHOD})
+      @Retention(RetentionPolicy.SOURCE)
+      public @interface Include {
+          int rank() default 0;    //默认全部包含 但是可以用这个来设定输出顺序
+  
+          String name() default ""; //可以用新的字符串替换输出的参数类型
+      }
+  ```
+
 * 我们可以通过添加`@EqualsAndHashCode`来快速生成比较和哈希值方法。
+
+* callsuper默认为假  设置为真会更安全  要比较父类也是否相同
+
+  还有其他的属性 例如exclude 比较常见
+
+  cacheStrategy   缓存机制  保存哈希值  懒加载策略
+
 * 我们可以通过添加`@AllArgsConstructor`和`@NoArgsConstructor`来快速生成全参构造和无参构造。
+
+  参数有staticname  指定名称  封装一个静态构造方法来调用私有的构造方法
+
+  还有访问权限
+
+  NoArgsConstuctor有force函数 强制无参 例如final没赋值的话会赋Null
+
+  
+
 * 我们可以添加`@RequiredArgsConstructor`来快速生成参数只包含`final`或被标记为`@NonNull`的成员字段。
+
+  
+
 * 使用`@Data`能代表`@Setter`、`@Getter`、`@RequiredArgsConstructor`、`@ToString`、`@EqualsAndHashCode`全部注解。
   * 一旦使用`@Data`就不建议此类有继承关系，因为`equal`方法可能不符合预期结果（尤其是仅比较子类属性）。
+  
 * 使用`@Value`与`@Data`类似，但是并不会生成setter并且成员属性都是final的。
+
+  和data一样没啥用 影响阅读性
+
 * 使用`@SneakyThrows`来自动生成try-catch代码块。
-* 使用`@Cleanup`作用与局部变量，在最后自动调用其`close()`方法（可以自由更换）
+
+  参数可以限定异常类型(class)
+
+* 使用`@Cleanup`作用与局部变量，在最后自动调用其`close()`方法（可以自由更换） 类似try with resource 但不如
+
+  
+
 * 使用`@Builder`来快速生成建造者模式。
   * 通过使用`@Builder.Default`来指定默认值。
   * 通过使用`@Builder.ObtainVia`来指定默认值的获取方式。
