@@ -2,7 +2,7 @@
 
 leetcode75  75/75 完成
 
-leetcode150 (40/150)
+leetcode150 (42/150)
 
 # JAVA路线 
 
@@ -15,15 +15,15 @@ https://javaguide.cn/home.html
 - [x] Java 多线程和并发  11.23-12.4
 - [x] 注解和反射 12.10-12.14
 - [x] JVM     12.14-12.18
-- [ ] Java web   1.8
+- [ ] Java web   1.8-
 - [ ] Springboot  
 - [ ] Spring
 - [ ] SpringMVC
 - [ ] Redis  
 - [ ] MQ
-- [ ] MyBatis
+- [ ] MyBatis 1.11-1.13
 - [x] MySql 12.18-1.7
-- [ ] SSM（不一定要）(Spring+spring mvc+mybatis)
+- [ ] SSM (Spring+spring mvc+mybatis)
 - [ ] linux
 - [ ] 两个项目 (0/2)
 - [ ] 408

@@ -541,6 +541,9 @@ Java的编译过程可以分成三个阶段：
   
 
 * 使用`@Data`能代表`@Setter`、`@Getter`、`@RequiredArgsConstructor`、`@ToString`、`@EqualsAndHashCode`全部注解。
+  
+* `@Data` 注解只是自动生成常见的 getter、setter、`toString()`、`equals()`、`hashCode()` 等方法，但 **它不会自动生成带参数的构造函数**。
+  
   * 一旦使用`@Data`就不建议此类有继承关系，因为`equal`方法可能不符合预期结果（尤其是仅比较子类属性）。
   
 * 使用`@Value`与`@Data`类似，但是并不会生成setter并且成员属性都是final的。
@@ -556,8 +559,19 @@ Java的编译过程可以分成三个阶段：
   
 
 * 使用`@Builder`来快速生成建造者模式。
+  
+  感觉作用不大 就是可以用上链式编程来赋值 
+  
+  ```
+  Student student= Student.builder().sid(1).name("23").sex("男")
+          .build();
+  ```
+  
   * 通过使用`@Builder.Default`来指定默认值。
   * 通过使用`@Builder.ObtainVia`来指定默认值的获取方式。
+  * tobuilder 是复制现有对象到新对象
+  
+   感觉没啥用 纯套娃 增加复杂性
 
 ***
 
@@ -627,28 +641,59 @@ XML文件也可以使用注释：
 JDK为我们内置了一个叫做`org.w3c`的XML解析库，我们来看看如何使用它来进行XML文件内容解析：
 
 ```java
-// 创建DocumentBuilderFactory对象
+package com.MyBatisLearning;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.*;
+public class lesson1 {
+    public static void main(String[] args) {
 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 // 创建DocumentBuilder对象
 try {
     DocumentBuilder builder = factory.newDocumentBuilder();
-    Document d = builder.parse("file:mappers/test.xml");
+    Document d = builder.parse("D:\\Document\\JavaWebLearning\\src\\com\\MyBatisLearning\\test.xml");
     // 每一个标签都作为一个节点
-    NodeList nodeList = d.getElementsByTagName("test");  // 可能有很多个名字为test的标签
-    Node rootNode = nodeList.item(0); // 获取首个
+    NodeList nodeList = d.getElementsByTagName("outer");  // 可能有很多个名字为test的标签
+ if (nodeList.getLength() > 0) {
+                Node rootNode = nodeList.item(0); // 获取 outer 标签
+                NodeList childNodes = rootNode.getChildNodes(); // 获取 outer 标签下的所有子节点
 
-    NodeList childNodes = rootNode.getChildNodes(); // 一个节点下可能会有很多个节点，比如根节点下就囊括了所有的节点
-    //节点可以是一个带有内容的标签（它内部就还有子节点），也可以是一段文本内容
+                // 遍历子节点
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node child = childNodes.item(i);
+                    if (child.getNodeType() == Node.ELEMENT_NODE) { // 过滤文本节点和空白节点
+                        String nodeName = child.getNodeName();
+                        String nodeValue = child.getFirstChild() != null ? child.getFirstChild().getNodeValue() : "";
+                        System.out.println(nodeName + "：" + nodeValue);
 
-    for (int i = 0; i < childNodes.getLength(); i++) {
-        Node child = childNodes.item(i);
-        if(child.getNodeType() == Node.ELEMENT_NODE)  //过滤换行符之类的内容，因为它们都被认为是一个文本节点
-        System.out.println(child.getNodeName() + "：" +child.getFirstChild().getNodeValue());
-        // 输出节点名称，也就是标签名称，以及标签内部的文本（内部的内容都是子节点，所以要获取内部的节点）
-    }
+                        // 如果节点是 inner，还可以获取其属性
+                       if (nodeName.equals("inner")) {
+                            // 获取 inner 的属性
+                            String type = child.getAttributes().getNamedItem("type").getNodeValue();
+                            System.out.println("inner type属性值：" + type);
+
+                            // 遍历 inner 标签的子节点（如 age 和 sex）
+                            NodeList innerChildNodes = child.getChildNodes();
+                            for (int j = 0; j < innerChildNodes.getLength(); j++) {
+                                Node innerChild = innerChildNodes.item(j);
+                                if (innerChild.getNodeType() == Node.ELEMENT_NODE) {
+                                    String innerNodeName = innerChild.getNodeName();
+                                    String innerNodeValue = innerChild.getFirstChild() != null ? innerChild.getFirstChild().getNodeValue() : "";
+                                    System.out.println(innerNodeName + "：" + innerNodeValue);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                System.out.println("没有找到名为 'outer' 的标签！");
+            }
 } catch (Exception e) {
     e.printStackTrace();
 }
+    }
+}
+
 ```
 
 当然，学习和使用XML只是为了更好地去认识Mybatis的工作原理，以及如何使用XML来作为Mybatis的配置文件，这是在开始之前必须要掌握的内容（使用Java读取XML内容不要求掌握，但是需要知道Mybatis就是通过这种方式来读取配置文件的）
@@ -700,7 +745,7 @@ public static void main(String[] args) throws FileNotFoundException {
 
 直接运行即可，虽然没有干什么事情，但是不会出现错误，如果之前的配置文件编写错误，直接运行会产生报错！那么现在我们来看看，`SqlSessionFactory`对象是什么东西：
 
-![img](https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.h5w3.com%2Fwp-content%2Fuploads%2F2021%2F01%2F1460000039107464.png&refer=http%3A%2F%2Fwww.h5w3.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1639372889&t=f37deb63f29f0dc2f8b6a3517a68b86c)
+![image-20250112175031845](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250112175031845.png)
 
 每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为核心的，我们可以通过`SqlSessionFactory`来创建多个新的会话，`SqlSession`对象，每个会话就相当于我不同的地方登陆一个账号去访问数据库，你也可以认为这就是之前JDBC中的`Statement`对象，会话之间相互隔离，没有任何关联。
 
@@ -727,8 +772,8 @@ public class Student {
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="TestMapper">
-    <select id="selectStudent" resultType="com.test.entity.Student">
-        select * from student
+    <select id="selectStudent" resultType="com.MyBatisLearning.Student">
+        select * from mybatislearning.student where sid=#{sid}
     </select>
 </mapper>
 ```
@@ -740,18 +785,33 @@ public class Student {
 ```xml
 <mappers>
     <mapper url="file:mappers/TestMapper.xml"/>
-    <!--    这里用的是url，也可以使用其他类型，我们会在后面讲解    -->
+    <!--    这里用的是url，也可以使用其他类型，我们会在后面讲解    -->  用resource就没问题 url出问题
 </mappers>
 ```
 
 最后在程序中使用我们定义好的Mapper即可：
 
 ```java
-public static void main(String[] args) throws FileNotFoundException {
-    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(new FileInputStream("mybatis-config.xml"));
-    try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
-        List<Student> student = sqlSession.selectList("selectStudent");
-        student.forEach(System.out::println);
+public class lesson3 {
+    @SneakyThrows
+    public static void main(String[] args) {
+        String resource = "D:\\Document\\JavaWebLearning\\src\\com\\MyBatisLearning\\mybatis-config.xml";
+//    InputStream inputStream = Resources.getResourceAsStream(resource);
+//    SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(new FileInputStream(resource));
+
+        try (SqlSession session = sqlSessionFactory.openSession(true);)  //自动提交打开
+        {
+            List<Student> selectStudent = session.selectList("selectStudent");
+            for (Student student : selectStudent)
+            {
+                System.out.println(student);
+            }
+            System.out.println("正常运行，这里是业务");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 ```
@@ -802,6 +862,8 @@ public static void main(String[] args) {
 之前我们演示了，如何创建一个映射器来将结果快速转换为实体类，但是这样可能还是不够方便，我们每次都需要去找映射器对应操作的名称，而且还要知道对应的返回类型，再通过`SqlSession`来执行对应的方法，能不能再方便一点呢？
 
 现在，我们可以通过`namespace`来绑定到一个接口上，利用接口的特性，我们可以直接指明方法的行为，而实际实现则是由Mybatis来完成。
+
+**`<select id="...">`**、**`<insert id="...">`** 等这些 SQL 语句标签，在 MyBatis 中通过 **`id` 属性** 直接与接口类中的方法对应，实现 SQL 语句与 Java 方法的映射。
 
 ```java
 public interface TestMapper {
@@ -887,7 +949,7 @@ sqlSessionFactory = new SqlSessionFactoryBuilder()
 </typeAliases>
 ```
 
-现在Mapper就可以直接使用别名了：
+现在Mapper就可以直接使用别名了： 用别名有点影响可读性
 
 ```xml
 <mapper namespace="com.test.mapper.TestMapper">
@@ -897,7 +959,7 @@ sqlSessionFactory = new SqlSessionFactoryBuilder()
 </mapper>
 ```
 
-如果这样还是很麻烦，我们也可以直接让Mybatis去扫描一个包，并将包下的所有类自动起别名（别名为首字母小写的类名）
+如果这样还是很麻烦，我们也可以直接让Mybatis去扫描一个包，并将包下的所有类自动起别名（别名为**首字母小写的类名**）
 
 ```java
 <typeAliases>
@@ -905,7 +967,7 @@ sqlSessionFactory = new SqlSessionFactoryBuilder()
 </typeAliases>
 ```
 
-也可以为指定实体类添加一个注解，来指定别名：
+也可以为指定实体类添加一个注解，来指定别名：  不太建议搞 影响可读性
 
 ```java
 @Data
@@ -945,6 +1007,8 @@ public class Student {
 
 当然，如果你不喜欢使用实体类，那么这些属性还可以被映射到一个Map上：
 
+resultType实际上是类
+
 ```xml
 <select id="selectStudent" resultType="Map">
     select * from student
@@ -957,9 +1021,13 @@ public interface TestMapper {
 }
 ```
 
+
+
 Map中就会以键值对的形式来存放这些结果了。
 
-通过设定一个`resultType`属性，让Mybatis知道查询结果需要映射为哪个实体类，要求字段名称保持一致。那么如果我们不希望按照这样的规则来映射呢？我们可以自定义`resultMap`来设定映射规则：
+**通过设定一个`resultType`属性，让Mybatis知道查询结果需要映射为哪个实体类，**要求字段名称保持一致**（不一致的话会报0）**。那么如果我们不希望按照这样的规则来映射呢？我们可以自定义`resultMap`来设定映射规则：
+
+
 
 ```xml
 <resultMap id="Test" type="Student">
@@ -971,7 +1039,9 @@ Map中就会以键值对的形式来存放这些结果了。
 
 通过指定映射规则，我们现在名称和性别一栏就发生了交换，因为我们将其映射字段进行了交换。
 
-如果一个类中存在多个构造方法，那么很有可能会出现这样的错误：
+如果一个类中存在多个构造方法，那么很有可能会出现这样的错误：  
+
+错误原因比较迷
 
 ```java
 ### Exception in thread "main" org.apache.ibatis.exceptions.PersistenceException: 
@@ -1008,6 +1078,10 @@ Map中就会以键值对的形式来存放这些结果了。
 
 如果不设置，默认为不开启，也就是默认需要名称保持一致。
 
+PS:感觉意义不大 徒增烦恼
+
+
+
 我们接着来看看条件查询，既然是条件查询，那么肯定需要我们传入查询条件，比如现在我们想通过sid字段来通过学号查找信息：
 
 ```java
@@ -1020,7 +1094,7 @@ Student getStudentBySid(int sid);
 </select>
 ```
 
-我们通过使用`#{xxx}`或是`${xxx}`来填入我们给定的属性，实际上Mybatis本质也是通过`PreparedStatement`首先进行一次预编译，有效地防止SQL注入问题，但是如果使用`${xxx}`就不再是通过预编译，而是直接传值，因此我们一般都使用`#{xxx}`来进行操作。
+我们通过使用`#{xxx}`或是`${xxx}`来填入我们给定的属性，**实际上Mybatis本质也是通过`PreparedStatement`首先进行一次预编译，有效地防止SQL注入问题**，但是如果使用`${xxx}`就不再是通过预编译，而是直接传值，因此我们**一般都使用`#{xxx}`来进行操作**。
 
 使用`parameterType`属性来指定参数类型（非必须，可以不用，推荐不用）
 
