@@ -544,6 +544,14 @@ Java的编译过程可以分成三个阶段：
   
 * `@Data` 注解只是自动生成常见的 getter、setter、`toString()`、`equals()`、`hashCode()` 等方法，但 **它不会自动生成带参数的构造函数**。
   
+* 比较两个对象是否属于同一类型。
+  
+  比较所有字段是否相等（通过 `Objects.equals` 方法）。
+  
+  遇到复杂对象时也会递归调用 `equals()`。
+  
+* 
+  
   * 一旦使用`@Data`就不建议此类有继承关系，因为`equal`方法可能不符合预期结果（尤其是仅比较子类属性）。
   
 * 使用`@Value`与`@Data`类似，但是并不会生成setter并且成员属性都是final的。
@@ -1231,6 +1239,38 @@ try (SqlSession sqlSession = MybatisUtil.getSession(false)){
 
 我们直接使用官网的例子进行讲解。
 
+if 就是if     
+
+choose等于switch
+
+foreach功能
+
+```java
+SELECT * 
+FROM mybatislearning.student 
+WHERE sid IN (1, 2, 3, 4);
+假设要select列表
+
+
+            List<Integer> ids=List.of(1,2,3,4);
+            List<Student> studentsResult=mapper.findStudentsByIds(ids);
+            studentsResult.forEach(System.out::println);
+
+
+
+
+<select id="findStudentsByIds" parameterType="list" resultType="Student">
+    SELECT * 
+    FROM mybatislearning.student
+    WHERE sid IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+</select>
+```
+
+
+
 ### 缓存机制
 
 MyBatis 内置了一个强大的事务性查询缓存机制，它可以非常方便地配置和定制。 
@@ -1291,7 +1331,13 @@ public static void main(String[] args) throws InterruptedException {
 
 我们发现，当我们进行了插入操作后，缓存就没有生效了，我们再次进行查询得到的是一个新创建的对象。
 
-也就是说，一级缓存，在进行DML操作后，会使得缓存失效，也就是说Mybatis知道我们对数据库里面的数据进行了修改，所以之前缓存的内容可能就不是当前数据库里面最新的内容了。还有一种情况就是，当前会话结束后，也会清理全部的缓存，因为已经不会再用到了。但是一定注意，一级缓存只针对于单个会话，多个会话之间不相通。
+小坑：.equals和==不一样
+
+也就是说，一级缓存，
+
+**在进行DML操作后，会使得缓存失效(一级和二级**)，也就
+
+是说Mybatis知道我们对数据库里面的数据进行了修改，所以之前缓存的内容可能就不是当前数据库里面最新的内容了。还有一种情况就是，当前**会话结束后，也会清理全部的缓存**，因为已经不会再用到了。但是一定注意，**一级缓存只针对于单个会话**，多个会话之间不相通。
 
 ```java
 public static void main(String[] args) {
@@ -1312,6 +1358,8 @@ public static void main(String[] args) {
 
 **注意：**一个会话DML操作只会重置当前会话的缓存，不会重置其他会话的缓存，也就是说，其他会话缓存是不会更新的！
 
+**一级缓存互相隔离**
+
 一级缓存给我们提供了很高速的访问效率，但是它的作用范围实在是有限，如果一个会话结束，那么之前的缓存就全部失效了，但是我们希望缓存能够扩展到所有会话都能使用，因此我们可以通过二级缓存来实现，二级缓存默认是关闭状态，要开启二级缓存，我们需要在映射器XML文件中添加：
 
 ```xml
@@ -1322,11 +1370,14 @@ public static void main(String[] args) {
 
 ```xml
 <cache
-  eviction="FIFO"
+  eviction="FIFO      缓存清楚策略  LRU  SOFT WEAK 默认LRU
   flushInterval="60000"
   size="512"
   readOnly="true"/>
+                 
 ```
+
+readOnly（只读）属性可以被设置为 true 或 false。只读的缓存会给所有调用者返回缓存对象的相同实例。 因此这些对象不能被修改。这就提供了可观的性能提升。而可读写的缓存会（通过序列化）返回缓存对象的拷贝。 速度上会慢一些，但是更安全，因此默认值是 false。
 
 我们来编写一个代码：
 
@@ -1348,7 +1399,11 @@ public static void main(String[] args) {
 
 我们可以看到，上面的代码中首先是第一个会话在进行读操作，完成后会结束会话，而第二个操作重新创建了一个新的会话，再次执行了同样的查询，我们发现得到的依然是缓存的结果。
 
+**session结束才会写到二级缓存** 即提交和关闭
+
 那么如果我不希望某个方法开启缓存呢？我们可以添加useCache属性来关闭缓存：
+
+
 
 ```xml
 <select id="getStudentBySid" resultType="Student" useCache="false">
@@ -1356,7 +1411,7 @@ public static void main(String[] args) {
 </select>
 ```
 
-我们也可以使用flushCache="false"在每次执行后都清空缓存，通过这这个我们还可以控制DML操作完成之后不清空缓存。
+
 
 ```xml
 <select id="getStudentBySid" resultType="Student" flushCache="true">
@@ -1364,7 +1419,7 @@ public static void main(String[] args) {
 </select>
 ```
 
-添加了二级缓存之后，会先从二级缓存中查找数据，当二级缓存中没有时，才会从一级缓存中获取，当一级缓存中都还没有数据时，才会请求数据库，因此我们再来执行上面的代码：
+**添加了二级缓存之后，会先从二级缓存中查找数据，当二级缓存中没有时，才会从一级缓存中获取，当一级缓存中都还没有数据时，才会请求数据库，因此我们再来执行上面的代码：**
 
 ```java
 public static void main(String[] args) {
@@ -1387,9 +1442,9 @@ public static void main(String[] args) {
 
 读取顺序：二级缓存 => 一级缓存 => 数据库
 
-![img](https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F2176079-2e6599c454e7af19.png&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1639471352&t=c7c1d6b11de1ad9af91e092590c58d83)
+![image-20250113221029449](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250113221029449.png)
 
-虽然缓存机制给我们提供了很大的性能提升，但是缓存存在一个问题，我们之前在`计算机组成原理`中可能学习过缓存一致性问题，也就是说当多个CPU在操作自己的缓存时，可能会出现各自的缓存内容不同步的问题，而Mybatis也会这样，我们来看看这个例子：
+虽然缓存机制给我们提供了很大的性能提升，但是缓存存在一个问题，我们之前在`计算机组成原理`中可能学习过**缓存一致性问题**，也就是说当多个CPU在操作自己的缓存时，可能会出现各自的缓存内容不同步的问题，而Mybatis也会这样，我们来看看这个例子：
 
 ```java
 public static void main(String[] args) throws InterruptedException {
@@ -1405,7 +1460,11 @@ public static void main(String[] args) throws InterruptedException {
 
 我们现在循环地每三秒读取一次，而在这个过程中，我们使用IDEA手动修改数据库中的数据，将1号同学的学号改成100，那么理想情况下，下一次读取将无法获取到小明，因为小明的学号已经发生变化了。
 
-但是结果却是依然能够读取，并且sid并没有发生改变，这也证明了Mybatis的缓存在生效，因为我们是从外部进行修改，Mybatis不知道我们修改了数据，所以依然在使用缓存中的数据，但是这样很明显是不正确的，因此，如果存在多台服务器或者是多个程序都在使用Mybatis操作同一个数据库，并且都开启了缓存，需要解决这个问题，要么就得关闭Mybatis的缓存来保证一致性：
+但是结果却是依然能够读取，并且sid并没有发生改变，这也证明了Mybatis的缓存在生效，**因为我们是从外部进行修改，Mybatis不知道我们修改了数据**，所以依然在使用缓存中的数据，但是这样很明显是不正确的，因此，如果存在多台服务器或者是多个程序都在使用Mybatis操作同一个数据库，并且都开启了缓存，需要解决这个问题，要么就得关闭Mybatis的缓存来保证一致性：
+
+一级缓存和二级缓存都有一致性问题
+
+
 
 ```xml
 <settings>
@@ -1414,12 +1473,16 @@ public static void main(String[] args) throws InterruptedException {
 ```
 
 ```xml
-<select id="getStudentBySid" resultType="Student" useCache="false" flushCache="true">
+<select id="getStudentBySid" resultType="Student"  flushCache="true">
     select * from student where sid = #{sid}
 </select>
 ```
 
-要么就需要实现缓存共用，也就是让所有的Mybatis都使用同一个缓存进行数据存取，在后面，我们会继续学习Redis、Ehcache、Memcache等缓存框架，通过使用这些工具，就能够很好地解决缓存一致性问题。
+**useCache是控制二级缓存的   一级缓存不能关闭 只能清空**
+
+要么就需要实现缓存共用，也就是让所有的Mybatis都使用同一个缓存进行数据存取，在后面，我们会继续学习**Redis**、Ehcache、Memcache等缓存框架，通过使用这些工具，就能够很好地解决缓存一致性问题。
+
+
 
 ### 使用注解开发
 
