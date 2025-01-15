@@ -1795,6 +1795,11 @@ public class ShopperProxy implements InvocationHandler {
         return method.invoke(target, args);
     }
 }
+
+Object result = method.invoke(target, args);
+method: 表示被调用的目标方法。
+target: 被代理的目标对象，方法将作用于此对象。
+args: 方法调用时的参数列表
 ```
 
 通过实现InvocationHandler来成为一个动态代理，我们发现它提供了一个invoke方法，用于调用被代理对象的方法并完成我们的代理工作。现在就可以通过` Proxy.newProxyInstance`来生成一个动态代理类：
@@ -2039,9 +2044,13 @@ public static void main(String[] args) {
     logger.log(Level.INFO, "普通的信息");
     logger.log(Level.CONFIG, "级别低于普通信息");
 }
+
+
 ```
 
-我们发现，级别低于默认级别的日志信息，无法输出到控制台，我们可以通过设置来修改日志的打印级别：
+我们发现，**级别低于默认级别的日志信息，无法输出到控制台，我们可以通过设置来修改日志的打印级别：**
+
+**logger负责记录 ConsoleHandler负责控制台（打印）**
 
 ```java
 public static void main(String[] args) {
@@ -2061,6 +2070,7 @@ public static void main(String[] args) {
     logger.log(Level.INFO, "普通的信息");
     logger.log(Level.CONFIG, "级别低于普通信息");
 }
+logger负责记录 ConsoleHandler负责控制台（打印）
 ```
 
 每个`Logger`都有一个父日志打印器，我们可以通过`getParent()`来获取：
@@ -2072,7 +2082,7 @@ public static void main(String[] args) throws IOException {
 }
 ```
 
-我们发现，得到的是`java.util.logging.LogManager$RootLogger`这个类，它默认使用的是ConsoleHandler，且日志级别为INFO，由于每一个日志打印器都会直接使用父类的处理器，因此我们之前需要关闭父类然后使用我们自己的处理器。
+我们发现，得到的是`java.util.logging.LogManager$RootLogger`这个类，**它默认使用的是ConsoleHandler，且日志级别为INFO**，由于每一个日志打印器都会直接使用父类的处理器，因此我们之前需要关闭父类然后使用我们自己的处理器。
 
 我们通过使用自己日志处理器来自定义级别的信息打印到控制台，当然，日志处理器不仅仅只有控制台打印，我们也可以使用文件处理器来处理日志信息，我们继续添加一个处理器：
 
