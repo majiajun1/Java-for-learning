@@ -2298,7 +2298,7 @@ Mybatis也有日志系统，它详细记录了所有的数据库操作等，但�
 <setting name="logImpl" value="STDOUT_LOGGING" />
 ```
 
-`logImpl`包括很多种配置项，包括 SLF4J | LOG4J | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING，而默认情况下是未配置，也就是说不打印。我们这里将其设定为STDOUT_LOGGING表示直接使用标准输出将日志信息打印到控制台，我们编写一个测试案例来看看效果：
+`logImpl`包括很多种配置项，包括 SLF4J | LOG4J | LOG4J2 | JDK_LOGGING | COMMONS_LOGGING | STDOUT_LOGGING | NO_LOGGING，而默认情况下是未配置，也就是说不打印。我们这里将其**设定为STDOUT_LOGGING表示直接使用标准输出将日志信息打印到控制台**，我们编写一个测试案例来看看效果：
 
 ```java
 public class TestMain {
@@ -2333,7 +2333,7 @@ public class TestMain {
 <setting name="logImpl" value="JDK_LOGGING" />
 ```
 
-将其配置为JDK_LOGGING表示使用JUL进行日志打印，因为Mybatis的日志级别都比较低，因此我们需要设置一下`logging.properties`默认的日志级别：
+将其**配置为JDK_LOGGING表示使用JUL进行日志打印，因为Mybatis的日志级别都比较低**，因此我们需要设置一下`logging.properties`默认的日志级别：
 
 ```properties
 handlers= java.util.logging.ConsoleHandler
