@@ -300,7 +300,7 @@ public class TestServlet implements Servlet {
 >
 > 我是destroy
 
-我们可以多次尝试去访问此页面，但是init和构造方法只会执行一次，而每次访问都会执行的是`service`方法，因此，一个Servlet的生命周期为：
+我们可以多次尝试去访问此页面，但是**init和构造方法只会执行一次**，而每次访问都会执行的是`service`方法，因此，一个Servlet的生命周期为：
 
 - 首先执行构造方法完成 Servlet 初始化
 - Servlet 初始化后调用 **init ()** 方法。
@@ -411,7 +411,7 @@ public class TestServlet extends HttpServlet {
 @WebServlet({"/test1", "/test2"})
 ```
 
-我们接着来看loadOnStartup属性，此属性决定了是否在Tomcat启动时就加载此Servlet，默认情况下，Servlet只有在被访问时才会加载，它的默认值为-1，表示不在启动时加载，我们可以将其修改为大于等于0的数，来开启启动时加载。并且数字的大小决定了此Servlet的启动优先级。
+我们接着来看loadOnStartup属性，此属性决定了是否在Tomcat启动时就加载此Servlet，默认情况下，Servlet只有在被访问时才会加载，**它的默认值为-1，表示不在启动时加载，我们可以将其修改为大于等于0的数，来开启启动时加载。并且数字的大小决定了此Servlet的启动优先级。**
 
 ```java
 @Log
@@ -698,6 +698,8 @@ function updateTime() {
 }
 ```
 
+`xhr.onreadystatechange = function()` 是 **XMLHttpRequest** 的一个事件监听器，用于监听 **AJAX 请求**的状态变化。它的核心作用是定义当请求的状态（`readyState`）发生变化时，应该执行的逻辑
+
 接着修改一下前端页面，添加一个时间显示区域：
 
 ```html
@@ -730,6 +732,12 @@ public class TimeServlet extends HttpServlet {
 
 GET请求也能传递参数，这里做一下演示。
 
+
+
+button->立即调用 `updateTime()` 函数。->前端通过 `xhr.open('GET', 'time', true)` 发送异步请求，目标路径为 `time`。->调用标签为time的servlet后端doget函数->返回带时间数据的response->
+
+`xhr.readyState` 为 4 且 `xhr.status` 为 200 时，表示请求成功。 将服务器返回的数据 (`xhr.responseText`) 更新到 `#time` 元素中
+
 ### 重定向与请求转发
 
 当我们希望用户登录完成之后，直接跳转到网站的首页，那么这个时候，我们就可以使用重定向来完成。当浏览器收到一个重定向的响应时，会按照重定向响应给出的地址，再次向此地址发出请求。
@@ -752,7 +760,9 @@ req.getRequestDispatcher("/time").forward(req, resp);
 
 现在，在登陆成功的时候，我们将请求转发给处理时间的Servlet，注意这里的路径规则和之前的不同，我们需要填写Servlet上指明的路径，并且请求转发只能转发到此应用程序内部的Servlet，不能转发给其他站点或是其他Web应用程序。
 
-现在再次进行登陆操作，我们发现，返回结果为一个405页面，证明了，我们的请求现在是被另一个Servlet进行处理，并且请求的信息全部被转交给另一个Servlet，由于此Servlet不支持POST请求，因此返回405状态码。
+现在再次进行登陆操作，我们发现，返回结果为一个405页面，**证明了，我们的请求现在是被另一个Servlet进行处理，并且请求的信息全部被转交给另一个Servlet，由于此Servlet不支持POST请求，因此返回405状态码。**
+
+**（post方法发送到另外一个servlet 也应该用post方法来接）**  就是拜托其他人来做同样的事
 
 那么也就是说，该请求包括请求参数也一起被传递了，那么我们可以尝试获取以下POST请求的参数。
 
