@@ -246,7 +246,9 @@ Lock的三个实现类   可重入锁(常用)   写锁 读锁
 
 公平锁：十分公平 可以先来后到 NonfairSync()
 
-非公平锁：十分不公平  可以插队 FairSync()    默认非公平锁
+非公平锁：十分不公平  可以插队 FairSync()    （谁抢到就谁）
+
+ReentrantLock可重入锁 **默认非公平锁**
 
 
 
@@ -258,7 +260,9 @@ lock锁与synchronized的区别：
 
 3、synchronized会自动释放锁   Lock手动解锁    如果不放 会死锁
 
-4、synchronized  线程1获得锁，阻塞  线程2等待，傻等； lock锁  不一定一直等
+4、synchronized  线程1获得锁，阻塞  线程2等待，傻等； lock锁  不一定一直等 
+
+**tryLock()方法：**是有返回值的，它表示用来尝试获取锁，如果获取成功，则返回true，如果获取失败（即锁已被其他线程获取），则返回false，也就说这个方法无论如何都会立即返回。在拿不到锁时不会一直在那等待。
 
 5、synchronized  可重入锁，不可以中断的  非公平 ； lock，可重入  可以判断锁，可设置公平和非公平
 
@@ -589,6 +593,37 @@ V call()
 回顾：Thread只接受Runnable参数
 
 Callable 找方法跟runnable扯上关系
+
+**适配器模式**
+
+~~~java
+==只是示例===
+public class FutureTask<V> implements RunnableFuture<V> {
+    private final Callable<V> callable;  // 适配的目标
+    private V result;                    // 存储返回值
+
+    public FutureTask(Callable<V> callable) {
+        this.callable = callable;
+    }
+
+    @Override
+    public void run() {
+        try {
+            result = callable.call();  // 调用 Callable 的 call() 方法
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public V get() {
+        return result;  // 返回计算结果
+    }
+}
+~~~
+
+ **`future.get()` 会阻塞，直到任务完成**。
+
+
 
 
 

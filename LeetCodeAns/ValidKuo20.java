@@ -1,0 +1,2 @@
+public class ValidKuo20 {
+}

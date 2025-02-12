@@ -11,6 +11,8 @@
       <sourceFolder url="file://$MODULE_DIR$/ZhuAndFanShe" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Leetcode" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/MysqlLearning" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Testing" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/LeetcodeErShua" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

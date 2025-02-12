@@ -27,13 +27,13 @@ https://javaguide.cn/home.html
 - [x] MySql 12.18-1.7
 - [x] SSM (Spring+spring mvc+mybatis)
 - [ ] linux
-- [ ] 两个项目 (0/2)
-- [ ] RPC   https://github.com/youngyangyang04/RPC-Java  2.4之前
-- [ ] 仿B站前后端分离项目 https://www.nowcoder.com/discuss/640368532730990592?sourceSSR=users  2.10之前
-- [ ] 八股文  1.27- 
-- [ ] 简历   回校前 
-
-
+- [x] 两个项目 (2/2)
+- [x] RPC   https://github.com/youngyangyang04/RPC-Java  2.2-2.6
+- [x] 新的课
+- [ ] 
+- [ ] 八股文 面经  1.27-持续 
+- [ ] 简历  2.18之前搞完差不多了   
+- [ ] 2.24差不多 边准备面试 一边投
 
 
 
