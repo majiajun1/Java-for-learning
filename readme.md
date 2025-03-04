@@ -46,15 +46,38 @@ https://javaguide.cn/home.html
 
 
 
-VIVO:已投
+   [vivo招聘](https://hr-campus.vivo.com/personal/deliveryRecord)  VIVO:2.28已投    已寄？
 
-腾讯:
+ [网易游戏(互娱)校园招聘官网](https://game.campus.163.com/resume) 网易互娱:3.3已投   
 
-腾讯音乐：
 
-美团
 
-饿了么
+[个人中心 | 美团招聘](https://zhaopin.meituan.com/web/personalCenter/resumeDetail?type=campus&mode=view&staffSsoId=2943436)  美团：3.3 已投 
 
-字节
+[OPPO招聘 - 加入我们 join us - 应聘记录](https://careers.oppo.com/university/oppo/center/history) oppo:3.3已投    
 
+[应聘进度 | 腾讯校招](https://join.qq.com/progress.html)  腾讯:3.3已投 --3.5面试 
+
+[我的投递 | 腾讯音乐娱乐招聘](https://join.tencentmusic.com/deliver)  腾讯音乐 :3.4已投
+
+[饿了么招聘官网](https://talent.ele.me/personal/campus-application?lang=zh) 饿了么 ：3.4已投
+
+[蚂蚁集团招聘官网](https://talent.antgroup.com/personal/campus-application) 蚂蚁:3.4已投
+
+[作业帮教育科技（北京）有限公司 - 校园招聘](https://app.mokahr.com/campus-recruitment/zuoyebang/150514?locale=zh-CN#/candidateHome/applications) 作业帮：3.4 已投
+
+[淘天集团招聘官网](https://talent.taotian.com/personal/campus-application?lang=zh) 淘天:3.4已投
+
+字节   
+
+网易
+
+阿里云
+
+京东
+
+携程
+
+快手
+
+搜狐畅游
