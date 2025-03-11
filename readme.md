@@ -35,6 +35,15 @@ https://javaguide.cn/home.html
 - [x] 简历  2.18之前搞完差不多了   
 - [x] 2.24差不多 边准备面试 一边投
 - [ ] 背计网和操作系统2.22-持续
+- [ ] 持续做算法
+
+- [x] 3.7-3.8深挖mysql
+- [ ] 3.9-3.10深挖ES
+- [ ] 3.11-3.12深挖项目
+- [ ] 3.13深挖linux和计网
+- [ ] 3.14后面穿插其他和补场景题
+
+
 
 
 
@@ -46,38 +55,67 @@ https://javaguide.cn/home.html
 
 
 
-   [vivo招聘](https://hr-campus.vivo.com/personal/deliveryRecord)  VIVO:2.28已投    已寄？
+   [vivo招聘](https://hr-campus.vivo.com/personal/deliveryRecord)  VIVO:2.28已投 ---**泡池子默认挂**
 
  [网易游戏(互娱)校园招聘官网](https://game.campus.163.com/resume) 网易互娱:3.3已投   
-
-
 
 [个人中心 | 美团招聘](https://zhaopin.meituan.com/web/personalCenter/resumeDetail?type=campus&mode=view&staffSsoId=2943436)  美团：3.3 已投 
 
 [OPPO招聘 - 加入我们 join us - 应聘记录](https://careers.oppo.com/university/oppo/center/history) oppo:3.3已投    
 
-[应聘进度 | 腾讯校招](https://join.qq.com/progress.html)  腾讯:3.3已投 --3.5面试 
+[应聘进度 | 腾讯校招](https://join.qq.com/progress.html)  腾讯:3.3已投 --3.5QQ一面 --**秒挂**
 
 [我的投递 | 腾讯音乐娱乐招聘](https://join.tencentmusic.com/deliver)  腾讯音乐 :3.4已投
 
-[饿了么招聘官网](https://talent.ele.me/personal/campus-application?lang=zh) 饿了么 ：3.4已投
+[饿了么招聘官网](https://talent.ele.me/personal/campus-application?lang=zh) 饿了么 ：3.4已投  **已寄**
 
 [蚂蚁集团招聘官网](https://talent.antgroup.com/personal/campus-application) 蚂蚁:3.4已投
 
-[作业帮教育科技（北京）有限公司 - 校园招聘](https://app.mokahr.com/campus-recruitment/zuoyebang/150514?locale=zh-CN#/candidateHome/applications) 作业帮：3.4 已投
+[作业帮教育科技（北京）有限公司 - 校园招聘](https://app.mokahr.com/campus-recruitment/zuoyebang/150514?locale=zh-CN#/candidateHome/applications) 作业帮：3.4 已投---**笔试已做**
 
-[淘天集团招聘官网](https://talent.taotian.com/personal/campus-application?lang=zh) 淘天:3.4已投
+[淘天集团招聘官网](https://talent.taotian.com/personal/campus-application?lang=zh) 淘天:3.4已投  **已寄**
 
-字节   
+[应聘记录](https://jobs.bytedance.com/experienced/position/application)字节   : 3.5已投
 
-网易
+[阿里云招聘官网](https://careers.aliyun.com/personal/campus-application?lang=zh)   阿里云：3.5已投--**已寄**
 
-阿里云
+[京东校招](https://campus.jd.com/#/myDeliver?type=present)京东：3.5已投---测评--**初筛中**
 
-京东
+[携程集团 - 校园招聘](https://campus.ctrip.com/campus-recruitment/trip/37757/#/candidateHome/applications) 携程:3.5已投--**测评已做**
 
-携程
+[快手校招 - 快手校招-投递记录](https://campus.kuaishou.cn/#/campus/my-apply)快手:3.5已投--初筛中
 
-快手
+https://careers.pddglobalhr.com/campus/personal-center 拼多多：3.5已投--**简历挂**
 
-搜狐畅游
+虾皮：3.6已投--**-暂不匹配（挂了）**
+
+[Applications - HSBC](https://hsbcearlycareers.groupgti.com/Application/List) 汇丰：3.7已投
+
+[网易校园招聘](https://campus.163.com/app/personal/apply?tab=leihuo)  网易雷火：3.7已投
+
+[哔哩哔哩-招聘](https://jobs.bilibili.com/campus/records?token=1595ef3e-f0c5-4277-9ef2-139f4754c48b)  B站：3.7已投
+
+[吉比特&雷霆游戏校园招聘](https://hr.g-bits.com/web/index.html#/center-web/recruit-query)吉比特:3.10已投
+
+[美的集团-校园招聘官网-Midea校招/实习生招聘](https://careers.midea.com/schoolOut/post)美的：3.11已投
+
+[云智研发公司 - 校园招聘](https://join.tencent-cloud.com/campus-recruitment/csig/20001#/candidateHome/applications) 腾讯云智：3.11已投
+
+==============日常============
+
+小米日常
+
+https://job.xiaohongshu.com/campus/position/14064  小红书日常 待投
+
+哈啰日常：
+
+得物：
+
+
+
+ 
+
+三七互娱：暂无后端
+
+
+
