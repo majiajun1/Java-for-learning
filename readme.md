@@ -55,6 +55,14 @@ https://javaguide.cn/home.html
 
 
 
+
+
+
+
+# 转移到excel（废弃）
+
+
+
    [vivo招聘](https://hr-campus.vivo.com/personal/deliveryRecord)  VIVO:2.28已投 ---**泡池子默认挂**
 
  [网易游戏(互娱)校园招聘官网](https://game.campus.163.com/resume) 网易互娱:3.3已投   
@@ -63,7 +71,7 @@ https://javaguide.cn/home.html
 
 [OPPO招聘 - 加入我们 join us - 应聘记录](https://careers.oppo.com/university/oppo/center/history) oppo:3.3已投    
 
-[应聘进度 | 腾讯校招](https://join.qq.com/progress.html)  腾讯:3.3已投 --3.5QQ一面 --**秒挂**
+[应聘进度 | 腾讯校招](https://join.qq.com/progress.html)  腾讯:3.3已投 --3.5QQ一面 --秒挂---3.12捞二面考虑中
 
 [我的投递 | 腾讯音乐娱乐招聘](https://join.tencentmusic.com/deliver)  腾讯音乐 :3.4已投
 
@@ -81,9 +89,9 @@ https://javaguide.cn/home.html
 
 [京东校招](https://campus.jd.com/#/myDeliver?type=present)京东：3.5已投---测评--**初筛中**
 
-[携程集团 - 校园招聘](https://campus.ctrip.com/campus-recruitment/trip/37757/#/candidateHome/applications) 携程:3.5已投--**测评已做**
+[携程集团 - 校园招聘](https://campus.ctrip.com/campus-recruitment/trip/37757/#/candidateHome/applications) 携程:3.5已投--**测评已做**-**-应该挂了**
 
-[快手校招 - 快手校招-投递记录](https://campus.kuaishou.cn/#/campus/my-apply)快手:3.5已投--初筛中
+[快手校招 - 快手校招-投递记录](https://campus.kuaishou.cn/#/campus/my-apply)快手:3.5已投--初筛中--3.12已寄---**改投其他岗位**
 
 https://careers.pddglobalhr.com/campus/personal-center 拼多多：3.5已投--**简历挂**
 
@@ -111,7 +119,7 @@ https://job.xiaohongshu.com/campus/position/14064  小红书日常 待投
 
 得物：
 
-
+华为日常
 
  
 
