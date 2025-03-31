@@ -2,20 +2,40 @@
 
 ## 常用命令
 
-> 查端口
+文件相关：mv mkdir  cd ls
 
-netstat
+进程相关：ps top netstate
 
-lsof
+权限相关：chmod  chown   useradd groupadd
 
-> 查内存占用
+网络相关：netstat  ip   addr
 
-free  top
+测试相关：ping  
 
-> du
 
-看指定目录或文件的磁盘空间
 
-> ps
+kill命令 杀进程
 
-看进程的信息
+top -H  查线程
+
+查端口：lsof   netstate
+
+
+
+telnet命令测试端口
+
+top也可以查CPU 核心数
+
+free和top命令可以查看内存  
+
+
+
+
+
+> CPU   100%怎么解决
+
+top命令查占用高的进程
+
+ps -T -p  查占用高的线程
+
+jstack命令查线程堆栈信息 定位代码

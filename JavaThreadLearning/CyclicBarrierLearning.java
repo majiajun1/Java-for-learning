@@ -5,7 +5,7 @@ public class CyclicBarrierLearning {
     public static void main(String[] args) {
         //召唤龙珠的线程
 
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(7,
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(2,
                 ()->{System.out.println("召唤神龙成功");});
 
 

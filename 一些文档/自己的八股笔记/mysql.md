@@ -30,6 +30,12 @@ null表示不确定的值
 
 
 
+
+
+自连接要注意去重！  最好用DISTINCT
+
+!= 和 <>效果一样
+
 ## 定位慢查询
 
 超过1s  时间过长
@@ -39,6 +45,14 @@ null表示不确定的值
 调试工具：Arthas
 
 运维工具：Prometheus、**Skywalking**
+
+> skywalking的底层是什么？怎么实现？
+
+
+
+
+
+
 
 
 
@@ -78,9 +92,11 @@ null表示不确定的值
 
 
 
-**type**   sql连接的类型 左往右性能变差
+> **type**   sql连接的类型 左往右性能变差
+>
+>  null system  const  eq_ref   ref   range  index  all
 
-null system  const  eq_ref   ref   range  index  all
+
 
 null没用到表 无需关注数
 
@@ -214,11 +230,21 @@ SELECT * FROM users WHERE id IN (...) ORDER BY id;
 
 1.违反最左匹配原则
 
-查询从最左列开始 不能跳过索引中的列
+查询从**最左列开始并连续**
 
 如果是AC这种情况  跳过中间  那只有最左索引生效
 
 2.范围查询的字段的右边的列，索引失效
+
+例如 a=2  b>1xxxx
+
+a=2是等值 索引生效 但是b>1
+
+**扫描所有 `b > 1` 的数据**
+
+**再逐行过滤 `c = 3`**（即**回表**，性能下降）
+
+解决方法：拆分索引  a和b c
 
 3.在索引列上进行运算操作，索引失效
 
@@ -325,6 +351,12 @@ START TRANSACTION-----执行sql语句---COMMIT要不全部完成 要不全部失
 可重复读和读已提交基于MVCC（保证并发）
 
 串行化是基于锁
+
+
+
+> 约束模式
+
+`SET CONSTRAINTS`设置当前事务里的约束检查的特性。`IMMEDIATE` 约束是在每条语句后面进行检查。`DEFERRED`约束一直到事务提交时才检查。 每个约束都有自己的`IMMEDIATE`或`DEFERRED`模式。
 
  ## MVCC （建议重看视频 搞不懂）
 
@@ -498,7 +530,41 @@ binlog无而redolog有 则要回滚
 
 
 
-中间件Mycat 来解决以上问题 （水平分）
+**中间件Mycat 来解决以上问题 （水平分）**
+
+### 具体技术
+
+>   ShardingSphere
+
+ 核心是定义分片规则，比如基于某个字段（如 user_id）进行取模分库。在配置里，指定数据源（多个数据库实例）和分片策略，ShardingSphere 会自动路由 SQL 到对应的库
+
+
+
+```yaml
+rules:
+  - !SHARDING
+    tables:
+      apply_record:  # 逻辑表名
+        actualDataNodes: ds.apply_record_$->{0..10}  # 11张分表
+        tableStrategy:
+          standard:
+            shardingColumn: apply_id
+            shardingAlgorithmName: apply_id_mod
+    shardingAlgorithms:
+      apply_id_mod:
+        type: MOD
+        props:
+          sharding-count: 11
+
+```
+
+**ShardingSphere** 的水平分表支持 **插入新数据**，它会根据分片规则自动路由数据到正确的分表。
+
+
+
+，**ShardingSphere** 可以通过 **XML 配置** 完成分库分表的设置，一旦配置好，**应用层不需要再写分片相关的代码**。
+
+
 
 
 
@@ -603,3 +669,16 @@ MySQL 优化器的作用是选择执行 SQL 查询的最佳执行计划，从而
 优化器通过评估不同索引的使用情况来决定是否以及如何使用索引。
 
 例如联合索引，优化器会优先选择
+
+
+
+
+
+## 杂
+
+> 自增值不连续的 4 个场景：
+
+1. 自增初始值和自增步长设置不为 1  （这个不用说）
+2. 唯一键冲突 ：当插入数据时，如果主键或唯一索引冲突，插入会失败，但自增值仍然会被占用，导致 ID 出现跳跃。
+3. 事务回滚:即使事务回滚，自增 ID 仍然会递增，不会回到之前的值。这是因为 MySQL 在分配自增 ID 时，并不会等事务提交才确定 ID，而是在 `INSERT` 语句执行时就占用了 ID。
+4. 批量插入（如 `insert...select` 语句  ：`INSERT ... SELECT` 语句一次性插入多条数据时，MySQL 会先分配足够的 ID 以确保所有数据插入成功，但如果部分数据因冲突失败，ID 仍然会被消耗，导致 ID 不连续。
