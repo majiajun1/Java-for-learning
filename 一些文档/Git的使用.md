@@ -129,5 +129,5 @@ vscode  （后期考虑其他IDE）
 昨晚的是branch的学习 其实也没啥 
 
 
-git test 2222
+ 
 get333  444
