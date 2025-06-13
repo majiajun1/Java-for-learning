@@ -1,4 +1,4 @@
-import com.oracle.jrockit.jfr.Producer;
+
 
 /**
  * 线程之间的通信问题：生产者和消费者问题！  等待唤醒，通知唤醒

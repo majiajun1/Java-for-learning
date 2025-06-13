@@ -1,3 +1,5 @@
+package com;
+
 import java.util.Arrays;
 
 public class ZuishaoArrow452 {

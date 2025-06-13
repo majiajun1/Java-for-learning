@@ -1,4 +1,4 @@
-import sun.text.normalizer.UCharacter;
+
 
 public class LongestPublicSubSeq1143 {
     public static void main(String[] args) {

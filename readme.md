@@ -5,7 +5,7 @@
 5月19日-8月19日  JAVA后端工程师    可能会考虑继续实习
 实习记录在另外一个project
 
-Leetcode150 (0/150)
+Leetcode150 (10/150)
 
 Leetcode 周赛(0)
 
