@@ -86,7 +86,7 @@ null表示不确定的值
 
 
 
-![image-20250212203555229](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250212203555229.png)
+![image-20250212203555229](..\..\TyporaImage\image-20250212203555229.png)
 
 下者意味着有优化空间
 
@@ -442,7 +442,7 @@ creator_trx_id:readview创建者的事务ID
 
 trx_id代表当前事务id （在记录的隐藏字段）
 
-![image-20250213215045677](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250213215045677.png)
+![image-20250213215045677](..\..\TyporaImage\image-20250213215045677.png)
 
 
 
@@ -640,7 +640,7 @@ innoDB支持表级锁和行级锁
 
  
 
-![image-20250308154725694](D:\Document\JAVA\TyporaImage\image-20250308154725694.png)
+![image-20250308154725694](..\..\TyporaImage\image-20250308154725694.png)
 
  
 

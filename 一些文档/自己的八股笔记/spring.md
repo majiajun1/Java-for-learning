@@ -46,7 +46,7 @@ A用到B  B用到A
 
 初始化的循环依赖
 
-![image-20250214165141080](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214165141080.png)
+![image-20250214165141080](..\..\TyporaImage\image-20250214165141080.png)
 
 
 
@@ -62,13 +62,13 @@ A用到B  B用到A
 
 二级缓存解决普通循环问题
 
-![image-20250214165551785](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214165551785.png)
+![image-20250214165551785](..\..\TyporaImage\image-20250214165551785.png)
 
 
 
 如果 A是代理对象 那就需要三级缓存解决
 
-![image-20250214165811793](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214165811793.png)
+![image-20250214165811793](..\..\TyporaImage\image-20250214165811793.png)
 
 对比二级缓存解决  其实就是存了个单例的工厂 然后用工厂拿到A  再把A放到**早期单例池**
 
@@ -139,11 +139,11 @@ java默认是default  方法具有包私有访问权限，只有同一包中的�
 
 
 
-![image-20250214173715445](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214173715445.png)
+![image-20250214173715445](..\..\TyporaImage\image-20250214173715445.png)
 
  **这一部分看PDF**
 
-![image-20250214173905290](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214173905290.png)
+![image-20250214173905290](..\..\TyporaImage\image-20250214173905290.png)
 
 **其实就是把后面的视图省掉了**
 
@@ -183,17 +183,17 @@ java默认是default  方法具有包私有访问权限，只有同一包中的�
 
  自己背吧
 
-![image-20250214175016204](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214175016204.png)
+![image-20250214175016204](..\..\TyporaImage\image-20250214175016204.png)
 
 
 
 > SpringMVC
 
-![image-20250214175118788](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214175118788.png)
+![image-20250214175118788](..\..\TyporaImage\image-20250214175118788.png)
 
 > Springboot
 
-![image-20250214175143445](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214175143445.png)
+![image-20250214175143445](..\..\TyporaImage\image-20250214175143445.png)
 
 
 
@@ -231,7 +231,7 @@ mybatis-config.xml
 
 用的cglib代理对象
 
-![image-20250214195335763](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214195335763.png)
+![image-20250214195335763](..\..\TyporaImage\image-20250214195335763.png)
 
 
 
@@ -239,7 +239,7 @@ mybatis-config.xml
 
 > 缓存
 
-![image-20250214195440558](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20250214195440558.png)
+![image-20250214195440558](..\..\TyporaImage\image-20250214195440558.png)
 
 一级缓存：单一sqlsession
 

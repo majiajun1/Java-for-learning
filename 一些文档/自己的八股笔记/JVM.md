@@ -291,11 +291,11 @@ Major GC  主要针对老年代进行回收，但不一定只回收老年代。 
 
 ## 堆和栈
 
-![Java 运行时数据区域（JDK1.8 ）](D:\Document\JAVA\TyporaImage\java-runtime-data-areas-jdk1.8.png)
+![Java 运行时数据区域（JDK1.8 ）](..\..\TyporaImage\java-runtime-data-areas-jdk1.8.png)
 
 
 
-![Java 运行时数据区域（JDK1.8 ）](D:\Document\JAVA\TyporaImage\java-runtime-data-areas-jdk1.8-17430677342952.png)
+![Java 运行时数据区域（JDK1.8 ）](..\..\TyporaImage\java-runtime-data-areas-jdk1.8-17430677342952.png)
 
 ### 栈
 
@@ -303,4 +303,4 @@ Java 虚拟机栈（后文简称栈）也是线程私有的，它的生命周期
 
 每个栈帧中都拥有：局部变量表、操作数栈、动态链接、方法返回地址。和数据结构上的栈类似，两者都是先进后出的数据结构，只支持出栈和入栈两种操作。
 
-![Java 虚拟机栈](D:\Document\JAVA\TyporaImage\stack-area.png)
+![Java 虚拟机栈](..\..\TyporaImage\stack-area.png)
