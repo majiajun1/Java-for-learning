@@ -11,10 +11,16 @@ public class Node {
     int val;
     Node next;
     Node random;
+    public al.Node left;
+    public al.Node right;
 
     public Node(int val) {
         this.val = val;
         this.next = null;
         this.random = null;
+        this.left = null;
+        this.right = null;
+
     }
 }
+
