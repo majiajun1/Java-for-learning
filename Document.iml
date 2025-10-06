@@ -15,6 +15,7 @@
       <sourceFolder url="file://$MODULE_DIR$/LeetcodeErShua" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/NiuKe" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/TenSort" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/DesignModeLearn" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

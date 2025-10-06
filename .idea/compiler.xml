@@ -10,5 +10,8 @@
         <module name="KAOSHI" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="DesignModeLearn" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

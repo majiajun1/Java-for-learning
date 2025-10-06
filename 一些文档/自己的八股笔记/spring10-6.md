@@ -4,7 +4,11 @@
 
 > bean是单例的
 
-singletion
+singletion 默认单例
+
+可以使用prototype 来多例
+
+单例由spring容器管理，多例不管理
 
 
 
@@ -105,9 +109,36 @@ public void logPointcut() {}
 
 
 
-## 事务失效的场景
+## 事务及事务失效的场景
 
-@Transactional
+使用@Transactional即可使用事务
+
+还能使用  `TransactionTemplate`
+
+```java
+
+@Service
+public class UserService {
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
+    public void updateUser(User user) {
+        transactionTemplate.execute(status -> {
+            // 业务逻辑
+            userMapper.update(user);
+            
+            // 如果出现异常，事务会自动回滚,亦可自己catch然后手动回滚
+            return null;
+        });
+    }
+}
+
+```
+
+
+
+
 
 情况1：异常捕获处理
 
@@ -211,6 +242,31 @@ mybatis-config.xml
 
 有springboot就不用这些了
 
+```java
+public interface UserMapper {
+    User selectById(@Param("id") Long id);
+    
+     // 返回多条记录
+    List<User> selectByStatus(@Param("status") String status);
+}
+
+
+
+<!-- resources/mapper/UserMapper.xml -->
+<mapper namespace="com.example.mapper.UserMapper">
+    <select id="selectById" parameterType="long" resultType="com.example.model.User">
+        SELECT * FROM user WHERE id = #{id}
+    </select>
+        
+         <select id="selectByStatus" parameterType="string" resultType="com.example.model.User">
+        SELECT * FROM user WHERE status = #{status}
+    </select>
+</mapper>
+
+        //#{status}和@Param("status")是要对上的
+        多个参数时必须用 @Param，单参数情况下不加 @Param 可能也行
+```
+
 
 
 
@@ -230,6 +286,10 @@ mybatis-config.xml
 全局修改:lazyloadingenabled  
 
 用的cglib代理对象
+
+通常场景是 一个对象里面包着另外一个对象，此时另外一个对象可以延迟加载，此时这个对象被代理，只有在get里面的对象时才会执行查询（代理拦截和invoke）
+
+
 
 ![image-20250214195335763](..\..\TyporaImage\image-20250214195335763.png)
 
@@ -255,6 +315,73 @@ mybatis-config.xml
 
 
 
+> #和$的区别？
+
+#会替换为占位符"?"，也就是PreaparedStatment的防注入方式。
+
+$不能防注入
+
+> JDBC的回忆
+
+Connection建立，调用Connection的create方法创建statement，调用statement的方法执行SQL语句，然后close资源
+
+记得要用try with resources和使用事务，还有PreparedStatement
+
+```java
+import java.sql.*;
+
+public class JdbcTransactionDemo {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/testdb";
+        String username = "root";
+        String password = "123456";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            // 1. 获取连接
+            conn = DriverManager.getConnection(url, username, password);
+
+            // 2. 关闭自动提交
+            conn.setAutoCommit(false);
+
+            // 3. 准备 SQL
+            String sql1 = "INSERT INTO user(id, name) VALUES (?, ?)";
+            ps = conn.prepareStatement(sql1);
+            ps.setLong(1, 1L);
+            ps.setString(2, "Alice");
+            ps.executeUpdate();
+
+
+            // 4. 提交事务
+            conn.commit();
+            System.out.println("事务提交成功！");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                if (conn != null) {
+                    // 5. 回滚事务
+                    conn.rollback();
+                    System.out.println("事务回滚！");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            // 6. 关闭资源
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+```
+
 
 
 ## Spring代理相关
@@ -270,3 +397,68 @@ CGLIB 代理的本质是 **继承目标类并重写方法**，但 **`final` 方�
 
 
 CGLIB 代理是通过 **创建目标类的子类** 来实现的，但 **`final` 方法不能被子类重写**，所以当外部调用该 `final` 方法时，实际上调用的是 **目标类（父类）自身的方法**，而**代理对象的依赖注入（DI）在 Spring 中是针对代理类进行的，目标类本身并没有被 Spring 进行 DI**，因此会导致 `null` 引用，从而引发 **空指针异常**。
+
+
+
+
+
+## spring一些杂
+
+### 依赖注入 
+
+Spring直接autowired即可
+
+ 其他方式如下：
+
+> 构造器注入 
+
+```java
+@Service
+public class UserService {
+
+    private final UserMapper userMapper;
+
+    // 构造器注入
+    public UserService(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+}
+//Spring 容器创建 UserService 时：
+
+发现 UserService 只有一个构造器
+
+找到类型为 UserMapper 的 Bean
+
+调用构造器 new UserService(userMapper)
+
+注入完成
+
+✅ 整个过程自动完成，不需要手动调用构造器
+```
+
+Spring 容器创建 Bean 时，如果找不到依赖 Bean，会报错，防止创建了一个包含空对象的Bean，防止使用时出现 `NullPointerException`
+
+使用 `final` 修饰依赖，保证 Bean 生命周期内不会被修改，提高对象设计的健壮性
+
+> setter注入
+
+```java
+@Service
+public class UserService {
+
+    private UserMapper userMapper;
+
+    // Setter 注入
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+    public void updateUser(User user) {
+        userMapper.update(user);
+    }
+}
+setter方法不能动final的变量，但构造对象（构造函数）的时候可以
+```
+
+比setter糟糕，废物。
