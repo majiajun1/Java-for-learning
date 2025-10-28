@@ -22,6 +22,8 @@ singletion 默认单例
 
 
 
+
+
 > 生命周期
 
 把xml信息传递到beandefinition      
@@ -136,9 +138,27 @@ public class UserService {
 
 ```
 
+底层是AOP（动态代理），拦截器管 “什么时候做、按什么规则做”，管理器管 “具体怎么做”，二者配合实现注解式事务的自动控制。
+
+拦截器基于 AOP 拦截带 `@Transactional` 的方法，先解析注解配置（如传播行为、回滚规则），再根据当前事务状态决定是否开启、暂停事务，最后在方法执行后触发提交或回滚；而事务管理器是实际执行者，比如 `DataSourceTransactionManager` 会操作数据库连接（设置自动提交为 false、调用 commit/rollback），不同数据访问技术对应不同管理器（不继续深入了）
 
 
 
+事务注解的两大参数，一个是传播行为，一个是隔离级别（Mysql八股），默认即可
+
+
+
+传播行为（Transaction Propagation）是 Spring 事务管理的核心概念，用来定义**当一个事务方法调用另一个事务方法时，两个事务如何协同工作**（比如是否共用一个事务、是否新建事务等）。
+
+3 个最常用的：
+
+1. **REQUIRED（默认）**：如果当前已有事务，就加入该事务；如果没有，就新建一个事务。比如 ServiceA 调用 ServiceB，两者会在同一个事务里，要么一起提交，要么一起回滚。
+2. **REQUIRES_NEW**：无论当前有没有事务，都新建一个独立事务，原事务会被暂停，直到新事务完成。比如 ServiceA 调用 ServiceB 时，B 抛异常回滚，不影响 A 的事务。
+3. **SUPPORTS**：如果当前有事务，就加入；如果没有，就以非事务方式执行（不开启新事务）。也就是说，该模式是否支持事务，看调用它的方法是否有事务支持。
+
+
+
+失效情况：
 
 情况1：异常捕获处理
 
@@ -184,31 +204,128 @@ java默认是default  方法具有包私有访问权限，只有同一包中的�
 
 ## 自动配置原理
 
+
+
+首先简单讲，以redis为例，只要在pom里面写了依赖，就会自动注入Bean，直接用RedisTemplate这个Bean。
+
+不需要再写 `@Configuration` 去注册这些常规组件Bean。
+
+```java
+// 数据库配置类
+@Configuration
+public class DataSourceConfig {
+
+    // 从配置文件（如 application.properties）读取参数
+    @Value("${spring.datasource.url}")
+    private String url;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    // 定义数据源 Bean（比如 HikariCP 连接池）
+    @Bean
+    public DataSource dataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
+        // 其他配置：超时时间、最大连接数等
+        config.setMaximumPoolSize(10);
+        return new HikariDataSource(config); // 返回连接池实例
+    }
+
+    // 依赖数据源的 JdbcTemplate Bean
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        // 直接调用上面定义的 dataSource() 方法，Spring 会自动注入依赖
+        return new JdbcTemplate(dataSource());
+    }
+}
+```
+
+
+
+
+
+
+
+
+
 @SpringBootApplication包含以下三个注解
 
 @SpringBootConfiguration
 
-@ComponentScane
+**@EnableAutoConfiguration**  （核心）
+
+@ComponentScan ：自动扫描指定包下的注解Bean，比如@Controller
 
 > **@EnableAutoConfiguration**
 
-它实际上是 `@Import(AutoConfigurationImportSelector.class)` 的一种简化写法，意味着它导入了 `AutoConfigurationImportSelector` 类，这个类负责从所有自动配置类中挑选出与当前应用环境匹配的配置。
+![image-20250214173905290](..\..\TyporaImage\1719495511568-bc5f9e21-9e2c-4888-91a8-4048058ff408.webp)
 
-读取引用的jar包,component和查meta-inf/spring.factories 
+@AutoConfigurationPackage:**指定自动配置的基础包路径**,当前注解标注的类所在的包，及其子包下的组件，需要被纳入自动扫描和管理范围
+
+ `@Import(AutoConfigurationImportSelector.class)` 导入了 `AutoConfigurationImportSelector` 类，这个类负责从所有自动配置类中挑选出与当前应用环境匹配的配置。
+
+1、读取`META-INF/spring.factories`文件，查找所有实现了 `AutoConfiguration` 接口的类，加载所有候选自动配置类（如RedisAutoConfiguration）。
+
+2、通过@Conditional注解筛选生效配置（如@ConditionalOnClass检查依赖是否存在）。
 
 
 
+>@Conditional
 
-
-@ConditionalOnClass 
-
-判断是否有对应的类，如果有则加载   把配置类的所有bean放入容器
+ ```java
+ @Configuration
+ @ConditionalOnClass(DataSource.class)
+ public class DataSourceAutoConfiguration {
+     @Bean
+     @ConditionalOnMissingBean
+     public DataSource dataSource() { ... }
+ }
+ //当类路径有 DataSource 且容器里没有自定义 DataSource 时，才自动配置默认的数据源。
+ ```
 
 
 
 
 
 ## Spinrg三件套常见注解
+
+> autowired和resource的注解
+
+autowired是spring的实现，resource是j2ee的实现
+
+autowired优先按类型查找
+
+找不到再按名称查
+
+可以结合@Qualifier 来解决接口多实现问题
+
+
+
+resource优先按名称
+
+按照**变量名** 来查找，如果找不到就再按类型找，再找不到（多实现）的话，可以指定 `name` 属性（最直接） 
+
+```java
+@Component
+class MyServiceImpl implements MyService {}
+默认规则：类名首字母小写
+
+类名 MyServiceImpl → bean 名称 "myServiceImpl"
+
+所以在容器里实际注册的名字就是 "myServiceImpl"
+    
+    @Resource
+    private MyService myServiceImpl; 成功注入
+        
+    @Resource(name="myServiceImpl")
+private MyService myService; 成功注入
+```
+
+
 
 > Spring
 
@@ -461,4 +578,23 @@ public class UserService {
 setter方法不能动final的变量，但构造对象（构造函数）的时候可以
 ```
 
-比setter糟糕，废物。
+比构造器糟糕，废物。
+
+
+
+### spring security
+
+> 怎么保证安全的
+
+核心就是先认证再授权，还带防攻击
+
+认证的时候，它会通过 AuthenticationManager 之类的组件校验你的身份，比如用户名密码对不对，密码都是用 BCrypt 这种加密算法存的，明文根本不会落地。要是用 JWT 令牌登录，它还能验证令牌的签名，防止篡改。
+
+授权这块更细，能按角色（比如 ADMIN）或者具体权限（比如删用户）来限制，接口级别的用 SecurityFilterChain 配置哪些路径谁能访问，方法级别的直接加 @PreAuthorize 注解，比如 “只有管理员才能调这个方法”。
+
+默认就防 CSRF 攻击，非 GET 请求得带令牌；还会加各种安全响应头，防 XSS
+
+
+
+
+

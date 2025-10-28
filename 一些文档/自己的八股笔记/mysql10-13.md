@@ -188,6 +188,8 @@ B+ 树叶⼦节点之间⽤链表连接了起来，有利于范围查询，⽽ B
 
 > 聚集索引和二级索引
 
+**只能有一个聚簇索引**  默认主键
+
 (聚集索引）主键查询：直接在 主键索引 所在的 B+ 树中查询，然后直接返回查询到的叶⼦节点（此时，叶⼦节点⾥⾯就是整⾏ 记录） 
 
 如果没有主键和唯一索引   会自动生成隐藏的rowid作为聚集索引
@@ -387,7 +389,9 @@ a=2是等值 索引生效 但是b>1
 
 4.字符串不加单引号，索引**可能**失效
 
-发生类型转换就会失效
+ 字段是int类型   sql语句加单引号 不会导致索引失效
+
+ 字段是字符串，sql语句无单引号且为数字，MySQL 会把列转成数字再比较
 
 5.%开头的模糊查询会失效，尾部%模糊查，索引不会失效
 
@@ -635,13 +639,17 @@ undo  log保存历史版本的链表，**每条记录有trx_id和回滚指针**
 
 > 根据trx_id和快照读的字段比对来判断可读性
 
-min_trx和max_trx组成一个时间窗口    m_ids在里面（交集非子集）
+trx_id==creator_trx_id    是这个事务创建的
+
+min_trx和max_trx组成一个时间窗口     m_ids在里面（交集非子集）
 
 如果trx_id小于min 则相当于读已提交，是可见的
 
+如果在中间的话，要看是否活跃（未提交）（看是否在m_ids)，已提交则可见
+
 如果大于max_trx 说明未提交，不可见
 
-如果在中间的话，要看是否活跃（未提交）（看是否在m_ids)，已提交则可见
+
 
  
 
@@ -715,6 +723,29 @@ SQL thread 再读relay log
 
 
 
+
+
+
+
+### 分区
+
+**分区**：是**逻辑上拆成多个分区**，但对外还是一个表（表名不变）。比如`order`表按月份分区后，应用层还是查`order`表，MySQL 内部自动找对应分区，完全透明。
+
+```sql
+CREATE TABLE `order` (
+  `id` bigint(20) NOT NULL,
+  `create_time` datetime NOT NULL,
+  `amount` decimal(10,2) NOT NULL
+) ENGINE=InnoDB 
+PARTITION BY RANGE (TO_DAYS(create_time)) (  -- 按日期天数转换值分区
+  PARTITION p202501 VALUES LESS THAN (TO_DAYS('2025-02-01')),  -- 2025-01的数据
+  PARTITION p202502 VALUES LESS THAN (TO_DAYS('2025-03-01')),  -- 2025-02的数据
+  PARTITION p_other VALUES LESS THAN MAXVALUE  -- 其他月份数据（兜底）
+);
+```
+
+
+
 **中间件Mycat 来解决以上问题 （水平分）**
 
 ### 具体技术
@@ -749,7 +780,9 @@ rules:
 
 ，**ShardingSphere** 可以通过 **XML 配置** 完成分库分表的设置，一旦配置好，**应用层不需要再写分片相关的代码**。
 
+> 怎么用（代码）
 
+直接读旧表数据然后插入就行了  注意旧表不要被shardingsphere拦截了就行 
 
 
 

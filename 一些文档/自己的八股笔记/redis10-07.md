@@ -1,8 +1,32 @@
-# Redis
+#  Redis
+
+### 基础
+
+>底层数据结构
+
+String: 字符串，底层是SDS，保存文本数据和也会存长度，以O(1)的时间获取长度
+
+SET  GET  SETNX
+
+List：列表（**双向链表**），现在的底层是QuickList      L/R +PUSH/POP
+
+
+
+Hash:类似java的hashmap 。  HSET  HGET   用户信息，商品信息，文章信息    
+
+
+
+Set：集合，类似Hashset，方便求并集和交集，共同好友，共同关注
+
+Zset：排序集合，底层是**跳表**，排序场景，排行榜电话。
+
+
+
+其他：GEO、BITMAP
 
 >  缓存三兄弟  击穿 雪崩 穿透
 
-击穿：缓存过期   
+击穿： 缓存过期，**但SQL有**
 
 1.  设置逻辑不过期（异步更新缓存过期时间 其他线程先返回过期的数据  只有一个线程更新缓存（锁））  高可用
 2.  强一致 互斥锁 直到更新完毕
@@ -15,23 +39,113 @@
 
 
 
-穿透：访问不存在的key    缓存没有   sql返回NUll后也不会存在redis   大量访问DB 导致DB负荷大  
+穿透：**访问SQL中不存在的key**    缓存没有   sql返回NUll后也不会存在redis   大量访问DB 导致DB负荷大  
 
 1.返回null值 并存在缓存里  设置一个过期时间防止负荷大
 
 2.布隆过滤器  先查有没有    hash求值存在 01位图里面    因为是hash所以有误判率   可以设置为5%左右  redisson和guava有实现  
 
+原理：多次哈希得到多个哈希值，对多个哈希值去模得到对应的bitmap位置，在对应位置上标记即可，所以会有误判率。
+
+3、请求校验
 
 
->  双写一致 
 
- 延迟双删 和读写锁      异步（canal和MQ通知）
+> 布隆过滤器的使用
 
-> 持久化  RDB和AOP   
+```java
+import org.redisson.api.RBloomFilter;
+import org.redisson.api.RedissonClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.Resource;
+
+@Configuration
+public class BloomFilterConfig {
+
+    @Resource
+    private RedissonClient redissonClient; // Redisson默认配置（连localhost:6379）
+
+    // 定义一个布隆过滤器Bean（直接用默认配置）
+    @Bean
+    public RBloomFilter<String> userBloomFilter() {
+        // 1. 获取布隆过滤器（指定名称，如"user_ids"）
+        RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter("user_ids");   //生成一个 RBloomFilter 接口的名为user_ids的代理对象（类似 “遥控器”），
+        
+        // 2. 初始化：预期存100万个元素，误判率1%（默认配置，直接用这两个参数即可）
+        bloomFilter.tryInit(1000000, 0.01);//若不存在user_ids，则新建
+        
+        return bloomFilter;
+    }
+}
+///////////////////////////////////////////////////////////
+import org.redisson.api.RBloomFilter;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+@Service
+public class UserService {
+
+    // 注入前面定义的布隆过滤器
+    @Resource
+    private RBloomFilter<String> userBloomFilter;
+
+    // 1. 初始化：向过滤器添加已存在的元素（比如从数据库加载所有用户ID）
+    public void initUserBloomFilter() {
+        // 假设从数据库查询出所有用户ID（这里模拟几个）
+        String[] userIds = {"1001", "1002", "1003", "1004"};
+        for (String id : userIds) {
+            // 添加元素到过滤器
+            userBloomFilter.add(id);
+        }
+    }
+
+    // 2. 查询用户时：先用过滤器判断是否可能存在，防止穿透
+    public String getUserById(String userId) {
+        // 第一步：判断用户ID是否一定不存在
+        if (!userBloomFilter.contains(userId)) {
+            // 一定不存在，直接返回，不查数据库
+            return "用户ID不存在（布隆过滤器拦截）";
+        }
+
+        // 第二步：如果可能存在，再查数据库/缓存（实际业务逻辑）
+        return "查询到用户信息：" + queryFromDb(userId);
+    }
+
+    // 模拟数据库查询
+    private String queryFromDb(String userId) {
+        return "user_" + userId;
+    }
+}
+```
+
+
+
+
+
+
+
+>  双写一致 （最终一致性）
+
+ 延迟双删 （很少用了）和读写锁      
+
+异步的两个方案  ：
+
+一、cannal订阅binlog更新，消息队列消费，缓存删除
+
+二、删除缓存放入消息队列，利用消息队列的失败重新消费功能来解决
+
+> 持久化  RDB和AOF   
 
 一个存快照 ---> COPY ON WRITE         
 
-一个存写命令（这个更好 有三种设置  always  everysecond和系统自己决定）
+一个存写命令  这个更好 
+
+有三种设置  always ：每个命令
+
+everysecond和系统自己决定：先缓存
 
 
 
@@ -41,11 +155,17 @@
 
 惰性删除    设置TTL  用到的时候会检查是否过期  检查到过期了再删除    对CPU友好但对内存不友好 因为没及时删
 
-定期删除，定期对KEY检查（一定数量的KEY）      但是难以确定时长和频率 难以优化
+定期删除，定期对KEY检查（一定数量的KEY）（默认20个）      但是难以确定时长和频率 难以优化
 
-SLOW模式  定时任务 默认10hz  每次不超过25ms  (为了不影响主进程)
+> 两种模式
 
-FAST模式：执行频率不固定，但两次间隔不低于2ms 每次耗时不超过1ms
+**SLOW模式**  定时任务 默认10hz  每次不超过25ms  (为了不影响主进程)
+
+若过期占比25%则继续检查：查并清理过期缓存，首次执行时统计 “过期数据占总数据的比例”。若过期比例＞25%：说明积累了较多过期数据，需要更密集地检查清理（可能在本次执行后，短时间内再次触发检查，或临时提高频率），直到过期比例降到 25% 以下。
+
+
+
+**FAST模式**：执行频率不固定，但两次间隔不低于2ms 每次耗时不超过1ms
 
 
 
@@ -92,9 +212,36 @@ random  lru  lfu  三种策略        3*2  还有前两种策略
 
 不同数据在不同的服务器   集群部署  锁的服务器    不同服务器不同线程共享一把锁
 
-setnx命令  要加失效时间 防止死锁
+setnx命令  要加失效时间 防止死锁  （不可重入）  
+
+```java
+StringRedisTemplate  stringRedisTemplate;
+    
+    public boolean setNx(String key, String value, long timeout, TimeUnit unit) {
+        // setIfAbsent 方法等价于 SETNX：key 不存在则设置，返回 true；否则返回 false
+        // 同时可以指定过期时间（避免死锁/内存泄漏）
+        return stringRedisTemplate.opsForValue().setIfAbsent(key, value, timeout, unit);
+    }
+```
+
+
 
 可以使用 **不同的锁 Key** 来锁定不同的业务，确保多个业务逻辑之间互不干扰。
+
+setnx想要实现重入，只能自己做一个计数器，**用ThreadLocal来获取当前线程的锁和计数器**
+
+```java
+// 记录当前线程重入次数
+private final ThreadLocal<Integer> reentrantCount = ThreadLocal.withInitial(() -> 0);
+
+// 保存当前线程持有的锁的key
+private final ThreadLocal<String> lockKeyHolder = new ThreadLocal<>();
+
+```
+
+
+
+
 
 锁的失效时间可能会比业务执行时间短  怎么办？
 
@@ -110,21 +257,41 @@ redisson实现的分布式锁 已经实现了给锁续期
 
 基于lua脚本
 
-redisson锁也是可重入的   用hash结构记录线程id  key id  和重入次数       重入次数变0就删除信息
+redisson锁 是**可重入**的   用hash结构记录线程id  key id  和重入次数       重入次数变0就删除信息
 
- 
+ ```java
+   RLock lock = redissonClient.getLock("my-lock");
+ 后面基本跟Lock库一样的使用
+ ```
 
-**主从一致性**
+> **主从一致性**
 
 RedLock红锁   多个redis实例上创建锁  n/2+1    防止主节点宕机  
 
 但是实现复杂性能差
 
+```java
+ Config config = new Config();
+        config.useClusterServers()
+              .addNodeAddress("redis://127.0.0.1:7001", 
+                              "redis://127.0.0.1:7002", 
+                              "redis://127.0.0.1:7003");
 
+        RedissonClient redisson = Redisson.create(config);
 
- 非要实现强一致性  应该使用zookeeper实现的分布式锁   用临时节点来管理锁    搞完就自动删除节点（其他线程监听） 让当前最小的节点来获取锁  （排队）
+        // 获取一把分布式锁（底层自动应用 RedLock 机制）
+        RLock lock = redisson.getLock("distributed-lock");
+```
 
+ RedLock 的底层本质，仍然是基于 `SETNX + EXPIRE`（或者 `SET key value NX PX time`）来实现的。 
+ 只不过——它在 多个 Redis 实例上 同时执行这套逻辑，并在客户端做“多数派判定”和“时间控制” 。
 
+> 其他
+
+ 非要实现强一致性  应该使用zookeeper实现的**分布式锁**   用临时节点来管理锁    搞完就自动删除节点（其他线程监听） 让当前最小的节点来获取锁  （排队）（curator)   （只是分布式锁。和redis无关，当然可以跟redis一起用，都是通的）
+
+“整个 Zookeeper 集群一致地记录了：当前锁持有者是 A”，
+ 因此无论谁连到哪一台机器，都知道锁已被占用。
 
 > 其他面试问题
 
@@ -138,23 +305,33 @@ RedLock红锁   多个redis实例上创建锁  n/2+1    防止主节点宕机
 
 读写分离   写在主节点  同步到从节点 来读   故障只能手动升级从节点
 
-
-
-实际上
-
-还有
+ 
 
 
 
 用replid id判断是否一致 来判断是否第一次同步   因为服务器变了的话 就要重新从0复制  （全量同步）
 
-执行bgsave用RDB文件来同步  RDB期间的命令（部分的AOP）(通过 Replication Buffer )   发到从节点来执行 防止漏了
+执行bgsave用RDB文件来同步  RDB期间的命令（部分的AOF）(通过 Replication Buffer )   发到从节点来执行 防止漏了
+
+
 
 offset判断是否落后 要不要更新 如果 `repl_offset` 发生偏移，则进行 **增量同步**。
 
+ Replication Buffer 是一个滑动窗口，如果`repl_offset` 不在窗口内，也要进行**全量同步**。包括如果复制中断了和宕机了 也需要判断。
+
+
+
 > 哨兵模式
 
+哨兵是一个独立节点
+
 监控节点是否正常工作
+
+
+
+
+
+
 
 master故障 会将一个slave升级
 
@@ -168,9 +345,31 @@ master故障 会将一个slave升级
 
 前者是 没响应就主观下线    后者是超过指定数量的哨兵都发现下线了 那就客观下线
 
+**Quorum**（法定人数、投票阈值）在 Redis 哨兵里，是**判断 master 是否客观下线（ODOWN）时所需的最少哨兵数量**。
+
+**各个哨兵发现 master 客观下线（ODOWN）是有延迟的**
+
+要先选出Leadewr
+
+**先发现客观下线**的sentinel向其他哨兵发起请求成为leader，其他哨兵在没有同意别的哨兵的leader请求时（**没有投过票**），就会把票投给该sentinel。当**半数以上**的sentinel投票通过后就认定该sentinel为leader。接下来的故障切换有该leader完成。
+
+
+
+只有认为 master 已经 ODOWN（多数哨兵确认下线）的哨兵才参与投票。
+
+
+
 > 哨兵选择顺序
 
+
+
+
+
 判断主和从节点断开时间长短   超过指定值就排除该从节点-》priority值（越小优先越高）---》**offset值（越大数据越多 优先级越高）---**》运行ID（越小越高）
+
+
+
+
 
 
 
@@ -178,7 +377,11 @@ master故障 会将一个slave升级
 
 网络原因 主节点没寄 哨兵以为寄了 去选一个新的主节点    但是写入数据还在旧的主节点在写     网络恢复后  旧主节点被强制降为从节点  数据被清空
 
-设置最少的slave节点  有slave才能写
+解决方法：
+
+quorum调大点，防止轻易的客观下线
+
+**设置最少的slave节点  有slave才能写** （目的是防止 master 写入数据后，没有足够的 slave 复制，万一 master 挂掉，数据丢失。）
 
 设置同步延迟不超过设置时间
 
@@ -186,7 +389,7 @@ master故障 会将一个slave升级
 
 1主1从就够了
 
-##   
+ Redis 3.2引入了保护模式，可以在检测到脑裂时阻止新的主节点接受写请求。通过配置 `protected-mode`参数，可以开启保护模式。
 
 > Sharding分片模式
 
@@ -212,7 +415,7 @@ Redis **自动管理**分片
 
 master之间通过ping监测（心跳）彼此健康状态
 
-访问任意节点 会转发到正确节点  --->哈希槽   CRC16  %16384            （像一致性哈希 但是一致性哈希有虚拟节点  负载均衡）
+访问任意节点 会转发到正确节点  --->哈希槽   CRC16  %**16384**            （像一致性哈希 但是一致性哈希有虚拟节点  负载均衡）
 
 > 如何分片的？
 
@@ -241,6 +444,8 @@ Redis Cluster的节点之间会共享消息，每个节点都会知道是哪个�
 
 
 > 临时接管节点
+
+cluster会自动管理
 
 当集群发生扩容、节点故障修复或者手动迁移哈希槽时，某些哈希槽的数据可能需要从一个节点迁移到另一个节点。这种迁移不会立即完成，而是需要一个过渡阶段。在这个阶段中，某些节点会暂时接管该哈希槽的请求处理，直到迁移完成。
 
@@ -345,6 +550,20 @@ NIO主要就是实现了高效的网络请求
 
  **NIO的一种 IO多路复用**
 
+
+
+**Redis 所有客户端的读写命令**（GET、SET、LPUSH 等）**都在主线程（main thread）顺序执行**
+
+多个 I/O 线程读取客户端发送的数据 (新版本的多线程 )
+
+将命令放到主线程的队列里执行
+
+
+
+RDB/AOF 持久化，后台线程，异步写磁盘，不阻塞主线程
+
+slave 同步数据时，可能使用后台线程
+
 > BIO AIO NIO
 
 BIO是阻塞IO  一直阻塞直到完成拿到数据
@@ -358,6 +577,10 @@ AIO是改进版的NIO    和NIO区别是  NIO程序决定channel准备好的操�
 比喻： BIO是充电桩充电   一直阻塞
 
  **这部分看网络相关**
+
+
+
+
 
 
 

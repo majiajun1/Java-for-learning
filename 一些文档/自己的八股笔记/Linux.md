@@ -10,7 +10,7 @@
 
 网络相关：netstat  ip   addr
 
-测试相关：ping  
+测试相关：ping      **`telnet 目标IP 端口号`**
 
 
 
@@ -22,13 +22,13 @@ top -H  查线程
 
 
 
-telnet命令测试端口
+**telnet命令测试端口**
 
-top也可以查CPU 核心数
+**top也可以查CPU 核心数**
 
 free和top命令可以查看内存  
 
-
+**`free -h`**：快速看总内存、已用、缓存、空闲等概况。
 
 
 
